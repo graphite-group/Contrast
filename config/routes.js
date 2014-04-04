@@ -34,7 +34,12 @@ module.exports.routes = {
   // (This would also work if you had a file at: `/views/home.ejs`)
   '/': {
     view: 'home/index'
-  }
+  },
+
+  '/upload': {
+    controller: 'ImageController',
+    action: 'upload'
+  },
 
 //serve static files for login, signup, about, terms&conditions
 

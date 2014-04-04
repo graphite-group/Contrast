@@ -1,32 +1,43 @@
-/**
- * ImageController
- *
- * @module      :: Controller
- * @description	:: A set of functions called `actions`.
- *
- *                 Actions contain code telling Sails how to respond to a certain type of request.
- *                 (i.e. do stuff, then send some JSON, show an HTML page, or redirect to another URL)
- *
- *                 You can configure the blueprint URLs which trigger these actions (`config/controllers.js`)
- *                 and/or override them with custom routes (`config/routes.js`)
- *
- *                 NOTE: The code you write here supports both HTTP and Socket.io automatically.
- *
- * @docs        :: http://sailsjs.org/#!documentation/controllers
- */
+'use strict';
+
+
+
 
 module.exports = {
 
-
   upload: function(req, res){
-    //upload image
+    console.log(req.files.image.path);
+    if(!!req.files.image){
+
+      var imagePath = req.files.image.path;
+      var extention = req.files.image.type === 'image/png'     ? '.png' :
+                      req.files.image.type === 'image/jpeg'    ? '.jpg' :
+                      req.files.image.type === 'image/tiff'    ? '.tiff':
+                      req.files.image.type === 'image/svg+xml' ? '.svg' :
+                      req.files.image.type === 'image/svg'     ? '.svg' :
+                                                                 '.jpg' ;
+
+      imageService.uploadToS3(imagePath, extention)
+        .then(res.send.bind(res))
+        .catch(function(err){
+          console.log(err);
+          res.send(err);
+        });
+
+    } else {
+      res.send({
+        success: false,
+        reason: 'no file by the name "image"'
+      });
+    }
+
   },
 
-  setPortfolioImage: function(req,res){
+  setPortfolioImage: function(req, res){
     //handling the post data for when user selects portfolio pic
   },
 
-  getImageDetails: function(req,res){
+  getImageDetails: function(req, res){
 
   },
 
