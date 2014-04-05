@@ -39,10 +39,7 @@ module.exports = {
       if(!!mimeToExt[req.files.image.type]){
         extention = mimeToExt[req.files.image.type];
       } else {
-        return res.send({
-          success: false,
-          reason: 'the file is not an image'
-        });
+        return serveError(res)('the file is not an image');
       }
 
       imageService.uploadToS3(imagePath, extention)
@@ -67,7 +64,6 @@ module.exports = {
     imageService.createImageDetails(imageDetails, userId)
       .then(serveData(res))
       .catch(serveError(res));
-
   },
 
   getImageDetails: function(req, res){
