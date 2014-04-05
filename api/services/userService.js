@@ -51,14 +51,7 @@ module.exports = {
         return updated;
       });
     });
-
-    //then extend with the new properties in updateData
-    // var a = db.updateNodeAsync(userId, updateData);
-    // if(typeof callback === 'function'){
-    //   a.then(callback.bind(this.null)).catch(callback);
-    // } else {
-    //   return a;
-    // }
+    
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);
     } else {
@@ -86,7 +79,12 @@ module.exports = {
   },
 
   fetchUserByEmail: function(email, callback){
-    // db.readNode();
+    var a = db.readNodesWithLabelsAndPropertiesAsync('user', {email:email});
+    if(typeof callback === 'function'){
+      a.then(callback.bind(this, null)).catch(callback);
+    } else {
+      return a;
+    }
   }
 
 };
@@ -98,6 +96,7 @@ module.exports = {
 // };
 
 // module.exports.createUser(userDataTest, function(node){console.log(node);});
-module.exports.fetchUserById(544).then(function(node){console.log(node);});
-// module.exports.updateUser(544, {name:"harish"}).then(function(node){console.log("last Console Log",node);});
+// module.exports.fetchUserById(544).then(function(node){console.log(node);});
+// module.exports.updateUser(544, {email:"bangers@mash.com"}).then(function(node){console.log("last Console Log",node);});
 // module.exports.deleteUser(542).then(function(node){console.log(node);});
+// module.exports.fetchUserByEmail('bangers@mash.com').then(function(node){console.log(node);});
