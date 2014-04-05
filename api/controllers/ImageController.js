@@ -1,6 +1,30 @@
 'use strict';
 
+var mimeToExt = {
+  'image/png'     : '.png' ,
+  'image/jpeg'    : '.jpg' ,
+  'image/tiff'    : '.tiff',
+  'image/svg+xml' : '.svg' ,
+  'image/svg'     : '.svg'
+};
 
+var serveError = function(res){
+  return function(err){
+    res.send({
+      success: false,
+      reason: err
+    });
+  };
+};
+
+var serveData = function(res){
+  return function(data){
+    res.send({
+      success: false,
+      data: data
+    });
+  };
+};
 
 
 module.exports = {
@@ -10,35 +34,50 @@ module.exports = {
     if(!!req.files.image){
 
       var imagePath = req.files.image.path;
-      var extention = req.files.image.type === 'image/png'     ? '.png' :
-                      req.files.image.type === 'image/jpeg'    ? '.jpg' :
-                      req.files.image.type === 'image/tiff'    ? '.tiff':
-                      req.files.image.type === 'image/svg+xml' ? '.svg' :
-                      req.files.image.type === 'image/svg'     ? '.svg' :
-                                                                 '.jpg' ;
+      var extention;
+
+      if(!!mimeToExt[req.files.image.type]){
+        extention = mimeToExt[req.files.image.type];
+      } else {
+        return res.send({
+          success: false,
+          reason: 'the file is not an image'
+        });
+      }
 
       imageService.uploadToS3(imagePath, extention)
-        .then(res.send.bind(res))
-        .catch(function(err){
-          console.log(err);
-          res.send(err);
-        });
+        .then(function(url){ return {url: url} })
+        .then(serveData(res))
+        .catch(serveError(res));
 
     } else {
-      res.send({
-        success: false,
-        reason: 'no file by the name "image"'
-      });
+      return serveError(res)('no file by the name "image"');
     }
 
   },
 
   setPortfolioImage: function(req, res){
-    //handling the post data for when user selects portfolio pic
+    var imageDetails = req.body;
+    var userId = req.session.user.id || req.session.user._id;
+
+    if(!!imageDetails.url){
+      return serveError(res)('no file by the name "image"');
+    }
+
+    imageService.createImageDetails(imageDetails, userId)
+      .then(serveData(res))
+      .catch(serveError(res));
+
   },
 
   getImageDetails: function(req, res){
+    if(!req.params.id){
+      return serveError(res)('No image id provided');
+    }
 
+    imageService.fetchImageDetails(req.params.id)
+      .then(serveData(res))
+      .catch(serveError(res));
   },
 
   /**

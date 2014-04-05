@@ -19,12 +19,15 @@ module.exports = {
   //takes a local file path, the file extension. And saves it to S3, and returns the URL
   uploadToS3: function(localImgPath, fileExtension, callback){
     var newFileName = 'contrast/' + Date.now().toString(36) + Math.random().toString().slice(2) + fileExtension + '';
-    var a = client.putFileAsync(localImgPath, newFileName, {'x-amz-acl': 'public-read'})
-              .then(function(reply){
-                console.log('IMAGE UPLOADED TO S3: ', reply.client._httpMessage.url);
-                return reply.client._httpMessage.url;
-              });
 
+    var a =
+    client.putFileAsync(localImgPath, newFileName, {'x-amz-acl': 'public-read'})
+      .then(function(reply){
+        console.log('IMAGE UPLOADED TO S3: ', reply.client._httpMessage.url);
+        return reply.client._httpMessage.url;
+      });
+
+    // call callback or return promise
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);
     } else {
@@ -56,6 +59,7 @@ module.exports = {
         return imageNode;
       });
 
+    // call callback or return promise
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);
     } else {
@@ -83,6 +87,7 @@ module.exports = {
         return db.updateNodeByIdAsync(imageId, node);
       });
 
+    // call callback or return promise
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);
     } else {
@@ -94,6 +99,7 @@ module.exports = {
   fetchImageDetails: function(imageId, callback){
     var a = db.readNodeAsync(imageId);
 
+    // call callback or return promise
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);
     } else {
@@ -105,7 +111,7 @@ module.exports = {
     var a =
     db.readRelationshipsOfNodeAsync(userId, {})
       .filter(function(relationship){
-        return relationship._end !== userId;
+        return relationship._end !== userId && relationship._type === 'CREATED';
       })
       .map(function(relationship){
         return relationship._end;
@@ -115,6 +121,7 @@ module.exports = {
         return this.fetchImageDetails(imageId);
       });
 
+    // call callback or return promise
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);
     } else {
@@ -126,6 +133,7 @@ module.exports = {
     var a =
     db.readNodesWithLabelsAndPropertiesAsync('image', filter);
 
+    // call callback or return promise
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);
     } else {
@@ -135,4 +143,4 @@ module.exports = {
 
 };
 
-// module.exports.fetchImagesByFilter({url: 'http://www.wikipedia.com'}).then(console.log.bind(console));
+module.exports.fetchImageByUserId(6).then(console.log.bind(console));
