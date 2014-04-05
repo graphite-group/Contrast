@@ -8,7 +8,7 @@ db = Promise.promisifyAll(db);
 module.exports = {
   //challengerImageId: num, challengeeImageId: num, challengeStats: object
   createChallenge: function(challengerImageId, challengeeImageId, challengeStats, callback){
-    
+
     var jsonStats = JSON.stringify(challengeStats);
 
     var addThreeWayRelationship = function(challengerNode, challengeeNode, node){
@@ -19,9 +19,7 @@ module.exports = {
       ]);
     };
 
-    var a = db.insertNodeAsync({
-      challengeStats: jsonStats
-    }, ['challenge'])
+    var a = db.insertNodeAsync(challengeStats, ['challenge'])
       .then(function(node){
         return Promise.all([
           db.readNodeAsync(challengerImageId),
