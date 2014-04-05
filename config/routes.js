@@ -35,21 +35,73 @@ module.exports.routes = {
   '/': {
     view: 'home/index'
   },
-
-  '/upload': {
+//////////////
+//Image Controller
+////////////////////
+  'POST /upload': {
     controller: 'ImageController',
     action: 'upload'
   },
 
-  '/image/:id': {
+  'GET /image/:id': {
     controller: 'ImageController',
     action: 'getImageDetails'
   },
 
-  '/profile/:id': {
+  'POST /image' : {
+    controller: 'ImageController',
+    action: 'setPortfolioImage'
+  },
+//////////////
+//User Controller
+////////////////////
+  'GET /profile/:id': {
     controller: 'UserController',
     action: 'profile'
   },
+
+  'GET /profile' : {
+    controller: 'UserController',
+    action: 'profile'
+  }, 
+
+  'GET /stats/:id' : {
+    controller: 'UserController',
+    action: 'userStats'
+  },
+//////////////
+//Auth Controller
+////////////////////
+  'POST /login' : {
+    controller: 'AuthController',
+    action: 'login' 
+  },
+
+  // 'GET /login' : {
+  //   view: 'login'
+  // },
+
+  'POST /logout' : {
+    controller: 'AuthController',
+    action: 'logout'
+  },
+
+  'POST /signup' : {
+    controller: 'AuthController',
+    action : 'signup'
+  },
+//////////////
+//Challenge Controller
+////////////////////
+  'GET /getChallenges' : {
+    controller: 'ChallengeController',
+    action: 'serveChallenge'
+  },
+  //req.body will have challengeId and imageId
+  'POST /castVote' : {
+    controller: 'ChallengeController',
+    action: 'castVote'
+  }
 //serve static files for login, signup, about, terms&conditions
 
   /*
