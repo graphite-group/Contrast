@@ -35,23 +35,7 @@ module.exports = {
 
 //returns true if node is successfully updated --- false if it is not found
   updateUser: function(userId, updateData, callback){
-    //first need to read node to get old properties
-    var a = this.fetchUserById(userId)
-    .then(function(node){
-
-      for(var key in updateData){
-        node[key] = updateData[key];
-      }
-      return node;
-    })
-    .then(function(node){
-      return db.updateNodeAsync(node._id, node, function(err, updated){
-        if(err){
-          throw err;
-        }
-        return updated;
-      });
-    });
+    var a = db.updateNodeByIdAsync(userId, updateData);
 
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);
@@ -89,6 +73,10 @@ module.exports = {
   }
 
 };
+
+/////////////////////////////////
+//test bits
+////////////////////////////////
 // var userDataTest = {
 //   name: "adam",
 //   email: "warren@gmail.com",
@@ -96,7 +84,7 @@ module.exports = {
 // };
 
 // module.exports.createUser(userDataTest, function(err, node){console.log(err, node);});
-// module.exports.fetchUserById(544).then(function(node){console.log(node);});
-// module.exports.updateUser(544, {email:"bangers@mash.com"}).then(function(node){console.log("last Console Log",node);});
+// module.exports.fetchUserById(541).then(function(node){console.log(node);});
+// module.exports.updateUser(541, {email: "testing@tests.com"}).then(function(node){console.log("last Console Log",node);});
 // module.exports.deleteUser(542).then(function(node){console.log(node);});
 // module.exports.fetchUserByEmail('bangers@mash.com').then(function(node){console.log(node);});
