@@ -1,33 +1,79 @@
-/**
- * ImageController
- *
- * @module      :: Controller
- * @description	:: A set of functions called `actions`.
- *
- *                 Actions contain code telling Sails how to respond to a certain type of request.
- *                 (i.e. do stuff, then send some JSON, show an HTML page, or redirect to another URL)
- *
- *                 You can configure the blueprint URLs which trigger these actions (`config/controllers.js`)
- *                 and/or override them with custom routes (`config/routes.js`)
- *
- *                 NOTE: The code you write here supports both HTTP and Socket.io automatically.
- *
- * @docs        :: http://sailsjs.org/#!documentation/controllers
- */
+'use strict';
+
+var mimeToExt = {
+  'image/png'     : '.png' ,
+  'image/jpeg'    : '.jpg' ,
+  'image/tiff'    : '.tiff',
+  'image/svg+xml' : '.svg' ,
+  'image/svg'     : '.svg'
+};
+
+var serveError = function(res){
+  return function(err){
+    res.send({
+      success: false,
+      reason: err
+    });
+  };
+};
+
+var serveData = function(res){
+  return function(data){
+    res.send({
+      success: true,
+      data: data
+    });
+  };
+};
+
 
 module.exports = {
 
-
   upload: function(req, res){
-    //upload image
+    console.log(req.files.image.path);
+    if(!!req.files.image){
+
+      var imagePath = req.files.image.path;
+      var extention;
+
+      if(!!mimeToExt[req.files.image.type]){
+        extention = mimeToExt[req.files.image.type];
+      } else {
+        return serveError(res)('the file is not an image');
+      }
+
+      imageService.uploadToS3(imagePath, extention)
+        .then(function(url){ return {url: url} })
+        .then(serveData(res))
+        .catch(serveError(res));
+
+    } else {
+      return serveError(res)('no file by the name "image"');
+    }
+
   },
 
-  setPortfolioImage: function(req,res){
-    //handling the post data for when user selects portfolio pic
+  setPortfolioImage: function(req, res){
+    var imageDetails = req.body;
+    var userId = req.session.user.id || req.session.user._id;
+
+    if(!!imageDetails.url){
+      return serveError(res)('no file by the name "image"');
+    }
+
+    imageService.createImageDetails(imageDetails, userId)
+      .then(serveData(res))
+      .catch(serveError(res));
   },
 
-  getImageDetails: function(req,res){
+  getImageDetails: function(req, res){
+    if(!req.params.id){
+      return serveError(res)('No image id provided');
+    }
 
+    imageService.fetchImageDetails(req.params.id)
+      .then(serveData(res))
+      .catch(serveError(res));
   },
 
   /**
