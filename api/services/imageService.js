@@ -6,9 +6,12 @@ var neo4j = require('node-neo4j');
 var db = new neo4j('http://localhost:7474');
 db = Promise.promisifyAll(db);
 
+// AWSAccessKeyId=AKIAIBXLO2SYODZCS7ZA
+// AWSSecretKey=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
+
 var client = knox.createClient({
-  key: 's3 key here',
-  secret: 's3 secret here',
+  key: 'AKIAIBXLO2SYODZCS7ZA',
+  secret: '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',
   bucket: 'contrastio'
 });
 

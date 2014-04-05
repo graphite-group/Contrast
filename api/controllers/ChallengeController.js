@@ -1,19 +1,4 @@
-/**
- * ChallengeController
- *
- * @module      :: Controller
- * @description	:: A set of functions called `actions`.
- *
- *                 Actions contain code telling Sails how to respond to a certain type of request.
- *                 (i.e. do stuff, then send some JSON, show an HTML page, or redirect to another URL)
- *
- *                 You can configure the blueprint URLs which trigger these actions (`config/controllers.js`)
- *                 and/or override them with custom routes (`config/routes.js`)
- *
- *                 NOTE: The code you write here supports both HTTP and Socket.io automatically.
- *
- * @docs        :: http://sailsjs.org/#!documentation/controllers
- */
+'use strict';
 var challengeService = require('../services/challengeService');
 
 var serveError = function(res){
@@ -39,12 +24,12 @@ module.exports = {
    * Action blueprints:
    *    `/challenge/image`
    */
-   
+
    //should return empty array if there are no challenges unconnected to user.id above, else should
    //return array of challenges
    serveChallenge:function(req,res){
     //look at cookies to serve next correct challenge
-    
+
     var userId = req.session.user.id;
 
     challengeService.findChallengesToVoteOn(userId)
