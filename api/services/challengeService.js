@@ -1,3 +1,4 @@
+'use strict';
 var neo4j = require('node-neo4j');
 var Promise = require('bluebird');
 
@@ -11,7 +12,7 @@ module.exports = {
 
   //challengerImageId: num, challengeeImageId: num, challengeStats: objects
   createChallenge: function(challengerImageId, opponentImageId, challengeStats, callback){
-    
+
     challengeStats.createdAt = new Date();
     challengeStats.challengerImageId = challengerImageId;
     challengeStats.challengerVote = 0;
@@ -26,7 +27,7 @@ module.exports = {
       ]);
     };
 
-    var a = 
+    var a =
       db.insertNodeAsync(challengeStats, ['challenge'])
         .then(function(node){
           return Promise.all([
@@ -49,7 +50,7 @@ module.exports = {
 
   //challengeId: num, challengeStats: object{challengerVote, opponentVote, createdAt}
   updateChallenge: function(challengeId, challengeStats, callback){
-    var a = 
+    var a =
       db.readNodeAsync(challengeId)
         .then(function(node){
           return db.updateNodeByIdAsync(node._id, challengeStats);
@@ -69,7 +70,7 @@ module.exports = {
     }
       console.log(relationship);
 
-    var a = 
+    var a =
       db.readRelationshipsOfNodeAsync(userId, {types: relationship});
 
     if(typeof callback === 'function'){
@@ -82,7 +83,7 @@ module.exports = {
   //relationship should be either "IS_CHALLENGER" or "IS_OPPONENT"
   findChallengesToVoteOn: function(userId, callback){
     console.log("CORRECT FUNC: ", userId);
-    var a = 
+    var a =
       db.cypherQueryAsync(
         "START u=node("+userId+")\n" +
         "MATCH (n:challenge)\n" +
@@ -100,7 +101,7 @@ module.exports = {
   },
 
   addUserVote: function(userId, challengeId, imageId, callback){
-    var a = 
+    var a =
       db.readNodeAsync(challengeId)
         .then(function(node){
           var challengeStats = {};
@@ -126,11 +127,11 @@ module.exports = {
 
 //need to make nodes in browser before using these to test
 
-createChallenge = module.exports.createChallenge;
+//createChallenge = module.exports.createChallenge;
 // createChallenge(2,1,{}).then(function(node){
 //   console.log(node);
 // });
- 
+
 // updateChallenge = module.exports.updateChallenge;
 // // updateChallenge(118,{challengerVote:'9', opponentVote:'0'}, function(err,result){
 // //   console.log(result);
@@ -142,7 +143,7 @@ createChallenge = module.exports.createChallenge;
 // //  console.log(results);
 // // });
 
-findChallengesToVoteOn = module.exports.findChallengesToVoteOn;
+//findChallengesToVoteOn = module.exports.findChallengesToVoteOn;
 // findChallengesToVoteOn(2,function(err,results){
 //  console.log(results.data);
 // });

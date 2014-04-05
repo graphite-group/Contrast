@@ -36,9 +36,10 @@ module.exports = {
       var imagePath = req.files.image.path;
       var extention;
 
-      if(!!mimeToExt[req.files.image.type]){
-        extention = mimeToExt[req.files.image.type];
+      if(!!mimeToExt[req.files.image.headers['content-type']]){
+        extention = mimeToExt[req.files.image.headers['content-type']];
       } else {
+        console.log(req.files.image.headers['content-type']);
         return serveError(res)('the file is not an image');
       }
 

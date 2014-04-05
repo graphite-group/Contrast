@@ -6,12 +6,9 @@ var neo4j = require('node-neo4j');
 var db = new neo4j('http://localhost:7474');
 db = Promise.promisifyAll(db);
 
-// AWSAccessKeyId=AKIAIBXLO2SYODZCS7ZA
-// AWSSecretKey=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
-
 var client = knox.createClient({
-  key: 'AKIAIBXLO2SYODZCS7ZA',
-  secret: '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',
+  key: 's3 key here',
+  secret: 's3 secret here',
   bucket: 'contrastio'
 });
 
@@ -146,4 +143,4 @@ module.exports = {
 
 };
 
-module.exports.createImageDetails({url: 'http://scribbler.co', title: 'all the codes'}, 10).then(console.log.bind(console));
+//module.exports.createImageDetails({url: 'http://scribbler.co', title: 'all the codes'}, 10).then(console.log.bind(console));
