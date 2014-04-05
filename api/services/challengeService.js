@@ -23,7 +23,7 @@ module.exports = {
         node
       ]);
     };
-    
+
     var a = db.insertNodeAsync(challengeStats, ['challenge'])
       .then(function(node){
         return Promise.all([
