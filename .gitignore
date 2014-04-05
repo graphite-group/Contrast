@@ -42,6 +42,7 @@ nbproject
 ########################
 # local config
 ########################
+env.js
 config/local.js
 =======
 # Logs
