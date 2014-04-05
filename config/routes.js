@@ -41,6 +41,15 @@ module.exports.routes = {
     action: 'upload'
   },
 
+  '/image/:id': {
+    controller: 'ImageController',
+    action: 'getImageDetails'
+  },
+
+  '/profile/:id': {
+    controller: 'UserController',
+    action: 'profile'
+  },
 //serve static files for login, signup, about, terms&conditions
 
   /*

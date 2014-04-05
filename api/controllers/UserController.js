@@ -15,7 +15,7 @@ var serveError = function(res){
 var serveData = function(res){
   return function(data){
     res.send({
-      success: false,
+      success: true,
       data: data
     });
   };
@@ -32,7 +32,7 @@ module.exports = {
     if(!!req.session.user){
       var userId = req.session.user.id || req.session.user._id;
     }
-    var profileId = req.params.id;
+    var profileId = req.params.id || userId;
     var selfProfile = (profileId === userId);
 
     userService.fetchUserById(profileId)

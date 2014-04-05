@@ -20,7 +20,7 @@ var serveError = function(res){
 var serveData = function(res){
   return function(data){
     res.send({
-      success: false,
+      success: true,
       data: data
     });
   };

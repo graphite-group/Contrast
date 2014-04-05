@@ -143,4 +143,4 @@ module.exports = {
 
 };
 
-module.exports.fetchImageByUserId(6).then(console.log.bind(console));
+module.exports.createImageDetails({url: 'http://scribbler.co', title: 'all the codes'}, 10).then(console.log.bind(console));
