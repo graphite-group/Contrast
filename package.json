@@ -13,7 +13,10 @@
     "gulp": "~3.6.0",
     "gulp-stylus": "~0.1.0",
     "gulp-browserify": "~0.5.0",
-    "node-neo4j": "^2.0.0-RC6"
+    "node-neo4j": "^2.0.0-RC6",
+    "bluebird": "^1.2.1",
+    "bcrypt": "^0.7.7",
+    "bcryptjs": "^0.7.12"
   },
   "scripts": {
     "start": "node app.js",
