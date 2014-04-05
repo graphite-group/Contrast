@@ -17,18 +17,27 @@ user node = {
 
 module.exports = {
   createUser: function(userData, callback){
-    var a = db.insertNodeAsync({
-      name: userData.name,
-      email: userData.email,
-      description: userData.description,
-      stats: userData.stats
-    }, ['user']);
+    var a = db.readNodesWithLabelsAndPropertiesAsync('user', {email:userData.email})
+    .then(function(nodes){
+      if(nodes.length < 1){
+        return db.insertNodeAsync(userData, ['user']);
+      } else {
+        throw new Error("a user account for " + userData.email +" already exists.");
+      }
+    });
 
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);
     } else {
       return a;
     }
+    // var a = db.insertNodeAsync({
+    //   name: userData.name,
+    //   email: userData.email,
+    //   description: userData.description,
+    //   stats: userData.stats
+    // }, ['user']);
+
   },
 
 //returns true if node is successfully updated --- false if it is not found
@@ -40,7 +49,6 @@ module.exports = {
       for(var key in updateData){
         node[key] = updateData[key];
       }
-      console.log(node);
       return node;
     })
     .then(function(node){
@@ -51,7 +59,7 @@ module.exports = {
         return updated;
       });
     });
-    
+
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);
     } else {
@@ -88,14 +96,14 @@ module.exports = {
   }
 
 };
-// var userDataTest = {
-//   name: "adam",
-//   email: "test@test.",
-//   description: "My name is Rob and I like to party."
-//   // stats: {"stars": 500}
-// };
+var userDataTest = {
+  name: "adam",
+  email: "warren@gmail.com",
+  description: "My name is Rob and I like to party."
+  // stats: {"stars": 500}
+};
 
-// module.exports.createUser(userDataTest, function(node){console.log(node);});
+module.exports.createUser(userDataTest, function(err, node){console.log(err, node);});
 // module.exports.fetchUserById(544).then(function(node){console.log(node);});
 // module.exports.updateUser(544, {email:"bangers@mash.com"}).then(function(node){console.log("last Console Log",node);});
 // module.exports.deleteUser(542).then(function(node){console.log(node);});
