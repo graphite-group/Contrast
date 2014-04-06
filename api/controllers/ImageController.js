@@ -59,7 +59,7 @@ module.exports = {
     var userId = req.session.user.id || req.session.user._id;
 
     if(!imageDetails.url){
-      return serveError(res)('no file by the name "image"');
+      return serveError(res)('no image URL on the post data');
     }
 
     imageService.createImageDetails(imageDetails, userId)
