@@ -22,7 +22,7 @@ module.exports = {
     var a = db.readNodesWithLabelsAndPropertiesAsync('user', {email:userData.email})
     .then(function(nodes){
       if(nodes.length < 1){
-        module.exports.hashPassword(userData.password)
+        return module.exports.hashPassword(userData.password)
         .then(function(hash){
           userData.password = hash;
           return userData;

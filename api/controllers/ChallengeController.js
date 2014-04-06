@@ -27,7 +27,7 @@ module.exports = {
 
    //should return empty array if there are no challenges unconnected to user.id above, else should
    //return array of challenges
-   serveChallenge:function(req,res){
+  serveChallenge:function(req,res){
     //look at cookies to serve next correct challenge
 
     var userId = req.session.user.id;
@@ -35,9 +35,9 @@ module.exports = {
     challengeService.findChallengesToVoteOn(userId)
     .then(serveData(res))
     .catch(serveError(res));
-   },
+  },
 
-   castVote:function(req,res){
+  castVote:function(req,res){
 
     var userId = req.session.user.id;
     var challengeId = req.body.challengeId;
@@ -47,7 +47,7 @@ module.exports = {
     .then(serveData(res))
     .catch(serveError(res));
 
-   },
+  },
 
   /**
    * Overrides for the settings in `config/controllers.js`
