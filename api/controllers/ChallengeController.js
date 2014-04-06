@@ -25,6 +25,34 @@ module.exports = {
    *    `/challenge/image`
    */
 
+   createChallenge:function(req,res){
+     var challengerImageId = req.body.challengerImageId;
+     var opponentImageId = req.body.opponentImageId;
+
+     challengeService.createChallenge(challengerImageId,opponentImageId,{})
+     .then(serveData(res))
+     .catch(serveError(res));
+   },
+
+    acceptChallenge:function(req,res){
+      var userId = req.session.user.id;
+      var challengeId = req.body.challengeId;
+
+      challengeService.acceptChallenge(userId,challengeId,{})
+      .then(serveData(res))
+      .catch(serveError(res));
+
+    },
+
+    rejectChallenge:function(req,res){
+      var challengeId = req.body.challengeId;
+
+      challengeService.endChallenge(challengeId,{})
+      .then(serveData(res))
+      .catch(serveError(res));
+
+    },
+
    //should return empty array if there are no challenges unconnected to user.id above, else should
    //return array of challenges
    serveChallenge:function(req,res){

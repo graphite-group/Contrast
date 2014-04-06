@@ -58,7 +58,7 @@ module.exports = {
     var imageDetails = req.body;
     var userId = req.session.user.id || req.session.user._id;
 
-    if(!!imageDetails.url){
+    if(!imageDetails.url){
       return serveError(res)('no file by the name "image"');
     }
 

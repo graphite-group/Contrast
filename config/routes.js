@@ -101,6 +101,11 @@ module.exports.routes = {
   'POST /castVote' : {
     controller: 'ChallengeController',
     action: 'castVote'
+  },
+
+  'POST /createChallenge' : {
+    controller: 'ChallengeController',
+    actoin: 'createChallenge'
   }
 //serve static files for login, signup, about, terms&conditions
 
