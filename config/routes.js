@@ -63,7 +63,7 @@ module.exports.routes = {
   'GET /profile' : {
     controller: 'UserController',
     action: 'profile'
-  }, 
+  },
 
   'GET /stats/:id' : {
     controller: 'UserController',
@@ -74,7 +74,7 @@ module.exports.routes = {
 ////////////////////
   'POST /login' : {
     controller: 'AuthController',
-    action: 'login' 
+    action: 'login'
   },
 
   // 'GET /login' : {
@@ -93,9 +93,14 @@ module.exports.routes = {
 //////////////
 //Challenge Controller
 ////////////////////
-  'GET /getChallenges' : {
+  'GET /challenge' : {
     controller: 'ChallengeController',
     action: 'serveChallenge'
+  },
+
+  'GET /myChallenges' : {
+    controller: 'ChallengeController',
+    action: 'myChallenges'
   },
   //req.body will have challengeId and imageId
   'POST /castVote' : {
@@ -103,9 +108,19 @@ module.exports.routes = {
     action: 'castVote'
   },
 
-  'POST /createChallenge' : {
+  'POST /challenge' : {
     controller: 'ChallengeController',
-    actoin: 'createChallenge'
+    action: 'createChallenge'
+  },
+
+  'POST /acceptChallenge' : {
+    controller: 'ChallengeController',
+    action: 'acceptChallenge'
+  },
+
+  'POST /rejectChallenge' : {
+    controller: 'ChallengeController',
+    action: 'rejectChallenge'
   }
 //serve static files for login, signup, about, terms&conditions
 

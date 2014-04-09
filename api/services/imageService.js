@@ -7,8 +7,6 @@ var env = require('../../env.js');
 var db = new neo4j('http://localhost:7474');
 db = Promise.promisifyAll(db);
 
-console.log(env);
-
 var client = knox.createClient({
   key: env.s3Key,
   secret: env.s3Secret,

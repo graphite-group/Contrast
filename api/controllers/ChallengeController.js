@@ -25,33 +25,50 @@ module.exports = {
    *    `/challenge/image`
    */
 
-   createChallenge:function(req,res){
-     var challengerImageId = req.body.challengerImageId;
-     var opponentImageId = req.body.opponentImageId;
+  createChallenge:function(req,res){
+    var challengerImageId = req.body.challengerImageId;
+    var opponentImageId = req.body.opponentImageId;
+    if(!challengerImageId || !opponentImageId){
+      return serveError(res)("Challenger and Opponent IDs are needed.");
+    }
 
-     challengeService.createChallenge(challengerImageId,opponentImageId,{})
-     .then(serveData(res))
-     .catch(serveError(res));
-   },
+    challengeService.createChallenge(challengerImageId, opponentImageId, {})
+    .then(serveData(res))
+    .catch(serveError(res));
+  },
 
-    acceptChallenge:function(req,res){
-      var userId = req.session.user.id;
-      var challengeId = req.body.challengeId;
+  acceptChallenge:function(req,res){
+    var userId = req.session.user.id;
+    var challengeId = req.body.challengeId;
+    if(!challengeId){
+      return serveError(res)("Challenge ID is needed.");
+    }
 
-      challengeService.acceptChallenge(userId,challengeId,{})
-      .then(serveData(res))
-      .catch(serveError(res));
+    challengeService.acceptChallenge(userId, challengeId, {})
+    .then(serveData(res))
+    .catch(serveError(res));
 
-    },
+  },
 
-    rejectChallenge:function(req,res){
-      var challengeId = req.body.challengeId;
+  myChallenges: function (req, res) {
+    var userId = req.session.user.id;
 
-      challengeService.endChallenge(challengeId,{})
-      .then(serveData(res))
-      .catch(serveError(res));
+    challengeService.findChallengesByUserHistory(userId, 'IS_OPPONENT')
+    .then(serveData(res))
+    .catch(serveError(res));
+  },
 
-    },
+  rejectChallenge:function(req,res){
+    var userId = req.session.user.id;
+    var challengeId = req.body.challengeId;
+    if(!challengeId){
+      return serveError(res)("Challenge ID is needed.");
+    }
+
+    challengeService.rejectChallenge(userId, challengeId, {})
+    .then(serveData(res))
+    .catch(serveError(res));
+  },
 
    //should return empty array if there are no challenges unconnected to user.id above, else should
    //return array of challenges
@@ -70,6 +87,9 @@ module.exports = {
     var userId = req.session.user.id;
     var challengeId = req.body.challengeId;
     var imageId = req.body.imageId;
+    if(!challengeId || !imageId){
+      return serveError(res)("Challenge and Image IDs is needed.");
+    }
 
     challengeService.addUserVote(userId, challengeId, imageId)
     .then(serveData(res))

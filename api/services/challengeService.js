@@ -106,6 +106,44 @@ module.exports = {
     }
   },
 
+  rejectChallenge: function(userId, challengeId, callback){
+    var a =
+      db.readLabelsAsync(challengeId)
+        .then(function(labels){
+          if( labels.indexOf('accepted') !== -1 || labels.indexOf('ended') !== -1 ){
+            throw new Error("Challenge already accepted or ended");
+          }
+          return db.readNodeAsync(challengeId);
+        })
+        .then(function(node){
+          return db.readRelationshipsOfNodeAsync(node.opponentImageId);
+        })
+        .filter(function(relationship){
+          return relationship._start === userId;
+        })
+        .then(function(relationships){
+          return relationships.length > 0;
+        })
+        .then(function(isUser){
+          if(!isUser){
+            throw new Error("user can not reject this challenge");
+          }
+          return db.replaceLabelsFromNodeAsync(challengeId, ['challenge', 'ended']);
+        })
+        .then(function(node){
+          var challengeStats = {};
+          challengeStats.startTime = new Date();
+          challengeStats.endTime = challengeStats.startTime;
+          return db.updateNodeByIdAsync(challengeId, challengeStats);
+        });
+
+    if(typeof callback === 'function'){
+      a.then(callback.bind(this, null)).catch(callback);
+    }else{
+      return a;
+    }
+  },
+
   endChallenge: function(challengeId, callback){
     var a =
       db.readLabelsAsync(challengeId)
@@ -118,7 +156,7 @@ module.exports = {
         .then(function(){
           return db.readNodeAsync(challengeId);
         });
-        
+
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);
     }else{
