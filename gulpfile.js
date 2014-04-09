@@ -14,7 +14,7 @@ gulp.task('stylus', function() {
 });
 
 gulp.task('browserify', function() {
-  gulp.src('./assets/js/app.js')
+  gulp.src('./assets/app/app.js')
     .pipe(browserify({
       insertGlobals: true,
       debug: false
