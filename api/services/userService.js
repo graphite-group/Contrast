@@ -1,3 +1,4 @@
+'use strict';
 var promise = require('bluebird');
 var neo4j = require('node-neo4j');
 var bcryptjs = require('bcryptjs');

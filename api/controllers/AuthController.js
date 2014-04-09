@@ -14,7 +14,7 @@ module.exports = {
     userService.fetchUserByEmail(email)
     .then(function(nodes){
       if(nodes.length>0){
-        return node[0];
+        return nodes[0];
       } else {
         throw new Error('no user exists the given username/password');
       }
@@ -29,7 +29,14 @@ module.exports = {
         req.session.user = node;
         req.session.user.id = node._id;
         req.session.authenticated = true;
-        res.redirect('/home');
+        if(!!req.body.json){
+          res.send({
+            sucess: true,
+            data: node
+          });
+        } else {
+          res.redirect('/');
+        }
       } else {
         res.redirect('/login');
       }
@@ -53,7 +60,14 @@ module.exports = {
       req.session.user = node;
       req.session.user.id = node._id;
       req.session.authenticated = true;
-      res.redirect('/home');
+      if(!!req.body.json){
+        res.send({
+          sucess: true,
+          data: node
+        });
+      } else {
+        res.redirect('/');
+      }
     })
     .catch(function(err){
       console.log("error creating user: " + err);
