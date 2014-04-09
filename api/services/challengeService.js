@@ -288,9 +288,9 @@ var endChallenge = module.exports.endChallenge;
 
 
 var findChallengesByUserHistory = module.exports.findChallengesByUserHistory;
-findChallengesByUserHistory(12,"IS_OPPONENT",function(err,results){
- console.log(results);
-});
+// findChallengesByUserHistory(12,"IS_OPPONENT",function(err,results){
+//  console.log(results);
+// });
 
 //findChallengesToVoteOn = module.exports.findChallengesToVoteOn;
 // findChallengesToVoteOn(2,function(err,results){

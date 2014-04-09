@@ -1,6 +1,7 @@
+'use strict';
+
 (function (io) {
-  console.log(io);
-  'use strict';
+
   // as soon as this file is loaded, connect automatically,
   var socket = io.connect();
   if (typeof console !== 'undefined') {
