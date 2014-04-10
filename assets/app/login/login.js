@@ -1,16 +1,15 @@
-//var angular = require('angular');
-// var app = angular.module('app.login', [require('angular-ui-router')]);
+module.exports = function(app){
 
-// console.log("testinggggggg");
+  app
+    .controller('loginController', ['$scope', 'MainService', function($scope, MainService){
+      $scope.test = MainService.getImages();
+    }])
+    .config(['$stateProvider', function($stateProvider){
+      $stateProvider.state('login',{
+          url: '/login',
+          templateUrl: '/app/login/login.html',
+          controller: 'loginController'
+        });
+    }]);
 
-// app.controller('loginCtrl', ['$scope', function($scope){
-//   $scope.test = "world";
-
-// }]);
-
-// module.exports = app;
-
-module.exports = function($scope){
-  $scope.test = "world";
-  
 };

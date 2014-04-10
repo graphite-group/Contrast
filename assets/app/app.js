@@ -25,41 +25,19 @@
 
   window.socket = socket;
 
-
-
-
 })( require('./../js/sails.io.js') );
 
 var angular = require('angular');
 
-var app = angular.module('contrast', [
-  require('angular-ui-router')
-  // require('./login/login.js')
-  ]);
+var app =
+  angular.module('contrast', [
+    require('angular-ui-router')
+  ])
+  .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider){
+    $urlRouterProvider.otherwise('/');
+  }]);
+
+require('./MainService.js')(app);
+require('./login/login.js')(app);
 
 
-app.config(['$stateProvider',function($stateProvider){
-  $stateProvider
-  .state('login',{
-    url: "/login",
-    templateUrl: "app/login/login.html",
-    controller: require('./login/login')
-  });
-
-}]);
-
-// require('./home');
-
-// /////home//////
-
-
-//   require('angular').module("app.home", [require('angular-ui-router')])
-//   .controller('ctrl', [...]);
-
-//   require('./subctrl');
-
-/*
-window.app = angular.module('contrast', [
-    require('angular-ui-router'),
-  ]);
-*/
