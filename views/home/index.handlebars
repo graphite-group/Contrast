@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html ng-app="contrastApp">
+<html >
   <head>
     <title>{{ title }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-
+    <link rel="stylesheet" href="/styles/app.css">
   </head>
 
   <body>
@@ -15,14 +15,21 @@
     <header>
       <h1>Contrast.io</h1>
       <nav>
-        <a href="#/">home</a>
-        <a href="#/profile">profile</a>
-        <a href="#/challenges">challenges</a>
-        <a href="#/login">login/logout</a>
-        <a href="#/signup">signup</a>
+        <div class="hamburger">
+          <a href="#!">:::</a>
+          <div class="dropdown">
+            <a href="#/">home</a>
+            <a href="#/profile">profile</a>
+            <a href="#/challenges">challenges</a>
+            <a href="#/login">login/logout</a>
+            <a href="#/signup">signup</a>
+          </div>
+        </div>
       </nav>
     </header>
-    <div ui-view class="container">
+
+    <div class="container" ng-app="contrast">
+      <div ui-view></div>
 
     </div>
     <footer>

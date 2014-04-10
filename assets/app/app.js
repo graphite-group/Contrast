@@ -1,6 +1,7 @@
+'use strict';
+
 (function (io) {
-  console.log(io);
-  'use strict';
+
   // as soon as this file is loaded, connect automatically,
   var socket = io.connect();
   if (typeof console !== 'undefined') {
@@ -30,9 +31,22 @@
 })( require('./../js/sails.io.js') );
 
 var angular = require('angular');
-var app = angular.module('app', [require('angular-ui-router')]);
+
+var app = angular.module('contrast', [
+  require('angular-ui-router')
+  // require('./login/login.js')
+  ]);
 
 
+app.config(['$stateProvider',function($stateProvider){
+  $stateProvider
+  .state('login',{
+    url: "/login",
+    templateUrl: "app/login/login.html",
+    controller: require('./login/login')
+  });
+
+}]);
 
 // require('./home');
 
@@ -43,3 +57,9 @@ var app = angular.module('app', [require('angular-ui-router')]);
 //   .controller('ctrl', [...]);
 
 //   require('./subctrl');
+
+/*
+window.app = angular.module('contrast', [
+    require('angular-ui-router'),
+  ]);
+*/
