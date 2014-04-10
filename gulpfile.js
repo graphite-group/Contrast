@@ -5,7 +5,7 @@ var rename = require('gulp-rename');
 var browserify = require('gulp-browserify');
 
 gulp.task('stylus', function() {
-  gulp.src('./assets/styles/styles.styl')
+  gulp.src('./assets/app/app.styl')
     .pipe(stylus({
       use: ['nib'],
       compress: false
@@ -23,25 +23,20 @@ gulp.task('browserify', function() {
     .pipe(gulp.dest('./.tmp/public/js/'));
 });
 
-// gulp.task('copy', function() {
-//   gulp.src('./assets/js/socket.io.js')
-//     .pipe(gulp.dest('./.tmp/public/js/'));
-//   gulp.src('./assets/js/sails.io.js')
-//     .pipe(gulp.dest('./.tmp/public/js/'));
-
-//   gulp.src('./assets/js/socket.io.js')
-//     .pipe(gulp.dest('./.tmp/public/js/'));
-// });
-
 gulp.task('copy-images', function() {
   gulp.src('./assets/images/*')
     .pipe(gulp.dest('./.tmp/public/images/'));
 });
 
-gulp.task('default', function() {
-  gulp.run('stylus', 'browserify', 'copy-images');
+gulp.task('copy-html', function() {
+  gulp.src('./assets/**/*.html')
+    .pipe(gulp.dest('./.tmp/public/'));
+});
 
-  gulp.watch('./assets/js/**/*', function() {
+gulp.task('default', function() {
+  gulp.run('stylus', 'browserify', 'copy-images', 'copy-html');
+
+  gulp.watch('./assets/**/*.js', function() {
     gulp.run('browserify');
   });
 
@@ -49,7 +44,11 @@ gulp.task('default', function() {
     gulp.run('copy-images');
   });
 
-  gulp.watch('./assets/styles/*.styl', function() {
+  gulp.watch('./assets/**/*.html', function() {
+    gulp.run('copy-html');
+  });
+
+  gulp.watch('./assets/**/*.styl', function() {
     gulp.run('stylus');
   });
 });

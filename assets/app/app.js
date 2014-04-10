@@ -27,3 +27,9 @@
 
 
 })( require('./../js/sails.io.js') );
+
+var angular = require('angular');
+
+window.app = angular.module('contrast', [
+    require('angular-ui-router'),
+  ]);
