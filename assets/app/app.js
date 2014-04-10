@@ -25,4 +25,21 @@
   window.socket = socket;
 
 
+
+
 })( require('./../js/sails.io.js') );
+
+var angular = require('angular');
+var app = angular.module('app', [require('angular-ui-router')]);
+
+
+
+// require('./home');
+
+// /////home//////
+
+
+//   require('angular').module("app.home", [require('angular-ui-router')])
+//   .controller('ctrl', [...]);
+
+//   require('./subctrl');
