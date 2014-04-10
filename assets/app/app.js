@@ -1,4 +1,5 @@
 'use strict';
+var rootSocket;
 
 (function (io) {
 
@@ -24,6 +25,7 @@
   });
 
   window.socket = socket;
+  rootSocket = socket;
 
 })( require('./../js/sails.io.js') );
 
@@ -37,7 +39,8 @@ var app =
     $urlRouterProvider.otherwise('/');
   }]);
 
-require('./MainService.js')(app);
+require('./MainService.js')(app, rootSocket);
 require('./login/login.js')(app);
+require('./profile/profile.js')(app, rootSocket);
 
 
