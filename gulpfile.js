@@ -3,6 +3,7 @@ var gulp = require('gulp');
 var stylus = require('gulp-stylus');
 var rename = require('gulp-rename');
 var browserify = require('gulp-browserify');
+var replace = require('gulp-replace');
 
 gulp.task('stylus', function() {
   gulp.src('./assets/app/app.styl')
@@ -17,8 +18,10 @@ gulp.task('browserify', function() {
   gulp.src('./assets/app/app.js')
     .pipe(browserify({
       insertGlobals: true,
-      debug: false
+      debug: true,
+      entry: true
     }))
+    .pipe(replace('\/\/# sourceMappingURL=angular.min.js.map', ''))
     .pipe(rename('app.js'))
     .pipe(gulp.dest('./.tmp/public/js/'));
 });

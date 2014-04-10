@@ -18,7 +18,8 @@
     "node-neo4j": "^2.0.0-RC6",
     "bcryptjs": "^0.7.12",
     "angular": "~1.2.15",
-    "angular-ui-router": "~0.2.10"
+    "angular-ui-router": "~0.2.10",
+    "gulp-replace": "~0.2.0"
   },
   "scripts": {
     "start": "node app.js",
