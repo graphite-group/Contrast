@@ -1,11 +1,6 @@
 'use strict';
 var rootSocket;
-<<<<<<< HEAD
-=======
 
-var rootSocket;
-
->>>>>>> f83339d7784330eddd8c3c770cdb86fa993f4ab2
 (function (io) {
 
   // as soon as this file is loaded, connect automatically,
