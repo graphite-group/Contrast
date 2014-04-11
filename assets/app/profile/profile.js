@@ -12,10 +12,10 @@ module.exports = function(app, socket){
     function($scope, $stateParams, MainService){
     $scope.Hello = "World";
     $scope.userId = $stateParams.id;
-    $scope.user = {};
     $scope.getUser = function(userId){
       MainService.getUserById(userId).then(function(user){
         $scope.user = user;
+        $scope.$apply();
       }, function(err){
         console.log("couldn't get the user");
       });
