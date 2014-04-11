@@ -2,11 +2,13 @@
 <h2>Login:</h2>
 
 <form ng-submit="submit()">
-  Username:<input type="text" name="email" ng-model="formData.email"> </br>
+  Email:<input type="text" name="email" ng-model="formData.email"> </br>
   Password:<input type="password" name="password" ng-model="formData.password"> </br>
+  {{passwordStatus}}
   <input type="submit" value="Submit">
 </form>
 
+  {{emailStatus}}
 <a href="#/singup">Signup!</a>
 
 </div>

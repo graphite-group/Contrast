@@ -14,7 +14,6 @@ module.exports = function(app, socket){
         return new Promise(function(resolve, reject){
           try{
             socket.get('http://localhost:3000/profile/' + userId, function(response){
-              console.log('response');
               resolve(response.data);
             });
           } catch(e){

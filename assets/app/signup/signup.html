@@ -1,0 +1,15 @@
+<div >
+<h2>Signup</h2>
+
+<form ng-submit="submit()">
+  Email:<input type="text" name="email" ng-model="formData.email"> </br>
+  {{emailStatus}}
+  Password:<input type="password" name="password" ng-model="formData.password"> </br>
+  {{passwordStatus}}
+  Confirm Password:<input type="password" name="confirmPassword" ng-model="formData.confirmPassword"> </br>
+  {{confirmPasswordStatus}}
+  <input type="submit" value="Submit">
+</form>
+
+{{test}}
+</div>
