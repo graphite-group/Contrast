@@ -13,6 +13,16 @@ module.exports = function(app, socket){
           });
       };
 
+      this.getImagesForUser = function(id){
+        return socket.getAsync('/user/' + id + '/images')
+          .then(function(res){
+            if(res.success === false){
+              throw new Error(res.reason);
+            }
+            return res.data;
+          });
+      };
+
       this.login = function(){
       };
 

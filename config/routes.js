@@ -53,6 +53,11 @@ module.exports.routes = {
     action: 'getImageDetails'
   },
 
+  'GET /user/:id/images': {
+    controller: 'ImageController',
+    action: 'getImagesForUser'
+  },
+
   'POST /image' : {
     controller: 'ImageController',
     action: 'setPortfolioImage'

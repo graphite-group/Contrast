@@ -2,16 +2,14 @@ module.exports = function(app, socket){
   'use strict';
 
   app
-  .controller('homeCtrl', ['$scope', function($scope){
+  .controller('homeCtrl', ['$scope', 'MainService', function($scope, MainService){
 
     $scope.init = function(){
-      $scope.images = [];
-      var names = ['alpha', 'beta', 'gamma', 'great', 'apple', 'boring'];
-      for(var i = 0; i < 50; i++){
-        $scope.images.push({
-          name: names[Math.floor(Math.random() * 6)]
-        });
-      }
+      MainService.getImages()
+      .then(function(images){
+        $scope.images = images;
+        $scope.$apply();
+      })
     };
     $scope.init();
   }])

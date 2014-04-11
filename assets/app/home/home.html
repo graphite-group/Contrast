@@ -7,7 +7,7 @@
     <div class="grid-block"
          ng-repeat="image in images | filter:imageFilter">
       <div class="block">
-        {{image.name}}
+        <img src="{{image.url}}" alt="">
       </div>
     </div>
 </section>
