@@ -1,4 +1,13 @@
 <div >
-"helloooo" {{ test }} "blah"
+<h2>Login:</h2>
+
+<form ng-submit="submit()">
+  Username:<input type="text" name="email" ng-model="formData.email"> </br>
+  Password:<input type="password" name="password" ng-model="formData.password"> </br>
+  <input type="submit" value="Submit">
+</form>
+
+<a href="#/singup">Signup!</a>
+
 </div>
 

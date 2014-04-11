@@ -6,14 +6,10 @@ module.exports = function(app, socket){
       this.getImages = function(){
         return "YAY Images";
       };
-      // this.getUserById = function(userId){
-      //   return $http({
-      //     method: 'GET',
-      //     url: 'http://localhost:3000/profile/' + userId
-      //   }).then(function(data){
-      //     return data.data;
-      //   });
-      // };
+
+      this.login = function(){
+      };
+
       this.getUserById = function(userId){
         return new Promise(function(resolve, reject){
           try{

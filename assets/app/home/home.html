@@ -1,0 +1,12 @@
+<section class="images">
+  <h3>
+    <input type="text" class="filter" ng-model="imageFilter">
+    Latest Images
+  </h3>
+  <div class="grid">
+    <div class="grid-block" ng-repeat="image in images | filter:imageFilter">
+      <div class="block">
+        {{image.name}}
+      </div>
+    </div>
+</section>

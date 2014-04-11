@@ -1,0 +1,52 @@
+section.images
+  padding 1rem
+  h3
+    padding 1rem
+    font-size 1.2rem
+    font-weight 100
+    font-family myfont
+    .filter
+      float right
+      appearance none
+      border 1px solid rgb(220,220,220)
+      border-radius 1rem
+      outline none
+      padding 0.25rem 0.5rem
+      width 6rem
+      transition 1s linear
+      &:focus
+        transition 0.25s linear
+        border 1px solid rgb(180,180,180)
+        width 10rem
+.grid
+  font-size 0
+.grid-block
+  display inline-block
+  position relative
+  width 100%
+  padding-bottom 56.25%
+  // background rgb(200,200,200)
+  // border-bottom 1px solid black
+  // &:nth-of-type(2n+2)
+  //   background rgb(220,220,220)
+  @media screen and (min-width: 38rem)
+    width 49.99%
+    padding-bottom 28.125%
+  @media screen and (min-width: 60rem)
+    width 33.32%
+    padding-bottom 18.75%
+  @media screen and (min-width: 84rem)
+    width 24.99%
+    padding-bottom 14.0625%
+  @media screen and (min-width: 110rem)
+    width 19.99%
+    padding-bottom 11.25%
+  .block
+    position absolute
+    top 1rem
+    left 1rem
+    bottom 1rem
+    right 1rem
+    background black
+    font-size 1rem
+    color white
