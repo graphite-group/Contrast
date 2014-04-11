@@ -43,6 +43,11 @@ module.exports.routes = {
     action: 'upload'
   },
 
+  'GET /image': {
+    controller: 'ImageController',
+    action: 'getImages'
+  },
+
   'GET /image/:id': {
     controller: 'ImageController',
     action: 'getImageDetails'

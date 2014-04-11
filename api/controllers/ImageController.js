@@ -26,6 +26,8 @@ var serveData = function(res){
   };
 };
 
+var imageService = require('./../services/imageService.js');
+
 
 module.exports = {
 
@@ -67,6 +69,17 @@ module.exports = {
       .catch(serveError(res));
   },
 
+  getImages: function(req, res){
+    return imageService.fetchImagesByFilter()
+      .then(function(images){
+        return images.sort(function(a, b){
+          return (new Date(b.updatedAt)).valueOf() - (new Date(a.updatedAt)).valueOf();
+        });
+      })
+      .then(serveData(res))
+      .catch(serveError(res));
+  },
+
   getImageDetails: function(req, res){
     if(!req.params.id){
       return serveError(res)('No image id provided');
@@ -85,3 +98,4 @@ module.exports = {
 
 
 };
+//module.exports.getImages().map(function(image){return image.updatedAt;}).then(console.log.bind(console)).catch(console.log.bind(console, 'Error'));

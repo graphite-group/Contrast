@@ -3,7 +3,7 @@ var rootSocket;
 
 var Promise = require('bluebird');
 
-var promisify = function(func, context){
+var promisify = function(func){
   return function(){
     var args = [].slice.call(arguments);
     var that = this;
@@ -59,7 +59,7 @@ var promisifyAll = function(obj){
 
 })( require('./../js/sails.io.js') );
 
-var angular = require('angular');
+//var angular = require('angular');
 
 var app =
   angular.module('contrast', [

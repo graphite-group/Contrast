@@ -48,6 +48,7 @@ module.exports = {
         }
       })
       .then(function(){
+        imageData.updatedAt = new Date();
         return db.insertNodeAsync(imageData, ['image']);
       })
       .then(function(imageNode){
@@ -85,6 +86,7 @@ module.exports = {
         for(var key in imageData){
           node[key] = imageData[key];
         }
+        node.updatedAt = new Date();
         return db.updateNodeByIdAsync(imageId, node);
       });
 
@@ -101,6 +103,26 @@ module.exports = {
     var a =
     db.readNodeAsync(imageId)
       .then(function(node){
+        if(!node){
+          throw new Error('Image not found!');
+        }
+        return Promise.join(
+          db.readRelationshipsOfNodeAsync(imageId)
+            .filter(function(relationship){
+              return relationship._end === imageId && relationship._type === 'CREATED';
+            })
+            .map(function(relationship){
+              return db.readNodeAsync(relationship._start);
+            }),
+          node
+        );
+      })
+      .spread(function(creators, node){
+        if(creators.length === 1){
+          node.user = creators[0];
+        } else {
+          node.users = creators;
+        }
         return node;
       });
 
@@ -135,8 +157,12 @@ module.exports = {
   },
 
   fetchImagesByFilter: function(filter, callback){
-    var a =
-    db.readNodesWithLabelsAndPropertiesAsync('image', filter);
+    var a;
+    if(filter === undefined || (Object.keys(filter)).length === 0){
+      a = db.readNodesWithLabelAsync('image');
+    } else {
+      a = db.readNodesWithLabelsAndPropertiesAsync('image', filter);
+    }
 
     // call callback or return promise
     if(typeof callback === 'function'){
@@ -148,4 +174,4 @@ module.exports = {
 
 };
 
-//module.exports.createImageDetails({url: 'http://scribbler.co', title: 'all the codes'}, 10).then(console.log.bind(console));
+// module.exports.updateImageDetails(14, {updatedAt: new Date()}).then(console.log.bind(console)).catch(console.log.bind(console, 'Error'));
