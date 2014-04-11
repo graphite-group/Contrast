@@ -59,7 +59,7 @@ var promisifyAll = function(obj){
 
 })( require('./../js/sails.io.js') );
 
-//var angular = require('angular');
+var angular = require('angular');
 
 var app =
   angular.module('contrast', [
