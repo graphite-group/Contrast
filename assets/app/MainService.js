@@ -2,9 +2,15 @@
 
 module.exports = function(app, socket){
   app
-    .service('MainService', ['$http', function($http){
+    .service('MainService', function(){
       this.getImages = function(){
-        return 'YAY Images';
+        return socket.getAsync('/image')
+          .then(function(res){
+            if(res.success === false){
+              throw new Error(res.reason);
+            }
+            return res.data;
+          });
       };
 
       this.login = function(){
@@ -12,7 +18,12 @@ module.exports = function(app, socket){
 
       this.getUserById = function(userId){
         return socket.getAsync('http://localhost:3000/profile/' + userId)
-          .then(function(res){return res.data});
+          .then(function(res){
+            if(res.success === false){
+              throw new Error(res.reason);
+            }
+            return res.data;
+          });
       };
-    }]);
+    });
 };
