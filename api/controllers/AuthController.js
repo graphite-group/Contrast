@@ -38,8 +38,21 @@ module.exports = {
           res.redirect('/');
         }
       } else {
-        res.redirect('/login');
+        if(!!req.body.json){
+          res.send({
+            sucess: false,
+            reason: "Username or Password is incorrect"
+          });
+        } else {
+          res.redirect('/login');
+        }
       }
+    })
+    .catch(function(err){
+      res.send({
+        sucess: false,
+        reason: "Username or Password is incorrect"
+      });
     });
   },
 

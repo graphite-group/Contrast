@@ -1,5 +1,11 @@
 'use strict';
 var rootSocket;
+<<<<<<< HEAD
+=======
+
+var rootSocket;
+
+>>>>>>> f83339d7784330eddd8c3c770cdb86fa993f4ab2
 (function (io) {
 
   // as soon as this file is loaded, connect automatically,
@@ -39,7 +45,8 @@ var app =
   }]);
 
 require('./home/home.js')(app, rootSocket);
-require('./MainService.js')(app);
-require('./login/login.js')(app);
+require('./MainService.js')(app, rootSocket);
+require('./login/login.js')(app, rootSocket);
+require('./profile/profile.js')(app, rootSocket);
 
 
