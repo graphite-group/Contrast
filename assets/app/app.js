@@ -1,5 +1,5 @@
 'use strict';
-
+var rootSocket;
 (function (io) {
 
   // as soon as this file is loaded, connect automatically,
@@ -24,6 +24,7 @@
   });
 
   window.socket = socket;
+  rootSocket = socket;
 
 })( require('./../js/sails.io.js') );
 
@@ -37,6 +38,7 @@ var app =
     $urlRouterProvider.otherwise('/');
   }]);
 
+require('./home/home.js')(app, rootSocket);
 require('./MainService.js')(app);
 require('./login/login.js')(app);
 
