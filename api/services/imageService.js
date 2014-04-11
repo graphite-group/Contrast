@@ -1,4 +1,4 @@
-'use strict';
+  'use strict';
 var knox = require('knox');
 var Promise = require('bluebird');
 var neo4j = require('node-neo4j');
@@ -98,7 +98,11 @@ module.exports = {
   },
 
   fetchImageDetails: function(imageId, callback){
-    var a = db.readNodeAsync(imageId);
+    var a =
+    db.readNodeAsync(imageId)
+      .then(function(node){
+        return node;
+      });
 
     // call callback or return promise
     if(typeof callback === 'function'){

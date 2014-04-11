@@ -1,10 +1,41 @@
 'use strict';
 var rootSocket;
 
+var Promise = require('bluebird');
+
+var promisify = function(func, context){
+  return function(){
+    var args = [].slice.call(arguments);
+    var that = this;
+    return new Promise(function(resolve, reject){
+      try{
+        func.apply(that, args.concat([function(){
+          resolve.apply(that, arguments);
+        }]));
+      } catch(err){
+        reject(err);
+      }
+    });
+  };
+};
+
+var promisifyAll = function(obj){
+  for(var key in obj){
+    if(typeof obj[key] === 'function'){
+      obj[key + 'Async'] = promisify(obj[key]);
+    }
+  }
+  return obj;
+};
+
+
+
 (function (io) {
 
   // as soon as this file is loaded, connect automatically,
   var socket = io.connect();
+  socket = promisifyAll(socket);
+
   if (typeof console !== 'undefined') {
     console.log('Connecting to Sails.js...');
   }
@@ -17,9 +48,8 @@ var rootSocket;
 
     console.log(
       'Socket is now connected and globally accessible as `socket`.\n' +
-      'e.g. to send a GET request to Sails, try \n' +
-      '`socket.get("/", function (response) ' +
-      '{ console.log(response); })`'
+      'e.g. to send a GET request to Sails, try \n\n' +
+      'socket.get("/", console.log.bind(console))'
     );
 
   });
@@ -35,7 +65,7 @@ var app =
   angular.module('contrast', [
     require('angular-ui-router')
   ])
-  .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider){
+  .config(['$urlRouterProvider', function($urlRouterProvider){
     $urlRouterProvider.otherwise('/');
   }]);
 
