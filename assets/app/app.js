@@ -1,4 +1,5 @@
 'use strict';
+var rootSocket;
 
 var rootSocket;
 
@@ -42,5 +43,6 @@ var app =
 
 require('./MainService.js')(app, rootSocket);
 require('./login/login.js')(app, rootSocket);
+require('./profile/profile.js')(app, rootSocket);
 
 
