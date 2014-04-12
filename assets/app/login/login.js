@@ -1,18 +1,28 @@
 module.exports = function(app, socket){
 
   app
-    .controller('loginController', ['$scope', 'MainService', function($scope, MainService){
-      $scope.emailStatus = $scope.formData;
-      $scope.submit = function(){
-        // formData = $scope.formData;
-        socket.post("/login",{email: $scope.formData.email, password: $scope.formData.password, json: 'true'}, function(response){
-          if(response.data){
-            console.log(response.data);
+    .controller('loginController', ['$scope', 'MainService', '$state', function($scope, MainService, $state){
+      $scope.formData = $scope.formData || {};
+      
+      $scope.onBlurEmail = function(){
+        if(!$scope.formData.email){
+          $scope.emailMsg = true;
+          $scope.emailStatus = "Please enter valid email";
+        }
+      };
 
+      $scope.submitForm = function(){
+        socket.postAsync("/login",{email: $scope.formData.email, password: $scope.formData.password, json: 'true'})
+        .then(function(response){
+          if(!!response.data){
+            MainService.login(response.data);
+            $state.go('profile',response.data.id);
           }else{
-            console.log(response.reason);
+            $scope.passwordStatus = response.reason;
+            $scope.$apply();
           }
-        });
+        })
+        .catch(console.log.bind(console));
       };
     }])
     .config(['$stateProvider', function($stateProvider){

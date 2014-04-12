@@ -1,23 +1,39 @@
 module.exports = function(app, socket){
 
   app
-    .controller('signupController', ['$scope', 'MainService', function($scope, MainService){
-      $scope.emailStatus = $scope.formData.email;
-      $scope.test = "asdf";
-      $scope.submit = function(){
-        // formData = $scope.formData;
+    .controller('signupController', ['$scope', 'MainService', '$state', function($scope, MainService, $state){
+      $scope.formData = $scope.formData || {};
+
+      $scope.onBlurEmail = function(){
         if(!$scope.formData.email){
+          $scope.emailMsg = true;
           $scope.emailStatus = "Please enter valid email";
-        }else{
-          socket.post("/signup",{email: $scope.formData.email, password: $scope.formData.password, json: 'true'}, function(response){
-            if(response.data){
-              console.log(response.data);
-              
-            }else{
-              console.log(response.reason);
-            }
-          });
         }
+      };
+      $scope.onBlurConfirmPassword = function(){
+        if($scope.formData.password !==  $scope.formData.confirmPassword){
+          $scope.confirmPasswordMsg = true;
+          $scope.confirmPasswordStatus = "Passwords do not match";
+        }
+      };
+
+      $scope.submit = function(){
+        socket.postAsync("/signup",{email: $scope.formData.email, password: $scope.formData.password, json: 'true'})
+        .then(function(response){
+          if(response.data){
+            MainService.login(response.data);
+            $scope.serverMsg = "User Created";
+            $scope.$apply();
+            $state.go('profile',response.data.id);
+            
+          }else{
+            console.log(response.reason);
+            $scope.serverMsg = response.reason;
+            $scope.$apply();
+          }
+        })
+        .catch(console.log.bind(console));
+  
       };
     }])
     .config(['$stateProvider', function($stateProvider){

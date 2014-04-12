@@ -1,25 +1,35 @@
-var Promise = require('bluebird');
+'use strict';
+
+var user = {};
 
 module.exports = function(app, socket){
   app
     .service('MainService', ['$http', function($http){
       this.getImages = function(){
-        return "YAY Images";
+        return 'YAY Images';
       };
 
-      this.login = function(){
+      this.login = function(userData){
+        user.id = userData.id;
+        user.email = userData.email;
+        user.logInTime = new Date();
+
+        console.log("UserData", user);
+      };
+
+      this.isLoggedIn = function(){
+        return !!user.id;
+      };
+
+      this.logout = function(){
+        user = {};
       };
 
       this.getUserById = function(userId){
-        return new Promise(function(resolve, reject){
-          try{
-            socket.get('http://localhost:3000/profile/' + userId, function(response){
-              resolve(response.data);
-            });
-          } catch(e){
-            reject(e);
-          }
-        });
+        return socket.getAsync('http://localhost:3000/profile/' + userId)
+          .then(function(res){return res.data});
       };
+
+
     }]);
 };

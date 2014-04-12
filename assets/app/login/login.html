@@ -1,15 +1,24 @@
-<div >
+
+<div>
 <h2>Login:</h2>
 
-<form ng-submit="submit()">
-  Email:<input type="text" name="email" ng-model="formData.email"> </br>
-  Password:<input type="password" name="password" ng-model="formData.password"> </br>
-  {{passwordStatus}}
+<form name="form" ng-submit="submitForm()" >
+
+Email:<input type="email" name="email" ng-model="formData.email" ng-blur="onBlurEmail()" ng-focus="emailMsg = false" required> </br>
+<div ng-show="emailMsg"> 
+  {{emailStatus}}
+</div>
+
+</br>
+Password:<input type="password" name="password" ng-model="formData.password" required> </br>
+
   <input type="submit" value="Submit">
+
 </form>
 
-  {{emailStatus}}
-<a href="#/singup">Signup!</a>
+{{passwordStatus}} </br>
+
+<a href="#/signup">Signup!</a>
 
 </div>
 
