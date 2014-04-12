@@ -2,10 +2,12 @@ module.exports = function(app, socket){
 
   app
     .controller('loginController', ['$scope', 'MainService', '$state', function($scope, MainService, $state){
-      if(MainService.isLoggedIn()){
-        console.log("test");
-        $state.go('profile');
-      }
+
+      MainService.isLoggedIn().then(function(user){
+        if(user.id){
+          $state.go('profile');
+        }
+      }).catch(console.log.bind(console));
 
       $scope.formData = $scope.formData || {};
       

@@ -1,14 +1,16 @@
 'use strict';
 
-var user = {};
+var Promise = require('bluebird');
+
+var user;
 
 module.exports = function(app, socket){
 
-  socket.get('/isLoggedIn', function(response){
+  user = socket.getAsync('/isLoggedIn').then(function(response){
     if(!!response.success){
-      user = response.data;
+      return response.data;
     }else{
-      user = {};
+      return {};
     }
   });
 
@@ -35,17 +37,23 @@ module.exports = function(app, socket){
       };
 
       this.login = function(userData){
-        user.id = userData.id;
-        user.email = userData.email;
-        user.logInTime = new Date();
+        user = new Promise(function(resolve, reject){
+          resolve({
+            id : userData.id,
+            email : userData.email,
+            logInTime : new Date()
+          });
+        });
       };
 
       this.isLoggedIn = function(){
-        return !!user.id;
+        return user;
       };
 
       this.logout = function(){
-        user = {};
+        user = new Promise(function(resolve, reject){
+          resolve({});
+        });
       };
 
       this.getUserById = function(userId){
