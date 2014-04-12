@@ -39,7 +39,9 @@ module.exports = function(app, socket){
         })
         .state('logout',{
           url: '/logout',
-          controller: function(){
+          controller: function(MainService){
+            MainService.logout();
+
             socket.post("/logout",{json:true}, function(response){
               console.log("logout",response);
             });
