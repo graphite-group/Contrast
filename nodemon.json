@@ -1,0 +1,4 @@
+{
+  "ignore": ["assets/*", ".tmp/*", ".git/*", "gulpfile.js"],
+  "verbose": true
+}
