@@ -4,23 +4,34 @@ var stylus = require('gulp-stylus');
 var rename = require('gulp-rename');
 var browserify = require('gulp-browserify');
 var replace = require('gulp-replace');
+var notify = require('gulp-notify');
 
 gulp.task('stylus', function() {
   gulp.src('./assets/app/app.styl')
-    .pipe(stylus({
-      use: ['nib'],
-      compress: false
-    }))
+    .pipe(
+      stylus({
+        use: ['nib'],
+        compress: false
+      })
+      .on('error', notify.onError(function (error) {
+        return "Stylus Error: " + error.message;
+      }))
+    )
     .pipe(gulp.dest('./.tmp/public/styles/'));
 });
 
 gulp.task('browserify', function() {
   gulp.src('./assets/app/app.js')
-    .pipe(browserify({
-      insertGlobals: true,
-      debug: true,
-      entry: true
-    }))
+    .pipe(
+      browserify({
+        insertGlobals: true,
+        debug: true,
+        entry: true
+      })
+      .on('error', notify.onError(function (error) {
+        return "Browserify Error: " + error.message;
+      }))
+    )
     .pipe(replace('\/\/# sourceMappingURL=angular.min.js.map', ''))
     .pipe(rename('app.js'))
     .pipe(gulp.dest('./.tmp/public/js/'));

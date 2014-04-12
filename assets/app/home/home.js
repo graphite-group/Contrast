@@ -9,7 +9,7 @@ module.exports = function(app, socket){
       .then(function(images){
         $scope.images = images;
         $scope.$apply();
-      })
+      });
     };
     $scope.init();
   }])
