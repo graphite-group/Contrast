@@ -12,7 +12,7 @@ module.exports = function(app, socket){
       });
     };
     $scope.showIt = function(){
-      console.log("Clicked. Trying...", $state);
+      $state.go('homescreen.imageDetails');
     };
     $scope.init();
   }])
