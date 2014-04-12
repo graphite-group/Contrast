@@ -28,7 +28,7 @@ module.exports = {
         req.session.user = node;
         req.session.user.id = node._id;
         req.session.authenticated = true;
-        if(!!req.body.json){
+        if(!!req.wantsJSON){
           res.send({
             sucess: true,
             data: node
@@ -37,7 +37,7 @@ module.exports = {
           res.redirect('/');
         }
       } else {
-        if(!!req.body.json){
+        if(!!req.wantsJSON){
           res.send({
             sucess: false,
             reason: "Username or Password is incorrect"
@@ -58,7 +58,7 @@ module.exports = {
   logout:function(req,res){
     req.session.user = null;
     req.session.authenticated = false;
-    if(!!req.body.json){
+    if(!!req.wantsJSON){
       res.send({
         sucess: true
       });
@@ -73,13 +73,14 @@ module.exports = {
     //if success, res.send(node)
     //else return error
     var userData = req.body;
+    delete userData.json;
     userService.createUser(userData)
     .then(function(node){
       delete node.password;
       req.session.user = node;
       req.session.user.id = node._id;
       req.session.authenticated = true;
-      if(!!req.body.json){
+      if(!!req.wantsJSON){
         res.send({
           sucess: true,
           data: node

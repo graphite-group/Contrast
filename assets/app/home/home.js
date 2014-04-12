@@ -2,7 +2,7 @@ module.exports = function(app, socket){
   'use strict';
 
   app
-  .controller('homeCtrl', ['$scope', 'MainService', function($scope, MainService){
+  .controller('homeCtrl', ['$scope', 'MainService', '$state', function($scope, MainService, $state){
 
     $scope.init = function(){
       MainService.getImages()
@@ -11,17 +11,20 @@ module.exports = function(app, socket){
         $scope.$apply();
       });
     };
+    $scope.showIt = function(){
+      console.log("Clicked. Trying...", $state);
+    };
     $scope.init();
   }])
   .config(['$stateProvider', function($stateProvider){
-    $stateProvider.state('home', {
+    $stateProvider
+    .state('homescreen', {
       url: '/',
       templateUrl: '/app/home/home.html',
       controller: 'homeCtrl'
-    });
-    $stateProvider.state('imageDetails', {
-      view: 'popup',
-      url: '/imageDetails',
+    })
+    .state('homescreen.imageDetails', {
+      url: 'imageDetails',
       templateUrl: '/app/imageDetails/imageDetails.html'
     });
   }]);
