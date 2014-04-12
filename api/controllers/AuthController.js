@@ -30,7 +30,7 @@ module.exports = {
         req.session.authenticated = true;
         if(!!req.body.json){
           res.send({
-            sucess: true,
+            success: true,
             data: node
           });
         } else {
@@ -39,7 +39,7 @@ module.exports = {
       } else {
         if(!!req.body.json){
           res.send({
-            sucess: false,
+            success: false,
             reason: "Username or Password is incorrect"
           });
         } else {
@@ -49,10 +49,23 @@ module.exports = {
     })
     .catch(function(err){
       res.send({
-        sucess: false,
+        success: false,
         reason: "Username or Password is incorrect"
       });
     });
+  },
+
+  isLoggedIn: function(req,res){
+    if(req.session.authenticated){
+      res.send({
+        success:true,
+        data: req.session.user
+      });
+    }else{
+      res.send({
+        success:false
+      });
+    }
   },
 
   logout:function(req,res){
@@ -60,7 +73,7 @@ module.exports = {
     req.session.authenticated = false;
     if(!!req.body.json){
       res.send({
-        sucess: true
+        success: true
       });
     } else {
       res.redirect('/login');
@@ -81,7 +94,7 @@ module.exports = {
       req.session.authenticated = true;
       if(!!req.body.json){
         res.send({
-          sucess: true,
+          success: true,
           data: node
         });
       } else {

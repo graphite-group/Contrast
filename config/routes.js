@@ -87,13 +87,14 @@ module.exports.routes = {
     action: 'login'
   },
 
-  // 'GET /login' : {
-  //   view: 'login'
-  // },
-
   'POST /logout' : {
     controller: 'AuthController',
     action: 'logout'
+  },
+
+  'GET /isLoggedIn' : {
+    controller: 'AuthController',
+    action: 'isLoggedIn'
   },
 
   'POST /signup' : {

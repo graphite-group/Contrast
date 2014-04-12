@@ -3,6 +3,15 @@
 var user = {};
 
 module.exports = function(app, socket){
+
+  socket.get('/isLoggedIn', function(response){
+    if(!!response.success){
+      user = response.data;
+    }else{
+      user = {};
+    }
+  });
+
   app
     .service('MainService', function(){
       this.getImages = function(){
