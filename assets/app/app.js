@@ -3,7 +3,7 @@ var rootSocket;
 
 var Promise = require('bluebird');
 
-var promisify = function(func, context){
+var promisify = function(func){
   return function(){
     var args = [].slice.call(arguments);
     var that = this;
