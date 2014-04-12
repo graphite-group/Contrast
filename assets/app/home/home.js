@@ -19,6 +19,11 @@ module.exports = function(app, socket){
       templateUrl: '/app/home/home.html',
       controller: 'homeCtrl'
     });
+    $stateProvider.state('imageDetails', {
+      view: 'popup',
+      url: '/imageDetails',
+      templateUrl: '/app/imageDetails/imageDetails.html'
+    });
   }]);
 
 };

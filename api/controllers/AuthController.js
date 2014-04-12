@@ -56,8 +56,15 @@ module.exports = {
   },
 
   logout:function(req,res){
-    req.session.loggedIn = false;
-    res.redirect('/login');
+    req.session.user = null;
+    req.session.authenticated = false;
+    if(!!req.body.json){
+      res.send({
+        sucess: true
+      });
+    } else {
+      res.redirect('/login');
+    }
   },
 
   signup:function(req,res){
