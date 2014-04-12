@@ -20,7 +20,6 @@ module.exports = {
       }
     })
     .then(function(node){
-      //node is an array of all the nodes that match the given email
       return Promise.all([userService.validatePassword(req.body.password, node.password), node]);
     })
     .spread(function(isValid, node){

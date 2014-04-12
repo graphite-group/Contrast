@@ -2,7 +2,8 @@
 module.exports = function(app, socket){
   app
   .config(['$stateProvider', function($stateProvider){
-    $stateProvider.state('profile',{
+    $stateProvider
+      .state('profile',{
         url: '/profile/:id',
         templateUrl: '/app/profile/profile.html',
         controller: 'profileCtrl'
@@ -12,6 +13,7 @@ module.exports = function(app, socket){
     function($scope, $stateParams, MainService){
     $scope.Hello = "World";
     $scope.userId = $stateParams.id;
+
     $scope.getUser = function(userId){
       MainService.getUserById(userId).then(function(user){
         $scope.user = user;
@@ -21,8 +23,22 @@ module.exports = function(app, socket){
       });
     };
     $scope.getUser($scope.userId);
+
+    $scope.getImages = function(){
+      MainService.getImages().then(function(images){
+        $scope.images = images;
+        $scope.$apply();
+      }, function(err){
+        console.log('error retrieving images');
+      });
+    };
+    $scope.getImages();
   }])
   .service();
+
+  function MainCtrl($state){
+  $state.transitionTo('profile.images');
+}
 
 };
 

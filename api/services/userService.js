@@ -56,7 +56,11 @@ module.exports = {
   },
 
   fetchUserById: function(userId, callback){
-    var a = db.readNodeAsync(userId);
+    var a = db.readNodeAsync(userId)
+    .then(function(node){
+      delete node.password;
+      return node;
+    });
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);
     } else {
@@ -117,7 +121,7 @@ module.exports = {
 // };
 
 // module.exports.createUser(userDataTest);// function(err, node){console.log(err, node);});
-// module.exports.fetchUserById(541).then(function(node){console.log(node);});
+// module.exports.fetchUserById(1).then(function(node){console.log(node);});
 // module.exports.updateUser(541, {email: "testing@tests.com"}).then(function(node){console.log("last Console Log",node);});
 // module.exports.deleteUser(542).then(function(node){console.log(node);});
 // module.exports.fetchUserByEmail('bcrypt@gmail.com').then(function(node){console.log(node);});
