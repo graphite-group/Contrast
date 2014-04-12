@@ -3,6 +3,15 @@
 var user = {};
 
 module.exports = function(app, socket){
+
+  socket.get('/isLoggedIn', function(response){
+    if(!!response.success){
+      user = response.data;
+    }else{
+      user = {};
+    }
+  });
+
   app
     .service('MainService', function(){
       this.getImages = function(){
@@ -29,8 +38,6 @@ module.exports = function(app, socket){
         user.id = userData.id;
         user.email = userData.email;
         user.logInTime = new Date();
-
-        console.log("UserData", user);
       };
 
       this.isLoggedIn = function(){

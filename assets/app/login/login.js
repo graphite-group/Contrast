@@ -2,6 +2,11 @@ module.exports = function(app, socket){
 
   app
     .controller('loginController', ['$scope', 'MainService', '$state', function($scope, MainService, $state){
+      if(MainService.isLoggedIn()){
+        console.log("test");
+        $state.go('profile');
+      }
+
       $scope.formData = $scope.formData || {};
       
       $scope.onBlurEmail = function(){
@@ -26,11 +31,22 @@ module.exports = function(app, socket){
       };
     }])
     .config(['$stateProvider', function($stateProvider){
-      $stateProvider.state('login',{
-        url: '/login',
-        templateUrl: '/app/login/login.html',
-        controller: 'loginController'
-      });
+      $stateProvider
+        .state('login',{
+          url: '/login',
+          templateUrl: '/app/login/login.html',
+          controller: 'loginController'
+        })
+        .state('logout',{
+          url: '/logout',
+          controller: function(MainService){
+            MainService.logout();
+
+            socket.post("/logout",{json:true}, function(response){
+              console.log("logout",response);
+            });
+          }
+        });
     }]);
 };
 
