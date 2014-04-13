@@ -40,17 +40,17 @@ module.exports = {
         if(!!req.wantsJSON){
           res.send({
             success: false,
-            reason: "Username or Password is incorrect"
+            reason: 'Username or Password is incorrect'
           });
         } else {
           res.redirect('/login');
         }
       }
     })
-    .catch(function(err){
+    .catch(function(){
       res.send({
         success: false,
-        reason: "Username or Password is incorrect"
+        reason: 'Username or Password is incorrect'
       });
     });
   },
@@ -103,12 +103,12 @@ module.exports = {
       }
     })
     .catch(function(err){
-      console.log("error creating user: " + err);
-      res.send(400, "unable to create user");
+      console.log('error creating user: ' + err);
+      res.send(400, 'unable to create user');
     });
   },
 
-  removeAcct: function(req,res){
+  removeAcct: function(req, res){
     //TODO: after the deleteUser function is fixed to delete relationships, hook this up
 
     // var userId = req.session.user.id;

@@ -12,7 +12,7 @@ var serveError = function(res){
   return function(err){
     res.send({
       success: false,
-      reason: err
+      reason: err.toString()
     });
   };
 };
@@ -77,6 +77,24 @@ module.exports = {
       .catch(serveError(res));
   },
 
+  updateImage: function(req, res){
+    if(!req.params.id){
+      return serveError(res)('No image id provided');
+    }
+    imageService.fetchImageDetails(parseInt(req.params.id))
+      .then(function(imageNode){
+        if(imageNode.user._id !== req.session.user.id && imageNode.user._id !== req.session.user._id){
+          throw new Error("You cannot modify someone else's image!");
+        }
+        return true;
+      })
+      .then(function(){
+        return imageService.updateImageDetails(parseInt(req.params.id), req.body)
+      })
+      .then(serveData(res))
+      .catch(serveError(res));
+  },
+
   getImagesForUser: function(req, res){
     if(!req.params.id){
       return serveError(res)('No image id provided');
@@ -97,7 +115,7 @@ module.exports = {
       return serveError(res)('No image id provided');
     }
 
-    imageService.fetchImageDetails(req.params.id)
+    imageService.fetchImageDetails(parseInt(req.params.id))
       .then(serveData(res))
       .catch(serveError(res));
   },

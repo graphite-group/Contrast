@@ -174,4 +174,4 @@ module.exports = {
 
 };
 
-// module.exports.updateImageDetails(14, {updatedAt: new Date()}).then(console.log.bind(console)).catch(console.log.bind(console, 'Error'));
+//module.exports.fetchImageDetails(14).then(console.log.bind(console)).catch(console.log.bind(console, 'Error'));

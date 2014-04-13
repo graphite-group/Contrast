@@ -5,6 +5,14 @@ global-reset()
 @import './animations'
 
 myfont = 'Helvetica Neue', Helvetica, sans-serif
+myblue = #78A7E2
+lightgrey = rgb(200,200,200)
+
+@css{
+  *, *:before, *:after {
+    -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+   }
+}
 
 html, body
   height 100%
@@ -13,10 +21,14 @@ html, body
 
 body
   padding-top 4rem
+.container
+  min-height 100%
+  min-height calc(100% - 3rem)
 
 @import './header.styl'
 
 @import './footer'
 
 @import './home/home.styl'
+@import './imageDetails/ImageDetails.styl'
 @import './profile/profile.styl'

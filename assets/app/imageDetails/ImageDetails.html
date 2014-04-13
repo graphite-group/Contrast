@@ -1,5 +1,13 @@
-<h1>
+<div class="ImageDetails" style="top:{{rect.top}}px; left:{{rect.left}}px; height:{{rect.height}}px; width:{{rect.width}}px; opacity:{{rect.opacity}};">
 
-  Hello World!
+  <div class="quit" ng-click="quit()" >X</div>
+  <div class="image">
+    <img class="{{rect.customClass}}" src="{{image.url}}" alt="{{image.title}}">
+  </div>
+  <div class="meta">
+    <a class="user {{rect.customClass}}" href="#/profile/{{image.user._id}}">{{image.user.name}}{{image.user.username}} {{image.user.email}}</a>
+    <h4 class="{{rect.customClass}}">{{image.title}}</h4>
+    <p class="{{rect.customClass}}">{{image.description}}</p>
+  </div>
 
-</h1>
+</div>

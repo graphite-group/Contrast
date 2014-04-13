@@ -27,17 +27,17 @@ header
     background-position center center
     font-size 0
     opacity 0.5
-    transition 0.5s linear
+    transition 0.5s 1s linear
     cursor pointer
     .dropdown
-      display none
+      display block
       position absolute
       top 2rem
       right 0
       width 10rem
       visibility hidden
       opacity 0
-      transition 0.5s 0.5s linear
+      transition 0.2s 0.2s ease-in
       border 1px solid rgba(0,0,0,0.1)
       a
         display block
@@ -47,12 +47,13 @@ header
         color rgba(0,0,0,0.4)
         background white
         border-bottom 1px solid rgba(0,0,0,0.1)
-        transition 0.5s linear
+        transition 0.5s 0 linear
         &:last-child
           border-bottom none
         &:hover
             color black
     &:hover
+      transition 0.5s linear
       opacity 1
       .dropdown
         opacity 1
