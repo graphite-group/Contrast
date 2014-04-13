@@ -5,7 +5,7 @@ module.exports = function(app, socket){
 
       MainService.isLoggedIn().then(function(user){
         if(user.id){
-          $state.go('profile');
+          $state.go('profileAbs.profile');
         }
       }).catch(console.log.bind(console));
 
@@ -20,7 +20,7 @@ module.exports = function(app, socket){
         .then(function(response){
           if(!!response.data){
             MainService.login(response.data);
-            $state.go('profile',response.data.id);
+            $state.go('profileAbs.profile',response.data.id);
           }else{
             $scope.passwordStatus = response.reason;
             $scope.$apply();
