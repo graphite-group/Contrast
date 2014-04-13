@@ -1,14 +1,12 @@
 module.exports = function(app, socket){
 
   app
-    .controller('signupController', ['$scope', 'MainService', '$state', function($scope, MainService, $state){
+
+    .controller('signupController', ['$scope', 'MainService', '$state', 'authService', function($scope, MainService, $state, authService){
       $scope.formData = $scope.formData || {};
 
       $scope.onBlurEmail = function(){
-        if(!$scope.formData.email){
-          $scope.emailMsg = true;
-          $scope.emailStatus = "Please enter valid email";
-        }
+        authService.onBlurEmail($scope);
       };
       $scope.onBlurConfirmPassword = function(){
         if($scope.formData.password !==  $scope.formData.confirmPassword){

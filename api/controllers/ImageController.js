@@ -29,7 +29,7 @@ var serveData = function(res){
 module.exports = {
 
   upload: function(req, res){
-    console.log(req.files.image.path);
+    //console.log(req.files.image.path);
     if(!!req.files.image){
 
       var imagePath = req.files.image.path;

@@ -1,21 +1,18 @@
 module.exports = function(app, socket){
 
   app
-    .controller('loginController', ['$scope', 'MainService', '$state', function($scope, MainService, $state){
+    .controller('loginController', ['$scope', 'MainService', '$state', 'authService', function($scope, MainService, $state, authService){
 
       MainService.isLoggedIn().then(function(user){
         if(user.id){
-          $state.go('profile');
+          $state.go('profileAbs.profile');
         }
       }).catch(console.log.bind(console));
 
       $scope.formData = $scope.formData || {};
       
       $scope.onBlurEmail = function(){
-        if(!$scope.formData.email){
-          $scope.emailMsg = true;
-          $scope.emailStatus = "Please enter valid email";
-        }
+        authService.onBlurEmail($scope);
       };
 
       $scope.submitForm = function(){
@@ -23,7 +20,7 @@ module.exports = function(app, socket){
         .then(function(response){
           if(!!response.data){
             MainService.login(response.data);
-            $state.go('profile',response.data.id);
+            $state.go('profileAbs.profile',response.data.id);
           }else{
             $scope.passwordStatus = response.reason;
             $scope.$apply();
