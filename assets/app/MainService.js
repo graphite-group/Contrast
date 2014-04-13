@@ -15,6 +15,14 @@ module.exports = function(app, socket){
   });
 
   app
+    .service('authService', function(){
+      this.onBlurEmail = function($scope){
+        if(!$scope.formData.email){
+          $scope.emailMsg = true;
+          $scope.emailStatus = "Please enter valid email";
+        }
+      };
+    })
     .service('MainService', function(){
       this.getImages = function(){
         return socket.getAsync('/image')

@@ -60,10 +60,12 @@ var promisifyAll = function(obj){
 })( require('./../js/sails.io.js') );
 
 var angular = require('angular');
+require('./../js/angular-file-upload.js')(angular);
 
 var app =
   angular.module('contrast', [
-    require('angular-ui-router')
+    require('angular-ui-router'),
+    'angularFileUpload'
   ])
   .config(['$urlRouterProvider', function($urlRouterProvider){
     $urlRouterProvider.otherwise('/');
@@ -74,5 +76,6 @@ require('./MainService.js')(app, rootSocket);
 require('./login/login.js')(app, rootSocket);
 require('./signup/signup.js')(app, rootSocket);
 require('./profile/profile.js')(app, rootSocket);
+require('./imageUploader/imageUploader.js')(app, rootSocket);
 
 

@@ -1,7 +1,7 @@
 module.exports = function(app, socket){
 
   app
-    .controller('loginController', ['$scope', 'MainService', '$state', function($scope, MainService, $state){
+    .controller('loginController', ['$scope', 'MainService', '$state', 'authService', function($scope, MainService, $state, authService){
 
       MainService.isLoggedIn().then(function(user){
         if(user.id){
@@ -12,10 +12,7 @@ module.exports = function(app, socket){
       $scope.formData = $scope.formData || {};
       
       $scope.onBlurEmail = function(){
-        if(!$scope.formData.email){
-          $scope.emailMsg = true;
-          $scope.emailStatus = "Please enter valid email";
-        }
+        authService.onBlurEmail($scope);
       };
 
       $scope.submitForm = function(){
