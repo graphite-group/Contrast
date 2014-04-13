@@ -1,30 +1,24 @@
-<div >
-<h2>Signup</h2>
 
 <form name="form" ng-submit="submit()" class="css-form">
- 
-  Email:<input type="email" name="email" ng-model="formData.email" ng-blur="onBlurEmail()" ng-focus="emailMsg = false" required> </br>
-  <div ng-show="emailMsg"> 
-    {{emailStatus}}
-  </div>
+  <h2>Sign Up</h2>
+  <!-- <label for="email">email</label> -->
+  <input type="email" name="email" ng-model="formData.email" ng-blur="onBlurEmail()" ng-focus="emailMsg = false" required placeholder="email">
 
-  </br>
-  Password:<input type="password" name="password" ng-model="formData.password" required> </br>
-  
-  </br>
-  Confirm Password:<input type="password" name="confirmPassword" ng-model="formData.confirmPassword" ng-blur="onBlurConfirmPassword()" ng-focus="confirmPasswordMsg = false"required> </br>
-  <div ng-show="confirmPasswordMsg"> 
-    {{confirmPasswordStatus}} 
-  </div>
 
-  </br>
-
-  {{serverMsg}}
+  <!-- <label for="password">password</label> -->
+  <input type="password" name="password" ng-model="formData.password" required placeholder="password">
+  <!-- <label for="confirmPassword">confirm password</label> -->
+  <input type="password" name="confirmPassword" ng-model="formData.confirmPassword" ng-blur="onBlurConfirmPassword()" ng-focus="confirmPasswordMsg = false"required placeholder="confirm password">
 
   <input type="submit" value="Submit">
-
-
+  <div ng-show="emailMsg" class="err">
+    {{emailStatus}}
+  </div>
+  <div ng-show="confirmPasswordMsg" class="err">
+    {{confirmPasswordStatus}}
+  </div>
+  <div ng-show="serverMsg" class="err">
+    {{serverMsg}}
+  </div>
+  <a href="#/login">Already have an account? Log In Now!</a>
 </form>
-
-{{test}}
-</div>

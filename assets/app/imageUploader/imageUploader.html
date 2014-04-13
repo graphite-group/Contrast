@@ -1,25 +1,25 @@
 <div ng-controller="imageUploader">
-  <input type="file" ng-file-select="onFileSelect($files)" >
-  <div class="imageDragBox" ng-file-drop="onFileSelect($files)" ng-file-drag-over-class="optional-css-class" ng-show="dropSupported">or drop file here</div>
-  <div ng-file-drop-available="dropSupported=true" 
-        ng-show="!dropSupported">HTML5 Drop File is not supported!</div>
-  
-  <div> Image URL: <a href="{{ imageUrl }}" target="_blank">{{imageUrl}}</a> 
-  <div>
-  <!-- <button ng-click="upload.abort()">Cancel Upload</button> -->
 
   <form name="imageUpload" ng-submit="submitForm()">
-    Title: <input type="text" ng-model="imageUpload.title" required>
-    </br>
-    Description: <input type="text" ng-model="imageUpload.description" required>
-    <br>
-    <input ng-show="imageUploadFinished" type="submit" value="Submit Picture and Info">
+  <h2>Upload</h2>
+    <input type="file" ng-file-select="onFileSelect($files)" >
+    <div class="imageDragBox" ng-file-drop="onFileSelect($files)" ng-file-drag-over-class="optional-css-class" ng-show="dropSupported">or drop file here</div>
+    <div ng-file-drop-available="dropSupported=true"
+          ng-show="!dropSupported">HTML5 Drop File is not supported!</div>
+
+    <!-- Image URL: <a href="{{ imageUrl }}" target="_blank">{{imageUrl}}</a> -->
+    <input type="text" ng-model="imageUpload.title" required placeholder="title">
+    <input type="text" ng-model="imageUpload.description" required placeholder="description">
+    <input ng-show="imageUploadFinished" type="submit" value="Submit Picture">
     <img ng-show="uploadingBar" src="/images/uploadingbar.gif"/>
+    <span class="quit" ng-click="cancel()" >X</span>
+
+    <div class="err" ng-show="errorMsg">
+      {{errorMsg}}
+    </div>
   </form>
 
-    <input ng-click="cancel()" type="button" value="Cancel and go back">
 
-    {{errorMsg}}
 
 </div>
 

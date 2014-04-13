@@ -1,24 +1,25 @@
 
-<div>
-<h2>Login:</h2>
+<!-- <div> -->
+
 
 <form name="form" ng-submit="submitForm()" >
+<h2>Log In</h2>
 
-Email:<input type="email" name="email" ng-model="formData.email" ng-blur="onBlurEmail()" ng-focus="emailMsg = false" required> </br>
-<div ng-show="emailMsg"> 
+<input type="email" name="email" ng-model="formData.email"
+                                 ng-blur="onBlurEmail()"
+                                 ng-focus="emailMsg = false"
+                                 placeholder="email" required>
+<div ng-show="emailMsg" class="err">
   {{emailStatus}}
 </div>
+<div class="err" ng-show="passwordStatus">
+  {{passwordStatus}}
+</div>
 
-</br>
-Password:<input type="password" name="password" ng-model="formData.password" required> </br>
-
-  <input type="submit" value="Submit">
-
+<input type="password" name="password" ng-model="formData.password" placeholder="password" required>
+<input type="submit" value="Submit">
+<a href="#/signup">Don’t have an account? Sign Up Now!</a>
 </form>
 
-{{passwordStatus}} </br>
 
-<a href="#/signup">Signup!</a>
-
-</div>
 

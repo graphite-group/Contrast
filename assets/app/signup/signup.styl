@@ -1,0 +1,82 @@
+form
+  display block
+  width 100%
+  max-width 22rem
+  margin 6rem auto
+  border 1px solid lightgrey
+  animation-name fadeIn
+  animation-duration 1s
+  position relative
+  .quit
+    position absolute
+    right 0
+    top 0
+    width 2rem
+    height 2rem
+    background #C50B0B
+    color white
+    font-family myfont
+    padding-top 0.5rem
+    text-align center
+    font-size 1rem
+    z-index 999
+    cursor pointer
+  .err
+    animation-name fadeIn
+    animation-duration 0.5s
+    position absolute
+    top -3.5rem
+    padding 1rem
+    background rgb(240,240,240)
+    font-family myfont
+    font-weight 200
+    left -1px
+    right -1px
+  a
+    position absolute
+    right 0px
+    bottom -2rem
+    display inline-block
+    color myblue
+    padding 0.5rem 0 0.25rem
+    text-decoration none
+    font-family myfont
+    font-weight 200
+    border-bottom 1px solid white
+    &:hover
+      border-bottom 1px solid myblue
+  h2
+    font-size 4rem
+    font-family myfont
+    font-weight 100
+    padding 4rem 2rem
+    text-align center
+  label
+    display block
+    font-family myfont
+    font-size 0.6rem
+    padding 0.25rem 0.5rem
+    &::after
+      content ':'
+  input[type='text'], input[type='password'], input[type='email'], input[type='submit']
+    display block
+    background rgb(240,240,240)
+    color black
+    appearance none
+    border 0
+    outline none
+    width 100%
+    font-size 1rem
+    padding 0.75rem 0.5rem
+    font-family myfont
+    font-weight 100
+    margin 0rem
+    border-top 1px solid rgba(0,0,0,0.2)
+    letter-spacing 1px
+  input[type='submit']
+    margin-bottom 0
+    //border-top 0
+    background rgb(60,60,60)
+    color white
+    font-weight 100
+    cursor pointer

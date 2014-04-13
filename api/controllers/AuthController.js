@@ -104,7 +104,10 @@ module.exports = {
     })
     .catch(function(err){
       console.log('error creating user: ' + err);
-      res.send(400, 'unable to create user');
+      res.send({
+        success: false,
+        reason: "Account with the given email address already exists!"
+      });
     });
   },
 
