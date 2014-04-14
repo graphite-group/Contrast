@@ -38,13 +38,13 @@ module.exports = function(app, socket){
         })
         .state('logout',{
           url: '/logout',
-          controller: function(MainService){
+          controller: ('logout', ['MainService', '$state', function(MainService, $state){
             MainService.logout();
 
-            socket.post("/logout",{json:true}, function(response){
-              console.log("logout",response);
+            socket.post("/logout", function(response){
+              $state.go('login');
             });
-          }
+          }])
         });
     }]);
 };
