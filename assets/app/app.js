@@ -61,10 +61,11 @@ var promisifyAll = function(obj){
 
 var angular = require('angular');
 require('./../js/angular-file-upload.js')(angular);
-
+require('./../js/angular-xeditable.js')(angular);
 var app =
   angular.module('contrast', [
     require('angular-ui-router'),
+    'xeditable',
     'angularFileUpload'
   ])
   .config(['$urlRouterProvider', function($urlRouterProvider){

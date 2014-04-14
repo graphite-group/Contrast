@@ -46,6 +46,17 @@ module.exports = {
       .catch(serveError(res));
   },
 
+  updateAccount: function(req, res){
+    var updates = req.body.updates;
+    var userId = updates.id;
+    delete updates.id;
+    // console.log('userId from updates ', userId);
+    // console.log('user from updateAccount', updates);
+    userService.updateUser(userId, updates)
+    .then(serveData(res))
+    .catch(serveError(res));
+    
+  },
 
   /**
    * Overrides for the settings in `config/controllers.js`

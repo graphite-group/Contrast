@@ -46,7 +46,6 @@ module.exports = function(app, socket){
       $scope.$apply();
     });
     $scope.quit = function(backTo){
-      console.log("BACKTO:", backTo);
       delete $scope.rect;
       window.removeEventListener('resize', $scope.resizeHandler);
       setTimeout(function(){
