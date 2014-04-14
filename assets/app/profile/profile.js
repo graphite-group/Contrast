@@ -84,7 +84,6 @@ module.exports = function(app, socket){
       data.id = $scope.user._id;
       UserService.updateUser({updates: data})
       .then(function(data){
-        console.log(data);
         $scope.$apply();
       })
       .catch(console.log.bind(console));
