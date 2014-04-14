@@ -30,7 +30,7 @@ header
     transition 0.5s 1s linear
     cursor pointer
     .dropdown
-      display block
+      display none
       position absolute
       top 2rem
       right 0
@@ -39,6 +39,13 @@ header
       opacity 0
       transition 0s 0.1s ease-in
       border 1px solid rgba(0,0,0,0.1)
+      &::before
+        content ""
+        position absolute
+        top -2rem
+        height 2rem
+        left 0
+        width 100%
       a
         display block
         font-size 1rem
@@ -56,6 +63,7 @@ header
       transition 0.5s linear
       opacity 1
       .dropdown
+        display block
         opacity 1
         display block
         transition 0.5s 0s linear

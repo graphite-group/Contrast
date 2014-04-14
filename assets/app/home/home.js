@@ -14,14 +14,14 @@ module.exports = function(app, socket){
     $scope.showIt = function(evt, id){
       $scope.rect = evt.target.getClientRects()[0];
       $scope.rect.customClass = '';
-
-      $state.go('homescreen.imageDetails', {id: id});
+      $scope.backTo = 'homescreen';
+      $state.go('homescreen.imageDetails', {imageId: id});
     };
     $scope.init();
   }])
   .controller('imageDetailsCtrl', ['$scope', 'MainService', '$state', '$stateParams', function($scope, MainService, $state, $stateParams){
 
-    socket.getAsync('/image/' + $stateParams.id)
+    socket.getAsync('/image/' + $stateParams.imageId)
     .then(function(response){
       if(!response.success){
         throw new Error('Route not found');
@@ -45,11 +45,12 @@ module.exports = function(app, socket){
       });
       $scope.$apply();
     });
-    $scope.quit = function(){
+    $scope.quit = function(backTo){
+      console.log("BACKTO:", backTo);
       delete $scope.rect;
       window.removeEventListener('resize', $scope.resizeHandler);
       setTimeout(function(){
-        $state.go('homescreen');
+        $state.go('^');
       }, 300);
     };
   }])
@@ -61,7 +62,7 @@ module.exports = function(app, socket){
       controller: 'homeCtrl'
     })
     .state('homescreen.imageDetails', {
-      url: 'imageDetails/:id',
+      url: 'imageDetails/:imageId',
       templateUrl: '/app/imageDetails/imageDetails.html',
       controller: 'imageDetailsCtrl'
     });
