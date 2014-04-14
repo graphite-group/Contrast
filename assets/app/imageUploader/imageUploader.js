@@ -11,6 +11,7 @@ module.exports = function(app, socket){
 
       $scope.imageUploadFinished = false;
       $scope.uploadingBar = false;
+      $scope.imagePreview = false;
 
       $scope.onFileSelect = function($files) {
         $scope.uploadingBar = true;
@@ -21,6 +22,7 @@ module.exports = function(app, socket){
         }).success(function(data, status, headers, config) {
           // file is uploaded successfully
           $scope.imageUrl = data.data.url;
+          $scope.imagePreview = true;
           $scope.imageUploadFinished = true;
           $scope.uploadingBar = false;
         }).catch(function(error){
