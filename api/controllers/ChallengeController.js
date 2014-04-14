@@ -1,6 +1,7 @@
 'use strict';
 var challengeService = require('../services/challengeService');
 
+
 var serveError = function(res){
   return function(err){
     res.send({
