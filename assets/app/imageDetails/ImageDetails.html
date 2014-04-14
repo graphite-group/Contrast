@@ -7,8 +7,21 @@
   <div class="meta">
     <a class="user {{rect.customClass}}" href="#/profile/{{image.user._id}}">{{image.user.name}}{{image.user.username}} {{image.user.email}}</a>
     <h4 class="{{rect.customClass}}">{{image.title}}</h4>
-    <p class="{{rect.customClass}}">{{image.description}}</p>
-    <button ng-show="isLoggedIn">YOU ARE LOGGED IN</button>
+    <p class="{{rect.customClass}}">
+      {{image.description}}
+      <span class="buttons"  ng-show="isLoggedIn">
+        <input type="text" placeholder="title" ng-model="challengeTitle">
+        <button ng-click="challengeNow()">Challenge</button>
+      </span>
+    </p>
+    <div class="challenge" ng-show="challenge" ng-controller="myImagesCtrl">
+      <div ng-repeat="image in images" class='full-block'>
+        <div class="block" ng-click="createChallenge(image._id)">
+          <img src="{{image.url}}" alt="">
+        </div>
+      </div>
+    </div>
+
   </div>
 
 </div>
