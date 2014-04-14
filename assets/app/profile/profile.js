@@ -38,7 +38,12 @@ module.exports = function(app, socket){
     $scope.showIt = function(evt, id){
       $scope.rect = evt.target.getClientRects()[0];
       $scope.rect.customClass = '';
-      $state.go('profileAbs.profile.imageDetails', {imageId: id});
+
+      if($state.is('profileAbs.profile')) {
+        $state.go('profileAbs.profile.imageDetails', {imageId: id});
+      } else {
+        $state.go('profileAbs.id.imageDetails', {imageId: id});
+      }
     };
 
     $scope.getUser = function(userId){
