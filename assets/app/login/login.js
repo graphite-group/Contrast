@@ -16,7 +16,7 @@ module.exports = function(app, socket){
       };
 
       $scope.submitForm = function(){
-        socket.postAsync("/login",{email: $scope.formData.email, password: $scope.formData.password, json: 'true'})
+        socket.postAsync("/login",{email: $scope.formData.email, password: $scope.formData.password})
         .then(function(response){
           if(!!response.data){
             MainService.login(response.data);

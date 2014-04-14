@@ -21,10 +21,16 @@ module.exports = {
     challengeStats.opponentVote = 0;
 
     var addThreeWayRelationship = function(challengerNode, opponentNode, node){
+      if(!challengerNode._id || !opponentNode._id){
+        throw new Error("challengerNode or opponentNode does not exist");
+      }
       return Promise.all([
         db.insertRelationshipAsync(challengerNode._id, node._id, 'IS_CHALLENGER', {}),
         db.insertRelationshipAsync(opponentNode._id, node._id, 'IS_OPPONENT', {}),
-        node
+        db.updateNodeByIdAsync(node._id, {
+          challengerImage : challengerNode.url,
+          opponentImage : opponentNode.url
+        })
       ]);
     };
 
@@ -264,7 +270,7 @@ start n=node(12), m=node(15) create (n)-[r:created]->(m) return n;
 */
 
 var createChallenge = module.exports.createChallenge;
-// createChallenge(15,14,{}).then(function(node){
+// createChallenge(29,23,{}).then(function(node){
 //   console.log(node);
 // });
 
@@ -273,12 +279,13 @@ var createChallenge = module.exports.createChallenge;
 // //   console.log(result);
 // // });
 
-
-// var acceptChallenge = module.exports.acceptChallenge;
-// acceptChallenge(15,19, function(err,result){
+//signature: acceptChallenge(userId, challengeId, callback)
+var acceptChallenge = module.exports.acceptChallenge;
+// acceptChallenge(4,36, function(err,result){
 //   console.log(err);
 //   console.log(result);
 // });
+
 
 var endChallenge = module.exports.endChallenge;
 // endChallenge(19, function(err,result){
@@ -310,4 +317,9 @@ var findChallengesByUserHistory = module.exports.findChallengesByUserHistory;
 MATCH (n)
 OPTIONAL MATCH (n)-[r]-()
 DELETE n,r
+
+//use to delete node and it's relationships
+START n = node(32) MATCH n-[r]-() DELETE n, r
+
+
 */
