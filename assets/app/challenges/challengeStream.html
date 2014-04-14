@@ -1,6 +1,7 @@
 
 <div ng-repeat='challenge in challenges'>
   <div style="display:inline-block;">
+    {{challenge.challengerImage}} hmmm...
     <img src="{{challenge.challengerImage}}" ng-click="vote(challenge.id, challenge.challengerId)">
   </div>
   <div style="display:inline-block;">

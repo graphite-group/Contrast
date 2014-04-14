@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/styles/app.css">
   </head>
 
-  <body>
+  <body ng-app="contrast">
     <!--[if IE 7]>
         <style>
         .getting-started li{overflow:visible;clear:both}.delete{width:690px}
@@ -21,14 +21,14 @@
             <a href="#/">home</a>
             <a href="#/profile">profile</a>
             <a href="#/challenges">challenges</a>
-            <a href="#/login">login/logout</a>
-            <a href="#/signup">signup</a>
+            <a href="#/login">login</a>
+            <a href="#/logout">logout</a>
           </div>
         </div>
       </nav>
     </header>
 
-    <div class="container" ng-app="contrast">
+    <div class="container">
       <div ui-view></div>
     </div>
     <footer>
