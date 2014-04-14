@@ -13,19 +13,18 @@ module.exports = function(app, socket){
     };
     $scope.showIt = function(evt, id){
       $scope.rect = evt.target.getClientRects()[0];
-      $scope.rect.customClass = "";
+      $scope.rect.customClass = '';
 
-      $scope.myTest = "THIS IS AWESOME";
       $state.go('homescreen.imageDetails', {id: id});
     };
     $scope.init();
   }])
   .controller('imageDetailsCtrl', ['$scope', 'MainService', '$state', '$stateParams', function($scope, MainService, $state, $stateParams){
-    // $scope.params = $stateParams;
+
     socket.getAsync('/image/' + $stateParams.id)
     .then(function(response){
       if(!response.success){
-        throw new Error("Route not found");
+        throw new Error('Route not found');
       }
       return response.data;
     })
@@ -37,7 +36,7 @@ module.exports = function(app, socket){
         width: window.innerWidth - 120,
         height: window.innerHeight - 160,
         opacity: 1,
-        customClass: "isactive"
+        customClass: 'isactive'
       };
       $scope.resizeHandler = window.addEventListener('resize', function(){
         $scope.rect.width = window.innerWidth - 120;
@@ -45,14 +44,14 @@ module.exports = function(app, socket){
         $scope.$apply();
       });
       $scope.$apply();
-    })
+    });
     $scope.quit = function(){
       delete $scope.rect;
       window.removeEventListener('resize', $scope.resizeHandler);
       setTimeout(function(){
         $state.go('homescreen');
       }, 300);
-    }
+    };
   }])
   .config(['$stateProvider', function($stateProvider){
     $stateProvider
