@@ -1,29 +1,47 @@
 <div>
-<!-- Hello {{Hello}} -->
+
 <pre>{{user | json}}</pre>
-<ui-view>
-</ui-view>
-  <div class="cover" style="background-image: url({{user.coverImgUrl}})">
-    <div class="profile" style="background-image: url({{user.profileImgUrl}})"></div>
-    <div class="stats">
-      <div class="joinDate">{{user.joinDate}}</div>
-      <div class="points">{{user.points}}</div>
-      <div class="wins">{{user.wins}}</div>
-      <div class="losses">{{user.losses}}</div>
+
+<div class="cover" style="background-image: url({{user.coverImgUrl}})">
+  <div class="profile" style="background-image: url({{user.profileImgUrl}})">
+    <div class="username">
+      {{user.username}}{{user.name}}
     </div>
   </div>
-  <div class="grid">
-    <!-- <div class="grid-block" ng-repeat="image in images | filter:imageFilter"> -->
-    <div class="grid-block">
-      <div class="block">
-        <img src="{{image.url}}">
-        <!-- 
-        check these properties to make sure that this data is coming through after the get images route is created on the server 
-        -->
-        {{image.name}}
-        {{image.description}}
-        {{image.stats}}
-        <button type="button" class="btn challenge">Challenge</button>
+</div>
+<div class="stats">
+  <div class="joinDate" data-title="Joined">{{user.joinDate}} January 26, 2014</div>
+  <div class="points" data-title="Points">{{user.points}}</div>
+  <div class="wins" data-title="Wins">{{user.wins}}</div>
+  <div class="losses" data-title="Losses">{{user.losses}}</div>
+</div>
+
+  <section class="images">
+    <h3>
+      <input type="text" class="filter" ng-model="imageFilter">
+      Latest Images
+    </h3>
+    <div class="grid">
+      <div class="grid-block"
+           ng-repeat="image in images | filter:imageFilter">
+        <div class="block" ng-click="showIt($event, image._id)" data-id="{{image._id}}">
+          <img src="{{image.url}}" alt="">
+        </div>
       </div>
     </div>
+  </section>
+    <!-- <div class="grid-block" ng-repeat="image in images | filter:imageFilter"> -->
+    <!-- <div class="grid-block">
+      <div class="block">
+        <img src="{{image.url}}">
+
+        check these properties to make sure that this data is coming through after the get images route is created on the server
+
+        <! {{image.name}}
+        {{image.description}}
+        {{image.stats}} -
+        <button type="button" class="btn challenge">Challenge</button>
+      </div>
+    </div> -->
+  </div>
 </div>

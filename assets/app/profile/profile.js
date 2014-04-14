@@ -19,9 +19,9 @@ module.exports = function(app, socket){
         controller: 'profileCtrl'//'profileIdCtrl'
       });
   }])
-  .controller('profileCtrl', ['$scope', '$stateParams', '$state', 'MainService', 
+  .controller('profileCtrl', ['$scope', '$stateParams', '$state', 'MainService',
     function($scope, $stateParams, $state, MainService){
-    $scope.Hello = "World";
+    $scope.Hello = 'World';
     $scope.profileId = $stateParams.id;
     // console.log('stateParams: ', $stateParams);
 
@@ -34,8 +34,8 @@ module.exports = function(app, socket){
       });
     };
 
-    $scope.getImages = function(){
-      MainService.getImages().then(function(images){
+    $scope.getImages = function(userId){
+      MainService.getImagesForUser(userId).then(function(images){
         $scope.images = images;
         $scope.$apply();
       }, function(err){
@@ -44,17 +44,19 @@ module.exports = function(app, socket){
     };
     if($stateParams.id){
       $scope.getUser($stateParams.id);
+      $scope.getImages($stateParams.id);
     } else {
       MainService.isLoggedIn().then(function(user){
         if(user.id){
         $scope.getUser(user.id);
+        $scope.getImages(user.id);
         } else {
           $state.go('login');
         }
       }).catch(console.log.bind(console));
     }
 
-    $scope.getImages();
+
   }]);
   // .service();
 

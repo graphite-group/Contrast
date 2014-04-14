@@ -2,16 +2,82 @@ lightgrey = rgb(200,200,200)
 
 .cover
   width 100%
-  padding-bottom 20%
+  padding-bottom 25%
   position relative
   background-color lightgrey
   background-size cover
   background-position center center
+  @media screen and (max-width:60rem)
+    padding-bottom 35%
+  @media screen and (max-width:40rem)
+    padding-bottom 50%
 
 .profile
-  height 150px
-  width 150px
+  position absolute
+  bottom -5rem
+  left 2rem
+  height 10rem
+  width 10rem
+  border-radius 5rem
   background-size cover
+  background-position center center
+  background-color black
+  .username
+    position absolute
+    bottom -1.6rem
+    left 0
+    right 0
+    text-align center
+    font-family myfont
+
 
 .stats
-  background-color lightgrey
+  margin-top 1rem
+  padding-left 13rem
+  padding-right 1rem
+  min-height 6rem
+  width 100%
+  font-size 0
+  position relative
+  div
+    display inline-block
+    font-size 1rem
+    border-right 1px solid rgba(0,0,0,0.1)
+    min-height 6rem
+    width calc(25% - 1px)
+    padding-top 3.5rem
+    position relative
+    font-family myfont
+    text-align center
+    font-weight 200
+    color textgrey
+    vertical-align top
+    &:last-child
+      border-right 0
+    &::before
+      position absolute
+      top 0
+      left 0.5rem
+      right 0.5rem
+      height 3rem
+      content attr(data-title)
+      text-transform uppercase
+      font-weight 700
+      padding-top 1rem
+      color black
+    @media screen and (max-width:40rem) and (min-width: 30rem)
+      width calc(50% - 1px)
+      border-bottom 1px solid rgba(0,0,0,0.1)
+      &:nth-child(2)
+        border-right 0
+      &:nth-child(n+3)
+        border-bottom 0
+    @media screen and (max-width:30rem)
+      width 100%
+      border-right 0
+      border-bottom 1px solid rgba(0,0,0,0.1)
+      &:last-child
+        border-bottom 0
+
+
+
