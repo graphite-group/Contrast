@@ -8,15 +8,25 @@ module.exports = function(app, socket){
         abstract: true,
         template: '<ui-view/>'
       })
-      .state('profileAbs.profile',{
+      .state('profileAbs.profile', {
         url: '',
         templateUrl: '/app/profile/profile.html',
         controller: 'profileCtrl'
+      })
+      .state('profileAbs.profile.imageDetails', {
+        url: '/imageDetails/:imageId',
+        templateUrl: '/app/imageDetails/imageDetails.html',
+        controller: 'imageDetailsCtrl'
       })
       .state('profileAbs.id', {
         url:'/{id:[0-9]{1,}}',
         templateUrl: '/app/profile/profile.html',
         controller: 'profileCtrl'//'profileIdCtrl'
+      })
+      .state('profileAbs.id.imageDetails', {
+        url: '/imageDetails/:imageId',
+        templateUrl: '/app/imageDetails/imageDetails.html',
+        controller: 'imageDetailsCtrl'
       });
   }])
   .controller('profileCtrl', ['$scope', '$stateParams', '$state', 'MainService',
@@ -24,6 +34,12 @@ module.exports = function(app, socket){
     $scope.Hello = 'World';
     $scope.profileId = $stateParams.id;
     // console.log('stateParams: ', $stateParams);
+
+    $scope.showIt = function(evt, id){
+      $scope.rect = evt.target.getClientRects()[0];
+      $scope.rect.customClass = '';
+      $state.go('profileAbs.profile.imageDetails', {imageId: id});
+    };
 
     $scope.getUser = function(userId){
       MainService.getUserById(userId).then(function(user){

@@ -1,6 +1,6 @@
 <div>
 
-<pre>{{user | json}}</pre>
+<!-- <pre>{{user | json}}</pre> -->
 
 <div class="cover" style="background-image: url({{user.coverImgUrl}})">
   <div class="profile" style="background-image: url({{user.profileImgUrl}})">
@@ -30,18 +30,6 @@
       </div>
     </div>
   </section>
-    <!-- <div class="grid-block" ng-repeat="image in images | filter:imageFilter"> -->
-    <!-- <div class="grid-block">
-      <div class="block">
-        <img src="{{image.url}}">
-
-        check these properties to make sure that this data is coming through after the get images route is created on the server
-
-        <! {{image.name}}
-        {{image.description}}
-        {{image.stats}} -
-        <button type="button" class="btn challenge">Challenge</button>
-      </div>
-    </div> -->
+  <ui-view>
   </div>
 </div>

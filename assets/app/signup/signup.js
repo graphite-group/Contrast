@@ -22,7 +22,7 @@ module.exports = function(app, socket){
             MainService.login(response.data);
             $scope.serverMsg = "User Created";
             $scope.$apply();
-            $state.go('profile',response.data.id);
+            $state.go('profileAbs.profile',response.data.id);
             
           }else{
             console.log(response.reason);

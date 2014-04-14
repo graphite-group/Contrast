@@ -77,5 +77,7 @@ require('./login/login.js')(app, rootSocket);
 require('./signup/signup.js')(app, rootSocket);
 require('./profile/profile.js')(app, rootSocket);
 require('./imageUploader/imageUploader.js')(app, rootSocket);
+require('./challenges/challengeStream.js')(app, rootSocket);
+
 
 

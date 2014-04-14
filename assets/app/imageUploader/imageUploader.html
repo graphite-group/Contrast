@@ -7,7 +7,12 @@
     <div ng-file-drop-available="dropSupported=true"
           ng-show="!dropSupported">HTML5 Drop File is not supported!</div>
 
-    <!-- Image URL: <a href="{{ imageUrl }}" target="_blank">{{imageUrl}}</a> -->
+    <div style="width:100%; padding-bottom:56.25%; position:relative;"> 
+      <div style="position:absolute; top: 0; bottom:0; left:0; right:0; text-align: center;">
+        <img style="max-width:100%; max-height:100%" src="{{imageUrl}}">
+      </div>
+    </div>
+    
     <input type="text" ng-model="imageUpload.title" required placeholder="title">
     <input type="text" ng-model="imageUpload.description" required placeholder="description">
     <input ng-show="imageUploadFinished" type="submit" value="Submit Picture">
