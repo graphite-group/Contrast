@@ -48,6 +48,7 @@ module.exports = function(app, socket){
       $scope.$apply();
     });
 
+
     MainService.isLoggedIn().then(function(user){
       if(!!user.id){
         $scope.isLoggedIn = true;

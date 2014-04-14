@@ -41,7 +41,7 @@ module.exports = function(app, socket){
 
       if($state.is('profileAbs.profile')) {
         $state.go('profileAbs.profile.imageDetails', {imageId: id});
-      } else {
+      } else if($state.is('profileAbs.id')) {
         $state.go('profileAbs.id.imageDetails', {imageId: id});
       }
     };
@@ -63,6 +63,7 @@ module.exports = function(app, socket){
         console.log('error retrieving images');
       });
     };
+    
     if($stateParams.id){
       $scope.getUser($stateParams.id);
       $scope.getImages($stateParams.id);
@@ -71,15 +72,34 @@ module.exports = function(app, socket){
         if(user.id){
         $scope.getUser(user.id);
         $scope.getImages(user.id);
+        $scope.profileOwner = true;
         } else {
           $state.go('login');
         }
       }).catch(console.log.bind(console));
     }
-
-
-  }]);
-  // .service();
+  }])
+  .controller('accountDataCtrl', ['$scope', 'UserService', function($scope, UserService){
+    $scope.updateUser = function(data){
+      data.id = $scope.user._id;
+      UserService.updateUser({updates: data})
+      .then(function(data){
+        $scope.$apply();
+      })
+      .catch(console.log.bind(console));
+    };
+  }])
+  .service('UserService', function(){
+    this.updateUser = function(userData){
+      return socket.postAsync('/profile/update', userData)
+      .then(function(res){
+        if(res.success === false){
+           throw new Error(res.reason);
+         }
+         return res.data;
+      });
+    };
+  });
 
   // function MainCtrl($state){
   // $state.transitionTo('profile.images');

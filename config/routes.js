@@ -70,16 +70,20 @@ module.exports.routes = {
 //////////////
 //User Controller
 ////////////////////
-  'GET /profile/:id': {
-    controller: 'UserController',
-    action: 'profile'
-  },
-
   'GET /profile' : {
     controller: 'UserController',
     action: 'profile'
   },
 
+  'GET /profile/:id': {
+    controller: 'UserController',
+    action: 'profile'
+  },
+
+  'POST /profile/update' : {
+    controller: 'UserController',
+    action: 'updateAccount'
+  },
   'GET /stats/:id' : {
     controller: 'UserController',
     action: 'userStats'

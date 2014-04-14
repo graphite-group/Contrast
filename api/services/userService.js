@@ -109,21 +109,3 @@ module.exports = {
   }
 
 };
-
-/////////////////////////////////
-//test bits
-////////////////////////////////
-// var userDataTest = {
-//   name: "encrypted",
-//   email: "encrypt@gmail.com",
-//   description: "My name is Rod and I like to party.",
-//   password: "adam"
-// };
-
-// module.exports.createUser(userDataTest);// function(err, node){console.log(err, node);});
-// module.exports.fetchUserById(1).then(function(node){console.log(node);});
-// module.exports.updateUser(541, {email: "testing@tests.com"}).then(function(node){console.log("last Console Log",node);});
-// module.exports.deleteUser(542).then(function(node){console.log(node);});
-// module.exports.fetchUserByEmail('bcrypt@gmail.com').then(function(node){console.log(node);});
-// module.exports.hashPassword('whatsup').then(function(x){console.log(x);});//.catch(function(err){console.log(err);});
-// module.exports.validatePassword("adam",{password:'$2a$08$LsNAS31.8Yd7GOS0BZIgHuzY5zTu15TnfSRe5hlNp3OpYBO7YFbhm'}).then(function(x){console.log(x);});
