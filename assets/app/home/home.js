@@ -21,6 +21,8 @@ module.exports = function(app, socket){
   }])
   .controller('imageDetailsCtrl', ['$scope', 'MainService', '$state', '$stateParams', function($scope, MainService, $state, $stateParams){
 
+    $scope.isLoggedIn = false;
+
     socket.getAsync('/image/' + $stateParams.imageId)
     .then(function(response){
       if(!response.success){
@@ -45,6 +47,14 @@ module.exports = function(app, socket){
       });
       $scope.$apply();
     });
+
+    MainService.isLoggedIn().then(function(user){
+      if(!!user.id){
+        $scope.isLoggedIn = true;
+        $scope.$apply();
+      }
+    })
+
     $scope.quit = function(backTo){
       console.log("BACKTO:", backTo);
       delete $scope.rect;
