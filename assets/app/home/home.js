@@ -49,7 +49,7 @@ module.exports = function(app, socket){
       delete $scope.rect;
       window.removeEventListener('resize', $scope.resizeHandler);
       setTimeout(function(){
-        $state.go('homescreen');
+        $state.go('^');
       }, 300);
     };
   }])
