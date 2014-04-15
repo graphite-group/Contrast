@@ -34,6 +34,8 @@ module.exports = {
       ]);
     };
 
+    //TODO: change order to first check images exist.
+    //Try a Cypher Query to create Challenge Node AND Relationships all together.
     var a =
       db.insertNodeAsync(challengeStats, ['challenge', 'requested' ])
         .then(function(node){
@@ -57,6 +59,8 @@ module.exports = {
 
   //challengeId: num, challengeStats: object{challengerVote, opponentVote, createdAt}
   updateChallenge: function(challengeId, challengeStats, callback){
+
+    //TODO: Add test that id is indeed a challenge.
     var a =
       db.readNodeAsync(challengeId)
         .then(function(node){
