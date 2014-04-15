@@ -34,6 +34,8 @@ module.exports = {
       ]);
     };
 
+    //TODO: change order to first check images exist.
+    //Try a Cypher Query to create Challenge Node AND Relationships all together.
     var a =
       db.insertNodeAsync(challengeStats, ['challenge', 'requested' ])
         .then(function(node){
@@ -57,6 +59,8 @@ module.exports = {
 
   //challengeId: num, challengeStats: object{challengerVote, opponentVote, createdAt}
   updateChallenge: function(challengeId, challengeStats, callback){
+
+    //TODO: Add test that id is indeed a challenge.
     var a =
       db.readNodeAsync(challengeId)
         .then(function(node){
@@ -239,8 +243,30 @@ module.exports = {
       return a;
     }
   },
+  //find all challenges to be accepted/rejected by user
+ //Start n=node(user_id)
+ // Match (n)-->(:image)-[:IS_OPPONENT]->(m:requested) return m;
 
-  //relationship should be either "IS_CHALLENGER" or "IS_OPPONENT"
+  findChallengesToBeAcceptedRejected: function(userId, callback){
+    var a =
+      db.cypherQueryAsync(
+        "START n=node("+userId+")\n" +
+        "MATCH (n)-->(:image)-[:IS_OPPONENT]->(m:requested)\n" +
+        "RETURN m;"
+      )
+      .then(function(results){
+        console.log("results",results);
+        return results.data;
+      });
+      // .map(function(result))
+
+    if(typeof callback === 'function'){
+      a.then(callback.bind(this, null)).catch(callback);
+    }else{
+      return a;
+    }
+  },
+
   findChallengesToVoteOn: function(userId, callback){
     var a =
       db.cypherQueryAsync(
@@ -298,7 +324,7 @@ start n=node(12), m=node(15) create (n)-[r:created]->(m) return n;
 */
 
 var createChallenge = module.exports.createChallenge;
-// createChallenge(29,23,{}).then(function(node){
+// createChallenge(124,47,{}).then(function(node){
 //   console.log(node);
 // });
 
@@ -331,9 +357,14 @@ var findChallengesByUserHistory = module.exports.findChallengesByUserHistory;
 //  console.log(results);
 // });
 
-//findChallengesToVoteOn = module.exports.findChallengesToVoteOn;
+//var findChallengesToVoteOn = module.exports.findChallengesToVoteOn;
 // findChallengesToVoteOn(2,function(err,results){
-//  console.log(results.data);
+//  console.log(results);
+// });
+
+var findChallengesToBeAcceptedRejected = module.exports.findChallengesToBeAcceptedRejected;
+// findChallengesToBeAcceptedRejected(4,function(err,results){
+//  console.log(results);
 // });
 
 //addUserVote = module.exports.addUserVote;
@@ -361,5 +392,12 @@ Match (n)-->(:image)-[:WINNER]->(m:challenge) return m;
 //find all challenges to be accepted/rejected by user
 Start n=node(user_id)
 Match (n)-->(:image)-[:IS_OPPONENT]->(m:requested) return m;
+
+//change labels of nodes
+Match (n:ended)
+remove n: ended
+set n: requested
+return n
+
 
 */
