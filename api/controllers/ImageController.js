@@ -63,6 +63,9 @@ module.exports = {
 
     imageService.createImageDetails(imageDetails, userId)
       .then(serveData(res))
+      .then(function(){
+        userService.addPoints(userId, 50);
+      })
       .catch(serveError(res));
   },
 

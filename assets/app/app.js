@@ -81,6 +81,8 @@ require('./404/404.js')(app, rootSocket);
 require('./profile/profile.js')(app, rootSocket);
 require('./imageUploader/imageUploader.js')(app, rootSocket);
 require('./challenges/challengeStream.js')(app, rootSocket);
+require('./requests/requests.js')(app, rootSocket);
+require('./mychallenges/mychallenges.js')(app, rootSocket);
 
 
 

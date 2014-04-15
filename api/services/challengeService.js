@@ -199,42 +199,54 @@ module.exports = {
       return a;
     }
   },
-  //relationship should be either "IS_CHALLENGER" or "IS_OPPONENT"
+  
+  //relationship should be either "IS_CHALLENGER" or "IS_OPPONENT", or neither
   findChallengesByUserHistory: function(userId, relationship, callback){
     if(!Array.isArray(relationship)){
       relationship = [relationship];
     }
 
-    var a =
-      db.readRelationshipsOfNodeAsync(userId, {types: ['created']})
-      .filter(function(link){
-        return link._start === userId;
-      })
-      .map(function(link){
-        return link._end;
-      })
-      .map(function(imageId){
-        return db.readRelationshipsOfNodeAsync(imageId, {types: relationship})
-          .filter(function(link){
-            return link._start === imageId;
-          })
-          .map(function(link){
-            return link._end;
-          });
-      })
-      .reduce(function(total, collection){
-        return total.concat(collection);
-      }, [])
-      .map(function(challengeId){
-        return Promise.all([
-            db.readNodeAsync(challengeId),
-            db.readLabelsAsync(challengeId)
-        ])
-        .spread(function(node, labels){
-          node.labels = labels;
-          return node;
+    // var a =
+    //   db.readRelationshipsOfNodeAsync(userId, {types: ['created']})
+    //   .filter(function(link){
+    //     console.log(link);
+    //     return link._start === userId;
+    //   })
+    //   .map(function(link){
+    //     return link._end;
+    //   })
+    //   .map(function(imageId){
+    //     return db.readRelationshipsOfNodeAsync(imageId, {types: relationship})
+    //       .filter(function(link){
+    //         return link._start === imageId;
+    //       })
+    //       .map(function(link){
+    //         return link._end;
+    //       });
+    //   })
+    //   .reduce(function(total, collection){
+    //     return total.concat(collection);
+    //   }, [])
+    //   .map(function(challengeId){
+    //     return Promise.all([
+    //         db.readNodeAsync(challengeId),
+    //         db.readLabelsAsync(challengeId)
+    //     ])
+    //     .spread(function(node, labels){
+    //       node.labels = labels;
+    //       return node;
+    //     });
+    //   });
+
+      var a =
+        db.cypherQueryAsync(
+          "START n=node("+userId+")\n" +
+          "MATCH (n)-[:CREATED]->(:image)-->(m:challenge)\n" +
+          "RETURN m;"
+        )
+        .then(function(results){
+          return results.data;
         });
-      });
 
 
     if(typeof callback === 'function'){
@@ -243,8 +255,30 @@ module.exports = {
       return a;
     }
   },
+  //find all challenges to be accepted/rejected by user
+ //Start n=node(user_id)
+ // Match (n)-->(:image)-[:IS_OPPONENT]->(m:requested) return m;
 
-  //relationship should be either "IS_CHALLENGER" or "IS_OPPONENT"
+  findChallengesToBeAcceptedRejected: function(userId, callback){
+    var a =
+      db.cypherQueryAsync(
+        "START n=node("+userId+")\n" +
+        "MATCH (n)-->(:image)-[:IS_OPPONENT]->(m:requested)\n" +
+        "RETURN m;"
+      )
+      .then(function(results){
+        console.log("results",results);
+        return results.data;
+      });
+      // .map(function(result))
+
+    if(typeof callback === 'function'){
+      a.then(callback.bind(this, null)).catch(callback);
+    }else{
+      return a;
+    }
+  },
+
   findChallengesToVoteOn: function(userId, callback){
     var a =
       db.cypherQueryAsync(
@@ -302,7 +336,7 @@ start n=node(12), m=node(15) create (n)-[r:created]->(m) return n;
 */
 
 var createChallenge = module.exports.createChallenge;
-// createChallenge(29,23,{}).then(function(node){
+// createChallenge(124,47,{}).then(function(node){
 //   console.log(node);
 // });
 
@@ -331,13 +365,18 @@ var endChallenge = module.exports.endChallenge;
 
 
 var findChallengesByUserHistory = module.exports.findChallengesByUserHistory;
-// findChallengesByUserHistory(12,"IS_OPPONENT",function(err,results){
+// findChallengesByUserHistory(4,[],function(err,results){
+//  console.log('results', results);
+// });
+
+//var findChallengesToVoteOn = module.exports.findChallengesToVoteOn;
+// findChallengesToVoteOn(2,function(err,results){
 //  console.log(results);
 // });
 
-//findChallengesToVoteOn = module.exports.findChallengesToVoteOn;
-// findChallengesToVoteOn(2,function(err,results){
-//  console.log(results.data);
+var findChallengesToBeAcceptedRejected = module.exports.findChallengesToBeAcceptedRejected;
+// findChallengesToBeAcceptedRejected(4,function(err,results){
+//  console.log(results);
 // });
 
 //addUserVote = module.exports.addUserVote;
@@ -365,5 +404,12 @@ Match (n)-->(:image)-[:WINNER]->(m:challenge) return m;
 //find all challenges to be accepted/rejected by user
 Start n=node(user_id)
 Match (n)-->(:image)-[:IS_OPPONENT]->(m:requested) return m;
+
+//change labels of nodes
+Match (n:ended)
+remove n: ended
+set n: requested
+return n
+
 
 */

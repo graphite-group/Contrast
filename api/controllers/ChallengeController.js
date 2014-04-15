@@ -51,25 +51,28 @@ module.exports = {
 
   },
 
-  myChallenges: function (req, res) {
-    var userId = req.session.user.id;
-
-    challengeService.findChallengesByUserHistory(userId, 'IS_OPPONENT')
-    .then(serveData(res))
-    .catch(serveError(res));
-  },
-
   rejectChallenge:function(req,res){
     var userId = req.session.user.id;
     var challengeId = req.body.challengeId;
     if(!challengeId){
       return serveError(res)("Challenge ID is needed.");
     }
-
     challengeService.rejectChallenge(userId, challengeId, {})
+    .then(serveData(res))
+    .then(function(){
+      userService.removePoints(userId, 5);
+    })
+    .catch(serveError(res));
+  },
+
+  myChallenges: function (req, res) {
+    var userId = req.session.user.id;
+
+    challengeService.findChallengesByUserHistory(userId, [])
     .then(serveData(res))
     .catch(serveError(res));
   },
+
 
    //should return empty array if there are no challenges unconnected to user.id above, else should
    //return array of challenges
@@ -78,7 +81,16 @@ module.exports = {
 
     var userId = req.session.user.id;
 
-    challengeService.findChallengesToVoteOn(userId)
+    challengeService.findChallengesToVoteOn(parseInt(userId))
+    .then(serveData(res))
+    .catch(serveError(res));
+  },
+
+  acceptReject:function(req,res){
+    var userId = req.session.user.id;
+    console.log(userId);
+
+    challengeService.findChallengesToBeAcceptedRejected(parseInt(userId))
     .then(serveData(res))
     .catch(serveError(res));
   },
@@ -94,6 +106,9 @@ module.exports = {
 
     challengeService.addUserVote(userId, challengeId, imageId)
     .then(serveData(res))
+    .then(function(){
+      userService.addPoints(userId, 1);
+    })
     .catch(serveError(res));
 
   },

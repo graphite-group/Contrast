@@ -122,6 +122,12 @@ module.exports.routes = {
     controller: 'ChallengeController',
     action: 'myChallenges'
   },
+
+  'GET /requests' : {
+    controller: 'ChallengeController',
+    action: 'acceptReject'
+  },
+
   //req.body will have challengeId and imageId
   'POST /castVote' : {
     controller: 'ChallengeController',

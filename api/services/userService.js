@@ -123,6 +123,36 @@ module.exports = {
     } else {
       return a;
     }
+  },
+
+  addPoints: function(userId, incPoints){
+    var a = db.readLabelsAsync(userId)
+    .filter(function(label){
+      if(label === 'user'){
+        return true;
+      }
+      return false;
+    })
+    .then(function(filteredItems){
+      if(filteredItems.length === 0){
+        throw new Error('user not found for that id');
+      }
+      return db.readNodeAsync(userId);
+    })
+    .then(function(node){
+      var updatedPoints = node.points + incPoints;
+      return db.updateNodeByIdAsync(userId, {points: parseInt(updatedPoints)}); //
+    });
+
+    if(typeof callback === 'function'){
+      a.then(callback.bind(this, null)).catch(callback);
+    } else {
+      return a;
+    }
+  },
+
+  removePoints: function(userId, incPoints){
+    this.addPoints(userId, -1 * parseInt(incPoints));
   }
 
 };
