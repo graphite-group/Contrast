@@ -57,9 +57,11 @@ module.exports = {
     if(!challengeId){
       return serveError(res)("Challenge ID is needed.");
     }
-
     challengeService.rejectChallenge(userId, challengeId, {})
     .then(serveData(res))
+    .then(function(){
+      userService.removePoints(userId, 5);
+    })
     .catch(serveError(res));
   },
   
@@ -104,6 +106,9 @@ module.exports = {
 
     challengeService.addUserVote(userId, challengeId, imageId)
     .then(serveData(res))
+    .then(function(){
+      userService.addPoints(userId, 1);
+    })
     .catch(serveError(res));
 
   },
