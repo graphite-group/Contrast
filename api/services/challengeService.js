@@ -199,42 +199,54 @@ module.exports = {
       return a;
     }
   },
-  //relationship should be either "IS_CHALLENGER" or "IS_OPPONENT"
+  
+  //relationship should be either "IS_CHALLENGER" or "IS_OPPONENT", or neither
   findChallengesByUserHistory: function(userId, relationship, callback){
     if(!Array.isArray(relationship)){
       relationship = [relationship];
     }
 
-    var a =
-      db.readRelationshipsOfNodeAsync(userId, {types: ['created']})
-      .filter(function(link){
-        return link._start === userId;
-      })
-      .map(function(link){
-        return link._end;
-      })
-      .map(function(imageId){
-        return db.readRelationshipsOfNodeAsync(imageId, {types: relationship})
-          .filter(function(link){
-            return link._start === imageId;
-          })
-          .map(function(link){
-            return link._end;
-          });
-      })
-      .reduce(function(total, collection){
-        return total.concat(collection);
-      }, [])
-      .map(function(challengeId){
-        return Promise.all([
-            db.readNodeAsync(challengeId),
-            db.readLabelsAsync(challengeId)
-        ])
-        .spread(function(node, labels){
-          node.labels = labels;
-          return node;
+    // var a =
+    //   db.readRelationshipsOfNodeAsync(userId, {types: ['created']})
+    //   .filter(function(link){
+    //     console.log(link);
+    //     return link._start === userId;
+    //   })
+    //   .map(function(link){
+    //     return link._end;
+    //   })
+    //   .map(function(imageId){
+    //     return db.readRelationshipsOfNodeAsync(imageId, {types: relationship})
+    //       .filter(function(link){
+    //         return link._start === imageId;
+    //       })
+    //       .map(function(link){
+    //         return link._end;
+    //       });
+    //   })
+    //   .reduce(function(total, collection){
+    //     return total.concat(collection);
+    //   }, [])
+    //   .map(function(challengeId){
+    //     return Promise.all([
+    //         db.readNodeAsync(challengeId),
+    //         db.readLabelsAsync(challengeId)
+    //     ])
+    //     .spread(function(node, labels){
+    //       node.labels = labels;
+    //       return node;
+    //     });
+    //   });
+
+      var a =
+        db.cypherQueryAsync(
+          "START n=node("+userId+")\n" +
+          "MATCH (n)-[:CREATED]->(:image)-->(m:challenge)\n" +
+          "RETURN m;"
+        )
+        .then(function(results){
+          return results.data;
         });
-      });
 
 
     if(typeof callback === 'function'){
@@ -353,8 +365,8 @@ var endChallenge = module.exports.endChallenge;
 
 
 var findChallengesByUserHistory = module.exports.findChallengesByUserHistory;
-// findChallengesByUserHistory(12,"IS_OPPONENT",function(err,results){
-//  console.log(results);
+// findChallengesByUserHistory(4,[],function(err,results){
+//  console.log('results', results);
 // });
 
 //var findChallengesToVoteOn = module.exports.findChallengesToVoteOn;

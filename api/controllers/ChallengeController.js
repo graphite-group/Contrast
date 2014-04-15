@@ -62,11 +62,11 @@ module.exports = {
     .then(serveData(res))
     .catch(serveError(res));
   },
-  
+
   myChallenges: function (req, res) {
     var userId = req.session.user.id;
 
-    challengeService.findChallengesByUserHistory(userId, 'IS_OPPONENT')
+    challengeService.findChallengesByUserHistory(userId, [])
     .then(serveData(res))
     .catch(serveError(res));
   },
