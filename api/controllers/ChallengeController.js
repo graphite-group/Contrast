@@ -78,7 +78,16 @@ module.exports = {
 
     var userId = req.session.user.id;
 
-    challengeService.findChallengesToVoteOn(userId)
+    challengeService.findChallengesToVoteOn(parseInt(userId))
+    .then(serveData(res))
+    .catch(serveError(res));
+  },
+
+  acceptReject:function(req,res){
+    var userId = req.session.user.id;
+    console.log(userId);
+    
+    challengeService.findChallengesToBeAcceptedRejected(parseInt(userId))
     .then(serveData(res))
     .catch(serveError(res));
   },
