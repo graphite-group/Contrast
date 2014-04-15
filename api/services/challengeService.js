@@ -2,7 +2,7 @@
 var neo4j = require('node-neo4j');
 var Promise = require('bluebird');
 
-var db = new neo4j('http://localhost:7474');
+var db = new neo4j('http://127.0.0.1:7474');
 db = Promise.promisifyAll(db);
 
 

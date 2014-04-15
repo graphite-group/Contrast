@@ -4,7 +4,7 @@ var Promise = require('bluebird');
 var neo4j = require('node-neo4j');
 var env = require('../../env.js');
 
-var db = new neo4j('http://localhost:7474');
+var db = new neo4j('http://127.0.0.1:7474');
 db = Promise.promisifyAll(db);
 
 var client = knox.createClient({

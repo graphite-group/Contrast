@@ -35,6 +35,7 @@ var promisifyAll = function(obj){
   // as soon as this file is loaded, connect automatically,
   var socket = io.connect();
   socket = promisifyAll(socket);
+  socket.off = socket.removeListener;
 
   if (typeof console !== 'undefined') {
     console.log('Connecting to Sails.js...');
