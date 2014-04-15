@@ -248,9 +248,11 @@ module.exports = {
         "MATCH (n:accepted)\n" +
         "WHERE NOT((n)-[]-(u))\n"+
         "RETURN n;"
-      ).then(function(results){
+      )
+      .then(function(results){
         return results.data;
       });
+      // .map(function(result))
 
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);

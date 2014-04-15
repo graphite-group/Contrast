@@ -1,0 +1,40 @@
+.allchallenges
+  position absolute
+  top 4rem
+  left 0
+  right 0
+  bottom 2rem
+  overflow hidden
+  .challenge
+    position absolute
+    top 0
+    left 0
+    bottom 0
+    right 0
+    transform translateY(100%)
+    font-size 0
+    padding 1rem
+    transition 1s ease-out
+    border 1px solid black
+    &::before
+      content ""
+      display inline-block
+      vertical-align middle
+      height 100%
+      width 0
+    &:first-child
+      transform translateY(0)
+    .half
+      display inline-block
+      width 50%
+      padding-bottom 28.75%
+      position relative
+      vertical-align middle
+      .block
+        top 1rem
+        left 1rem
+        bottom 1rem
+        right 1rem
+        background lightgrey
+        position absolute
+        cursor pointer
