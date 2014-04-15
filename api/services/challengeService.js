@@ -359,9 +359,9 @@ var findChallengesByUserHistory = module.exports.findChallengesByUserHistory;
 // });
 
 var findChallengesToBeAcceptedRejected = module.exports.findChallengesToBeAcceptedRejected;
-findChallengesToBeAcceptedRejected(4,function(err,results){
- console.log(results);
-});
+// findChallengesToBeAcceptedRejected(4,function(err,results){
+//  console.log(results);
+// });
 
 //addUserVote = module.exports.addUserVote;
 // addUserVote(117, 120, 117, function(err,node){
