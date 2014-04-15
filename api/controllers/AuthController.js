@@ -87,6 +87,7 @@ module.exports = {
     //else return error
     var userData = req.body;
     delete userData.json;
+    userData.points = 100;
     userService.createUser(userData)
     .then(function(node){
       delete node.password;

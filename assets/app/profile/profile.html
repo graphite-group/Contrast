@@ -7,8 +7,10 @@
     <div class="username">
     <!-- <a href="#" editable-text="user.name">{{ user.name || 'empty' }}</a> -->
       {{user.username}} <br />
-      <!-- <a href="#" editable-text="user.name">{{user.name}}</a> -->
-      {{user.name}}
+      <div ng-controller="accountDataCtrl">
+        <span editable-text="user.name">{{user.name}}</span>
+      </div>
+      <!-- {{user.name}} -->
     </div>
   </div>
 </div>
@@ -25,19 +27,19 @@
   <div>
     <span class="title">Name: </span>
     <span editable-text="user.name" e-name="name">
-      {{user.name || ''}}
+      {{user.name}}
     </span>
   </div>
   <div>
     <span class="title">Cover Image: </span>
     <span editable-text="user.coverImgUrl" e-name="coverImgUrl">
-      {{user.coverImgUrl || ''}}
+      {{user.coverImgUrl}}
     </span>
   </div>
   <div>
     <span class="title">Profile Image: </span>
     <span editable-text="user.profileImgUrl" e-name="profileImgUrl">
-      {{user.profileImgUrl || ''}}
+      {{user.profileImgUrl}}
     </span>
   </div>
 
