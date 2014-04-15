@@ -33,8 +33,7 @@ module.exports = function(app, socket){
     function($scope, $stateParams, $state, MainService){
     $scope.Hello = 'World';
     $scope.profileId = $stateParams.id;
-    // console.log('stateParams: ', $stateParams);
-
+    $scope.profileOwner = false;
     $scope.showIt = function(evt, id){
       $scope.rect = evt.target.getClientRects()[0];
       $scope.rect.customClass = '';
