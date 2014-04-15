@@ -316,10 +316,6 @@ var acceptChallenge = module.exports.acceptChallenge;
 
 
 var endChallenge = module.exports.endChallenge;
-endChallenge(36, function(err,result){
-  console.log(err);
-  console.log(result);
-});
 // endChallenge(34, function(err,result){
 //   console.log(err);
 //   console.log(result);
