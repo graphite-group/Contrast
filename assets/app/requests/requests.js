@@ -30,7 +30,7 @@ module.exports = function(app, socket){
         });
       };
 
-      $scope.accept = function(id){
+      $scope.reject = function(id){
         console.log("id",id);
        $scope.requests.shift();  
         socket.postAsync('/rejectChallenge',{challengeId: id})

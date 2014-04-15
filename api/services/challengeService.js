@@ -393,4 +393,11 @@ Match (n)-->(:image)-[:WINNER]->(m:challenge) return m;
 Start n=node(user_id)
 Match (n)-->(:image)-[:IS_OPPONENT]->(m:requested) return m;
 
+//change labels of nodes
+Match (n:ended)
+remove n: ended
+set n: requested
+return n
+
+
 */
