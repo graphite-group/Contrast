@@ -1,10 +1,14 @@
-
-<div ng-repeat='challenge in challenges'>
-  <div style="display:inline-block;">
-    {{challenge.challengerImage}} hmmm...
-    <img src="{{challenge.challengerImage}}" ng-click="vote(challenge.id, challenge.challengerId)">
+<div class="allchallenges">
+  <div ng-repeat='challenge in challenges' class="challenge">
+    <div class="half">
+      <div class="block" ng-click="vote(challenge.id, challenge.challengerId)">
+        <img src="{{challenge.challengerImage}}">
+      </div>
+    </div>
+    <div class="half">
+      <div class="block" ng-click="vote(challenge.id, challenge.opponentId)">
+        <img src="{{challenge.opponentImage}}">
+      <div>
+    </div>
   </div>
-  <div style="display:inline-block;">
-    <img src="{{challenge.opponentImage}}" ng-click="vote(challenge.id, challenge.opponentId)" >
-  <div>
 </div>
