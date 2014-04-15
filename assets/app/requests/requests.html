@@ -1,0 +1,16 @@
+<div class="allchallenges">
+  <div ng-repeat='request in requests' class="challenge request">
+    <div class="half">
+      <div class="block" ng-click="vote(challenge.id, challenge.challengerId)">
+        <img src="{{challenge.challengerImage}}">
+      </div>
+    </div>
+    <div class="half">
+      <div class="block" ng-click="vote(challenge.id, challenge.opponentId)">
+        <img src="{{challenge.opponentImage}}">
+      <div>
+    </div>
+    <button class="accept">Accept</button>
+    <button class="reject">Reject</button>
+  </div>
+</div>
