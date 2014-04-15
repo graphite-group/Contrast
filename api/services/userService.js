@@ -56,7 +56,19 @@ module.exports = {
   },
 
   fetchUserById: function(userId, callback){
-    var a = db.readNodeAsync(userId)
+    var a = db.readLabelsAsync(userId)
+    .filter(function(label){
+      if(label === 'user'){
+        return true;
+      }
+      return false;
+    })
+    .then(function(filteredItems){
+      if(filteredItems.length === 0){
+        throw new Error('user not found for that id');
+      }
+      return db.readNodeAsync(userId);
+    })
     .then(function(node){
       delete node.password;
       return node;

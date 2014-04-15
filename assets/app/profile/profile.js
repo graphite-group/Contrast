@@ -46,11 +46,13 @@ module.exports = function(app, socket){
     };
 
     $scope.getUser = function(userId){
-      MainService.getUserById(userId).then(function(user){
+     return MainService.getUserById(userId).then(function(user){
         $scope.user = user;
         $scope.$apply();
+        return true;
       }, function(err){
         console.log("couldn't get the user");
+        return false;
       });
     };
 
@@ -64,8 +66,14 @@ module.exports = function(app, socket){
     };
     
     if($stateParams.id){
-      $scope.getUser($stateParams.id);
-      $scope.getImages($stateParams.id);
+      $scope.getUser($stateParams.id).then(function(isUser){
+        if(isUser){
+          $scope.getImages();
+        } else {
+          $state.go('404');
+        }
+      });
+
     } else {
       MainService.isLoggedIn().then(function(user){
         if(user.id){

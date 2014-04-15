@@ -76,9 +76,11 @@ require('./home/home.js')(app, rootSocket);
 require('./MainService.js')(app, rootSocket);
 require('./login/login.js')(app, rootSocket);
 require('./signup/signup.js')(app, rootSocket);
+require('./404/404.js')(app, rootSocket);
 require('./profile/profile.js')(app, rootSocket);
 require('./imageUploader/imageUploader.js')(app, rootSocket);
 require('./challenges/challengeStream.js')(app, rootSocket);
+
 
 
 
