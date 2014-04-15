@@ -20,6 +20,11 @@ user node = {
 
 module.exports = {
   createUser: function(userData, callback){
+    userData.joinDate = new Date();
+    userData.points = 100;
+    userData.wins = 0;
+    userData.losses = 0;
+
     var a = db.readNodesWithLabelsAndPropertiesAsync('user', {email:userData.email})
     .then(function(nodes){
       if(nodes.length < 1){
