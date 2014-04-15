@@ -155,6 +155,8 @@ module.exports = {
   },
 
   endChallenge: function(challengeId, callback){
+    var winner;
+
     var a =
       db.readLabelsAsync(challengeId)
         .then(function(labels){
@@ -165,6 +167,30 @@ module.exports = {
         })
         .then(function(){
           return db.readNodeAsync(challengeId);
+        })
+        .then(function(node){
+          if(node.challengerVote > node.opponentVote){
+            return Promise.join(
+              db.insertRelationshipAsync(node.challengerImageId, node._id, 'WINNER', {}),
+              db.insertRelationshipAsync(node.opponentImageId, node._id, 'LOSER', {}),
+              node
+            );
+          } else if(node.challengerVote < node.opponentVote) {
+            return Promise.join(
+              db.insertRelationshipAsync(node.opponentImageId, node._id, 'WINNER', {}),
+              db.insertRelationshipAsync(node.challengerImageId, node._id, 'LOSER', {}),
+              node
+            );
+          } else {
+            return Promise.join(
+              db.insertRelationshipAsync(node.opponentImageId, node._id, 'WINNER', {}),
+              db.insertRelationshipAsync(node.challengerImageId, node._id, 'WINNER', {}),
+              node
+            );
+          }
+        })
+        .spread(function(a, b, node){
+          return node;
         });
 
     if(typeof callback === 'function'){
@@ -294,7 +320,11 @@ var acceptChallenge = module.exports.acceptChallenge;
 
 
 var endChallenge = module.exports.endChallenge;
-// endChallenge(19, function(err,result){
+// endChallenge(34, function(err,result){
+//   console.log(err);
+//   console.log(result);
+// });
+// endChallenge(36, function(err,result){
 //   console.log(err);
 //   console.log(result);
 // });
@@ -327,5 +357,13 @@ DELETE n,r
 //use to delete node and it's relationships
 START n = node(32) MATCH n-[r]-() DELETE n, r
 
+
+//find all challenges won by user
+Start n=node(user_id)
+Match (n)-->(:image)-[:WINNER]->(m:challenge) return m;
+
+//find all challenges to be accepted/rejected by user
+Start n=node(user_id)
+Match (n)-->(:image)-[:IS_OPPONENT]->(m:requested) return m;
 
 */
