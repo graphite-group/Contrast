@@ -21,46 +21,46 @@
   <div class="losses" data-title="Losses">{{user.losses}}</div>
 </div>
 
-<!-- editable user form data -->
+<!-- <!-editable user form data -
 <div ng-controller="accountDataCtrl" ng-show="profileOwner">
-<form editable-form name="editableForm" onbeforesave="updateUser($data)">
-  <div>
-    <span class="title">Name: </span>
-    <span editable-text="user.name" e-name="name">
-      {{user.name}}
-    </span>
-  </div>
-  <div>
-    <span class="title">Cover Image: </span>
-    <span editable-text="user.coverImgUrl" e-name="coverImgUrl">
-      {{user.coverImgUrl}}
-    </span>
-  </div>
-  <div>
-    <span class="title">Profile Image: </span>
-    <span editable-text="user.profileImgUrl" e-name="profileImgUrl">
-      {{user.profileImgUrl}}
-    </span>
-  </div>
+  <form editable-form name="editableForm" onbeforesave="updateUser($data)">
+    <div>
+      <span class="title">Name: </span>
+      <span editable-text="user.name" e-name="name">
+        {{user.name}}
+      </span>
+    </div>
+    <div>
+      <span class="title">Cover Image: </span>
+      <span editable-text="user.coverImgUrl" e-name="coverImgUrl">
+        {{user.coverImgUrl}}
+      </span>
+    </div>
+    <div>
+      <span class="title">Profile Image: </span>
+      <span editable-text="user.profileImgUrl" e-name="profileImgUrl">
+        {{user.profileImgUrl}}
+      </span>
+    </div>
 
-  <div class="buttons">
-    <!-- button to show form -->
-    <button type="button" class="btn btn-default" ng-click="editableForm.$show()" ng-show="!editableForm.$visible">
-      Edit
-    </button>
-    <!-- buttons to submit / cancel form -->
-    <span ng-show="editableForm.$visible">
-      <button type="submit" class="btn btn-primary" ng-disabled="editableForm.$waiting">
-        Save
+    <div class="buttons">
+      <!- button to show form -
+      <button type="button" class="btn btn-default" ng-click="editableForm.$show()" ng-show="!editableForm.$visible">
+        Edit
       </button>
-      <button type="button" class="btn btn-default" ng-disabled="editableForm.$waiting" ng-click="editableForm.$cancel()">
-        Cancel
-      </button>
-    </span>
-  </div>
-</form>
+      <! buttons to submit / cancel form -
+      <span ng-show="editableForm.$visible">
+        <button type="submit" class="btn btn-primary" ng-disabled="editableForm.$waiting">
+          Save
+        </button>
+        <button type="button" class="btn btn-default" ng-disabled="editableForm.$waiting" ng-click="editableForm.$cancel()">
+          Cancel
+        </button>
+      </span>
+    </div>
+  </form>
 
-</div>
+</div> -->
 
   <section class="images">
     <h3>

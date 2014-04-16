@@ -2,7 +2,7 @@ module.exports = function(app, socket){
   'use strict';
 
   app
-  .controller('homeCtrl', ['$scope', 'MainService', '$state', function($scope, MainService, $state){
+  .controller('homeCtrl', ['$scope', 'MainService', '$state', '$rootScope', function($scope, MainService, $state, $root){
 
     $scope.init = function(){
       MainService.getImages()
