@@ -1,12 +1,14 @@
 'use strict';
-var promise = require('bluebird');
+var Promise = require('bluebird');
 var neo4j = require('node-neo4j');
 var bcryptjs = require('bcryptjs');
-// db = new neo4j('http://username:password@domain:port');
-var db = new neo4j('http://localhost:7474');
+var env = require('../../env.js');
 
-db = promise.promisifyAll(db);
-bcryptjs = promise.promisifyAll(bcryptjs);
+var dbAddress = env.namNeo || env.localNeo;
+var db = new neo4j(dbAddress);
+
+db = Promise.promisifyAll(db);
+bcryptjs = Promise.promisifyAll(bcryptjs);
 
 
 /*

@@ -21,12 +21,16 @@ module.exports = function(app, socket){
       })
       .catch(console.log.bind(console));
 
-      $scope.vote = function(id, imageId){
-       $scope.challenges.shift();  
+      $scope.vote = function(event, id, imageId){
         socket.postAsync('/castVote',{challengeId: id, imageId:imageId})
         .then(function(response){
           console.log("vote", response);
         });
+        event.currentTarget.classList.add('liked');
+        setTimeout(function(){
+          $scope.challenges.shift();
+          $scope.$apply();
+        }, 500)
       };
 
     }])
