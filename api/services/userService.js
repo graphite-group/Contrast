@@ -1,5 +1,5 @@
 'use strict';
-var promise = require('bluebird');
+var Promise = require('bluebird');
 var neo4j = require('node-neo4j');
 var bcryptjs = require('bcryptjs');
 var env = require('../../env.js');
@@ -7,8 +7,8 @@ var env = require('../../env.js');
 var dbAddress = env.namNeo || env.localNeo;
 var db = new neo4j(dbAddress);
 
-db = promise.promisifyAll(db);
-bcryptjs = promise.promisifyAll(bcryptjs);
+db = Promise.promisifyAll(db);
+bcryptjs = Promise.promisifyAll(bcryptjs);
 
 
 /*

@@ -10,10 +10,11 @@
     <p class="{{rect.customClass}}">
       {{image.description}}
       <span class="buttons"  ng-show="isLoggedIn">
-        <input type="text" placeholder="title" ng-model="challengeTitle">
-        <button ng-click="challengeNow()">Challenge</button>
+        <button ng-click="challengeNow()">Challenge This Image</button>
+        <h5 ng-show="challenge">Pick Image to Challenge With</h5>
       </span>
     </p>
+
     <div class="challenge" ng-show="challenge" ng-controller="myImagesCtrl">
       <div ng-repeat="image in images" class='full-block'>
         <div class="block" ng-click="createChallenge(image._id)">

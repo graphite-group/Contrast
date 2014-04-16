@@ -6,6 +6,7 @@ var env = require('../../env.js');
 
 var dbAddress = env.namNeo || env.localNeo;
 var db = new neo4j(dbAddress);
+
 db = Promise.promisifyAll(db);
 
 var client = knox.createClient({
