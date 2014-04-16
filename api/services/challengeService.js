@@ -205,7 +205,6 @@ module.exports = {
     if(!Array.isArray(relationship)){
       relationship = [relationship];
     }
-
     // var a =
     //   db.readRelationshipsOfNodeAsync(userId, {types: ['created']})
     //   .filter(function(link){
@@ -241,7 +240,7 @@ module.exports = {
       var a =
         db.cypherQueryAsync(
           "START n=node("+userId+")\n" +
-          "MATCH (n)-[:CREATED]->(:image)-->(m:challenge)\n" +
+          "MATCH (n)-[:CREATED]->(:image)-[:"+relationship+"]->(m:challenge)\n" +
           "RETURN m;"
         )
         .then(function(results){
@@ -365,7 +364,7 @@ var endChallenge = module.exports.endChallenge;
 
 
 var findChallengesByUserHistory = module.exports.findChallengesByUserHistory;
-// findChallengesByUserHistory(4,[],function(err,results){
+// findChallengesByUserHistory(4,'IS_OPPONENT',function(err,results){
 //  console.log('results', results);
 // });
 

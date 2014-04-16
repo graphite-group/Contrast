@@ -1,14 +1,42 @@
-<div class="allchallenges">
-  <div ng-repeat='challenge in challenges' class="challenge">
+<div class="">
+
+  <div> 
+    <h2>Is Challenger</h2>
+  </div>
+
+  <div ng-repeat='challenger in challengers' class="challenge">
     <div class="half">
-      <div class="block">
-        <img src="{{challenge.challengerImage}}">
+      <div class="block challenger">
+        <p>Challenger Vote {{ challenger.challengerVote}}</p>
+        <img src="{{challenger.challengerImage}}">
       </div>
     </div>
     <div class="half">
-      <div class="block" 
-        <img src="{{challenge.opponentImage}}">
-      <div>
+      <div class="block opponent"> 
+        <p>Opponent Vote {{ challenger.opponentVote}}</p>
+        <img src="{{challenger.opponentImage}}">
+      </div>
     </div>
   </div>
+
+  <div> 
+    <h2>Is Opponent</h2>
+  </div>
+
+  <div ng-repeat='opponent in opponents' class="challenge">
+    <div class="half">
+      <div class="block challenger">
+        <p>Challenger Vote {{ opponent.challengerVote}}</p>
+        <img src="{{opponent.challengerImage}}">
+      </div>
+    </div>
+    <div class="half">
+      <div class="block opponent"> 
+        <p>Opponent Vote {{ opponent.opponentVote}}</p>
+        <img src="{{opponent.opponentImage}}">
+      </div>
+    </div>
+  </div>
+
+ 
 </div>
