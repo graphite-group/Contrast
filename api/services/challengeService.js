@@ -2,6 +2,7 @@
 var neo4j = require('node-neo4j');
 var Promise = require('bluebird');
 var env = require('../../env.js');
+var util = require('util');
 
 var dbAddress = env.namNeo || env.localNeo;
 var db = new neo4j(dbAddress);
@@ -193,6 +194,28 @@ module.exports = {
           }
         })
         .spread(function(a, b, node){
+
+          db.cypherQueryAsync(
+            "START challenge = node(" +node._id+")\n" +
+            "MATCH (loser:user)-[:CREATED]->(image)-[:LOSER]->(challenge)<-[:WINNER]-(:image)<-[:CREATED]-(winner:user)\n" +
+            "SET winner.points = winner.points+20\n" +
+            "SET loser.points = loser.points-20\n" +
+            "RETURN winner, challenge, loser;"
+          )
+          .then(function(results){return results.data[0];})
+          .spread(function(winner, challenge, loser){
+            challenge.winner = winner;
+            challenge.loser = loser;
+
+            sails.io.sockets.emit('challenge', {
+              data: challenge,
+              id: node._id,
+              verb: 'update',
+              createdAt: node.createdAt,
+              updatedAt: new Date()
+            });
+          });
+
           return node;
         });
 
@@ -208,48 +231,15 @@ module.exports = {
     if(!Array.isArray(relationship)){
       relationship = [relationship];
     }
-
-    // var a =
-    //   db.readRelationshipsOfNodeAsync(userId, {types: ['created']})
-    //   .filter(function(link){
-    //     console.log(link);
-    //     return link._start === userId;
-    //   })
-    //   .map(function(link){
-    //     return link._end;
-    //   })
-    //   .map(function(imageId){
-    //     return db.readRelationshipsOfNodeAsync(imageId, {types: relationship})
-    //       .filter(function(link){
-    //         return link._start === imageId;
-    //       })
-    //       .map(function(link){
-    //         return link._end;
-    //       });
-    //   })
-    //   .reduce(function(total, collection){
-    //     return total.concat(collection);
-    //   }, [])
-    //   .map(function(challengeId){
-    //     return Promise.all([
-    //         db.readNodeAsync(challengeId),
-    //         db.readLabelsAsync(challengeId)
-    //     ])
-    //     .spread(function(node, labels){
-    //       node.labels = labels;
-    //       return node;
-    //     });
-    //   });
-
-      var a =
-        db.cypherQueryAsync(
-          "START n=node("+userId+")\n" +
-          "MATCH (n)-[:CREATED]->(:image)-->(m:challenge)\n" +
-          "RETURN m;"
-        )
-        .then(function(results){
-          return results.data;
-        });
+    var a =
+      db.cypherQueryAsync(
+        "START n=node("+userId+")\n" +
+        "MATCH (n)-[:CREATED]->(:image)-->(m:challenge)\n" +
+        "RETURN m;"
+      )
+      .then(function(results){
+        return results.data;
+      });
 
 
     if(typeof callback === 'function'){
@@ -356,11 +346,18 @@ var acceptChallenge = module.exports.acceptChallenge;
 // });
 
 
-var endChallenge = module.exports.endChallenge;
-// endChallenge(34, function(err,result){
+// var endChallenge = module.exports.endChallenge;
+// endChallenge(26762, function(err,result){
 //   console.log(err);
 //   console.log(result);
 // });
+
+// setTimeout(function(){
+//   challengeService.endChallenge(26769, function(err,result){
+//     console.log('================ERROR================', err);
+//     console.log('================RESULT================',result);
+//   });  
+// }, 5000);
 // endChallenge(36, function(err,result){
 //   console.log(err);
 //   console.log(result);

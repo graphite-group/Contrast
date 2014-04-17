@@ -113,6 +113,17 @@ module.exports = {
 
   },
 
+  // endChallenge: function(req, res){
+  //   var challengeId = req.body.challengeId;
+    
+  //   challengeService.endChallenge(challengeId)
+  //   .then()
+  //   // .then(function(){
+  //   //   userService.addPoints(userId, 1);
+  //   // })
+  //   .catch(serveError(res));
+  // },
+
   /**
    * Overrides for the settings in `config/controllers.js`
    * (specific to ChallengeController)
