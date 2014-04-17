@@ -10,6 +10,17 @@
 
 module.exports.bootstrap = function (cb) {
 
+ // Queue.destroy().done(function(err,res){});
+
+  Queue.find()
+  .done(function(err, tasks){
+    //console.log("tasks", tasks);
+    tasks.forEach(function(task){
+      console.log("scheduling tasks after server reboot");
+      scheduler.addJob(task.challengeId, task.endTime);
+    });
+  });
+
   // It's very important to trigger this callack method when you are finished 
   // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)
   cb();

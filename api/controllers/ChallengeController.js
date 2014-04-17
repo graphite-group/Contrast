@@ -76,7 +76,7 @@ module.exports = {
   },
 
   myChallenges: function (req, res) {
-    var userId = req.session.user.id;
+    var userId = req.session.user.id || req.session.user._id;
     var relationship = req.body.relationship;
 
     challengeService.findChallengesByUserHistory(userId, relationship)
@@ -90,7 +90,7 @@ module.exports = {
   serveChallenge:function(req,res){
     //look at cookies to serve next correct challenge
 
-    var userId = req.session.user.id;
+    var userId = req.session.user.id || req.session.user._id;
 
     challengeService.findChallengesToVoteOn(parseInt(userId))
     .then(serveData(res))
@@ -98,7 +98,7 @@ module.exports = {
   },
 
   acceptReject:function(req,res){
-    var userId = req.session.user.id;
+    var userId = req.session.user.id || req.session.user._id;
     console.log(userId);
 
     challengeService.findChallengesToBeAcceptedRejected(parseInt(userId))
@@ -108,7 +108,7 @@ module.exports = {
 
   castVote:function(req,res){
 
-    var userId = req.session.user.id;
+    var userId = req.session.user.id || req.session.user._id;
     var challengeId = req.body.challengeId;
     var imageId = req.body.imageId;
     if(!challengeId || !imageId){

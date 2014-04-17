@@ -221,7 +221,8 @@ module.exports = {
               createdAt: node.createdAt,
               updatedAt: new Date()
             });
-          });
+          })
+          .catch(console.log.bind(console));
 
           return node;
         });
