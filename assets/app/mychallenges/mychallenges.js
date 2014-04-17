@@ -2,6 +2,33 @@ module.exports = function(app, socket){
   app
     .controller('mychallengesCtrl',['$scope', function($scope){
 
+      $scope.listener = function(event){
+        if(event.verb === 'update'){
+          for(var i = 0; i < $scope.images.length; i++){
+            if($scope.challenges[i].id === event.id){
+              for(var key in event.data){
+                $scope.challenges[i][key] = event.data[key];
+              }
+              $scope.$apply();
+              break;
+            }
+          }
+        }
+      };
+
+      $scope.removeListeners = function(){
+        socket.off('challenge', $scope.listener);
+      };
+
+      $rootScope.$on('$stateChangeStart', function(a,b){
+        console.log(b.name);
+        if(b.name.indexOf('homescreen') === -1){
+          $scope.removeListeners();
+          console.log('done');
+        }
+      });
+      socket.on('challenge', $scope.listener);
+
       socket.getAsync("/mychallenges")
       .then(function(response){
         if(!!response.data){
@@ -15,8 +42,6 @@ module.exports = function(app, socket){
             };
           });
           $scope.$apply();
-        }else{
-
         }
       })
       .catch(console.log.bind(console));

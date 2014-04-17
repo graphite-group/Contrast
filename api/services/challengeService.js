@@ -202,55 +202,29 @@ module.exports = {
       return a;
     }
   },
-  
+
   //relationship should be either "IS_CHALLENGER" or "IS_OPPONENT", or neither
   findChallengesByUserHistory: function(userId, relationship, callback){
     if(!Array.isArray(relationship)){
       relationship = [relationship];
     }
 
-    // var a =
-    //   db.readRelationshipsOfNodeAsync(userId, {types: ['created']})
-    //   .filter(function(link){
-    //     console.log(link);
-    //     return link._start === userId;
-    //   })
-    //   .map(function(link){
-    //     return link._end;
-    //   })
-    //   .map(function(imageId){
-    //     return db.readRelationshipsOfNodeAsync(imageId, {types: relationship})
-    //       .filter(function(link){
-    //         return link._start === imageId;
-    //       })
-    //       .map(function(link){
-    //         return link._end;
-    //       });
-    //   })
-    //   .reduce(function(total, collection){
-    //     return total.concat(collection);
-    //   }, [])
-    //   .map(function(challengeId){
-    //     return Promise.all([
-    //         db.readNodeAsync(challengeId),
-    //         db.readLabelsAsync(challengeId)
-    //     ])
-    //     .spread(function(node, labels){
-    //       node.labels = labels;
-    //       return node;
-    //     });
-    //   });
-
       var a =
         db.cypherQueryAsync(
           "START n=node("+userId+")\n" +
           "MATCH (n)-[:CREATED]->(:image)-->(m:challenge)\n" +
-          "RETURN m;"
+          "WITH m \n" +
+          "MATCH (o:user)-[:CREATED]->(:image)-[:IS_OPPONENT]->(m)<-[:IS_CHALLENGER]-(:image)<-[:CREATED]-(c:user) \n" +
+          "RETURN o,m,c;"
         )
         .then(function(results){
           return results.data;
+        })
+        .map(function(result){
+          result[1].opponent = result[0];
+          result[1].challenger = result[2];
+          return result[1];
         });
-
 
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);
@@ -273,7 +247,6 @@ module.exports = {
         console.log("results",results);
         return results.data;
       });
-      // .map(function(result))
 
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);
@@ -287,7 +260,7 @@ module.exports = {
       db.cypherQueryAsync(
         "START u=node("+userId+")\n" +
         "MATCH (n:accepted)\n" +
-        "WHERE NOT((n)-[]-(u))\n"+
+        "WHERE NOT((n)-[:VOTED_ON]-(u))\n"+
         "RETURN n;"
       )
       .then(function(results){
@@ -327,16 +300,7 @@ module.exports = {
 
 };
 
-//need to make nodes in browser before using these to test
-/* data to get started:
-create (n:user {username:"stash"});
-create (n:user {username:"norm"});
-create (n:user {username:"harry"});
-create (n:image {url:"xxxxx"});
-create (n:image {url:"adsf"});
-start n=node(13), m=node(14) create (n)-[r:created]->(m) return n;
-start n=node(12), m=node(15) create (n)-[r:created]->(m) return n;
-*/
+
 
 var createChallenge = module.exports.createChallenge;
 // createChallenge(124,47,{}).then(function(node){
@@ -367,7 +331,7 @@ var endChallenge = module.exports.endChallenge;
 // });
 
 
-var findChallengesByUserHistory = module.exports.findChallengesByUserHistory;
+//module.exports.findChallengesByUserHistory(26745).then(console.log.bind(console)).then(console.error.bind(console, "error: "))
 // findChallengesByUserHistory(4,[],function(err,results){
 //  console.log('results', results);
 // });

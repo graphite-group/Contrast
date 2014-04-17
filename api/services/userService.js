@@ -23,6 +23,7 @@ user node = {
 module.exports = {
   createUser: function(userData, callback){
     userData.joinDate = new Date();
+    userData.createdAt = new Date();
     userData.points = 100;
     userData.wins = 0;
     userData.losses = 0;
