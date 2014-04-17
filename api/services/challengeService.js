@@ -2,6 +2,7 @@
 var neo4j = require('node-neo4j');
 var Promise = require('bluebird');
 var env = require('../../env.js');
+var scheduler = require('./scheduler.js');
 
 var dbAddress = env.namNeo || env.localNeo;
 var db = new neo4j(dbAddress);
@@ -13,6 +14,8 @@ module.exports = {
 
   //RELATIONSHIPS: 'IS_CHALLENGER', 'IS_OPPONENT', 'VOTED_ON'
   //LABELS: 'requested', 'accepted', 'ended'
+
+
 
   //challengerImageId: num, challengeeImageId: num, challengeStats: objects
   createChallenge: function(challengerImageId, opponentImageId, challengeStats, callback){
@@ -82,6 +85,9 @@ module.exports = {
 
   //challengeId: num, challengeStats: object{challengerVote, opponentVote, createdAt}, acceptOrEnd: string
   acceptChallenge: function(userId, challengeId, callback){
+
+    // challengeStats.endAt.setMinutes(challengeStats.createdAt.getMinutes()+5);
+
     var a =
       db.readLabelsAsync(challengeId)
         .then(function(labels){
@@ -105,10 +111,11 @@ module.exports = {
           }
           return db.replaceLabelsFromNodeAsync(challengeId, ['challenge', 'accepted']);
         })
-        .then(function(node){
+        .then(function(flag){
           var challengeStats = {};
           challengeStats.startTime = new Date();
-          challengeStats.endTime = new Date(Date.now().valueOf() + 3600000);
+          challengeStats.endTime = new Date(Date.now().valueOf() + 600000);
+          scheduler.addJob(challengeId, challengeStats.endTime);
           return db.updateNodeByIdAsync(challengeId, challengeStats);
         });
 
@@ -158,7 +165,7 @@ module.exports = {
   },
 
   endChallenge: function(challengeId, callback){
-    var winner;
+    console.log("in end challenge", challengeId);
 
     var a =
       db.readLabelsAsync(challengeId)
@@ -208,37 +215,6 @@ module.exports = {
     if(!Array.isArray(relationship)){
       relationship = [relationship];
     }
-    // var a =
-    //   db.readRelationshipsOfNodeAsync(userId, {types: ['created']})
-    //   .filter(function(link){
-    //     console.log(link);
-    //     return link._start === userId;
-    //   })
-    //   .map(function(link){
-    //     return link._end;
-    //   })
-    //   .map(function(imageId){
-    //     return db.readRelationshipsOfNodeAsync(imageId, {types: relationship})
-    //       .filter(function(link){
-    //         return link._start === imageId;
-    //       })
-    //       .map(function(link){
-    //         return link._end;
-    //       });
-    //   })
-    //   .reduce(function(total, collection){
-    //     return total.concat(collection);
-    //   }, [])
-    //   .map(function(challengeId){
-    //     return Promise.all([
-    //         db.readNodeAsync(challengeId),
-    //         db.readLabelsAsync(challengeId)
-    //     ])
-    //     .spread(function(node, labels){
-    //       node.labels = labels;
-    //       return node;
-    //     });
-    //   });
 
       var a =
         db.cypherQueryAsync(
@@ -338,7 +314,14 @@ start n=node(12), m=node(15) create (n)-[r:created]->(m) return n;
 */
 
 var createChallenge = module.exports.createChallenge;
-// createChallenge(124,47,{}).then(function(node){
+// createChallenge(47,24,{}).then(function(node){
+//   console.log(node);
+// });
+
+// createChallenge(49,23,{}).then(function(node){
+//   console.log(node);
+// });
+// createChallenge(48,24,{}).then(function(node){
 //   console.log(node);
 // });
 
@@ -349,7 +332,7 @@ var createChallenge = module.exports.createChallenge;
 
 //signature: acceptChallenge(userId, challengeId, callback)
 var acceptChallenge = module.exports.acceptChallenge;
-// acceptChallenge(4,36, function(err,result){
+// acceptChallenge(4,6683, function(err,result){
 //   console.log(err);
 //   console.log(result);
 // });
@@ -397,6 +380,9 @@ DELETE n,r
 
 //use to delete node and it's relationships
 START n = node(32) MATCH n-[r]-() DELETE n, r
+
+//use to delete node that doesn't have relationships
+START n = node( 1920 )  DELETE n
 
 
 //find all challenges won by user
