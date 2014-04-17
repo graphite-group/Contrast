@@ -62,6 +62,16 @@ module.exports = {
     }
 
     imageService.createImageDetails(imageDetails, userId)
+      .then(function(data){
+        sails.io.sockets.emit('image', {
+          data: data,
+          id: data._id,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          verb: 'create'
+        });
+        return data;
+      })
       .then(serveData(res))
       .then(function(){
         userService.addPoints(userId, 50);

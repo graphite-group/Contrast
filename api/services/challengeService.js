@@ -3,6 +3,7 @@ var neo4j = require('node-neo4j');
 var Promise = require('bluebird');
 var env = require('../../env.js');
 var scheduler = require('./scheduler.js');
+var util = require('util');
 
 var dbAddress = env.namNeo || env.localNeo;
 var db = new neo4j(dbAddress);
@@ -200,6 +201,28 @@ module.exports = {
           }
         })
         .spread(function(a, b, node){
+
+          db.cypherQueryAsync(
+            "START challenge = node(" +node._id+")\n" +
+            "MATCH (loser:user)-[:CREATED]->(image)-[:LOSER]->(challenge)<-[:WINNER]-(:image)<-[:CREATED]-(winner:user)\n" +
+            "SET winner.points = winner.points+20\n" +
+            "SET loser.points = loser.points-20\n" +
+            "RETURN winner, challenge, loser;"
+          )
+          .then(function(results){return results.data[0];})
+          .spread(function(winner, challenge, loser){
+            challenge.winner = winner;
+            challenge.loser = loser;
+
+            sails.io.sockets.emit('challenge', {
+              data: challenge,
+              id: node._id,
+              verb: 'update',
+              createdAt: node.createdAt,
+              updatedAt: new Date()
+            });
+          });
+
           return node;
         });
 
@@ -209,23 +232,31 @@ module.exports = {
       return a;
     }
   },
-  
+
   //relationship should be either "IS_CHALLENGER" or "IS_OPPONENT", or neither
   findChallengesByUserHistory: function(userId, relationship, callback){
-    if(!Array.isArray(relationship)){
-      relationship = [relationship];
+    if(Array.isArray(relationship)){
+      relationship = relationship.map(function(str){return ':' + str}).join('');
+    } else {
+      relationship = ':' + relationship
     }
 
       var a =
         db.cypherQueryAsync(
           "START n=node("+userId+")\n" +
-          "MATCH (n)-[:CREATED]->(:image)-[:"+relationship+"]->(m:challenge)\n" +
-          "RETURN m;"
+          "MATCH (n)-[:CREATED]->(:image)-["+relationship+"]->(m:challenge)\n" +
+          "WITH m \n" +
+          "MATCH (o:user)-[:CREATED]->(:image)-[:IS_OPPONENT]->(m)<-[:IS_CHALLENGER]-(:image)<-[:CREATED]-(c:user) \n" +
+          "RETURN o,m,c;"
         )
         .then(function(results){
           return results.data;
+        })
+        .map(function(result){
+          result[1].opponent = result[0];
+          result[1].challenger = result[2];
+          return result[1];
         });
-
 
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);
@@ -245,10 +276,8 @@ module.exports = {
         "RETURN m;"
       )
       .then(function(results){
-        console.log("results",results);
         return results.data;
       });
-      // .map(function(result))
 
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);
@@ -262,7 +291,7 @@ module.exports = {
       db.cypherQueryAsync(
         "START u=node("+userId+")\n" +
         "MATCH (n:accepted)\n" +
-        "WHERE NOT((n)-[]-(u))\n"+
+        "WHERE NOT((n)-[:VOTED_ON]-(u))\n"+
         "RETURN n;"
       )
       .then(function(results){
@@ -302,16 +331,7 @@ module.exports = {
 
 };
 
-//need to make nodes in browser before using these to test
-/* data to get started:
-create (n:user {username:"stash"});
-create (n:user {username:"norm"});
-create (n:user {username:"harry"});
-create (n:image {url:"xxxxx"});
-create (n:image {url:"adsf"});
-start n=node(13), m=node(14) create (n)-[r:created]->(m) return n;
-start n=node(12), m=node(15) create (n)-[r:created]->(m) return n;
-*/
+
 
 var createChallenge = module.exports.createChallenge;
 // createChallenge(47,24,{}).then(function(node){
@@ -338,19 +358,23 @@ var acceptChallenge = module.exports.acceptChallenge;
 // });
 
 
-var endChallenge = module.exports.endChallenge;
-// endChallenge(34, function(err,result){
+// var endChallenge = module.exports.endChallenge;
+// endChallenge(26762, function(err,result){
 //   console.log(err);
 //   console.log(result);
 // });
+
+// setTimeout(function(){
+//   challengeService.endChallenge(26769, function(err,result){
+//     console.log('================ERROR================', err);
+//     console.log('================RESULT================',result);
+//   });  
+// }, 5000);
 // endChallenge(36, function(err,result){
 //   console.log(err);
 //   console.log(result);
 // });
 
-
-var findChallengesByUserHistory = module.exports.findChallengesByUserHistory;
-// findChallengesByUserHistory(4,'IS_OPPONENT',function(err,results){
 //  console.log('results', results);
 // });
 

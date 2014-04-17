@@ -34,6 +34,16 @@ module.exports = {
     }
 
     challengeService.createChallenge(challengerImageId, opponentImageId, {})
+    // .then(function(challenge){
+    //   sails.io.sockets.emit('challenge', {
+    //     data: challenge,
+    //     verb: 'create',
+    //     id: challenge._is,
+    //     createdAt: challenge.createdAt,
+    //     updatedAt: new Date()
+    //   })
+    //   return challenge;
+    // })
     .then(serveData(res))
     .catch(serveError(res));
   },
@@ -113,6 +123,17 @@ module.exports = {
     .catch(serveError(res));
 
   },
+
+  // endChallenge: function(req, res){
+  //   var challengeId = req.body.challengeId;
+    
+  //   challengeService.endChallenge(challengeId)
+  //   .then()
+  //   // .then(function(){
+  //   //   userService.addPoints(userId, 1);
+  //   // })
+  //   .catch(serveError(res));
+  // },
 
   /**
    * Overrides for the settings in `config/controllers.js`

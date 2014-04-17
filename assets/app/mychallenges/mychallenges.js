@@ -1,8 +1,36 @@
 module.exports = function(app, socket){
   app
-    .controller('mychallengesCtrl',['$scope', function($scope){
+    .controller('mychallengesCtrl',['$scope', '$rootScope', function($scope, $rootScope){
+
+      $scope.listener = function(event){
+        if(event.verb === 'update'){
+          for(var i = 0; i < $scope.images.length; i++){
+            if($scope.challenges[i].id === event.id){
+              for(var key in event.data){
+                $scope.challenges[i][key] = event.data[key];
+              }
+              $scope.$apply();
+              break;
+            }
+          }
+        }
+      };
+
+      $scope.removeListeners = function(){
+        socket.off('challenge', $scope.listener);
+      };
+
+      $rootScope.$on('$stateChangeStart', function(a,b){
+        console.log(b.name);
+        if(b.name.indexOf('mychallenges') === -1){
+          $scope.removeListeners();
+          console.log('done');
+        }
+      });
+      socket.on('challenge', $scope.listener);
 
       socket.postAsync("/mychallenges",{relationship: "IS_CHALLENGER"})
+
       .then(function(response){
         if(!!response.data){
           $scope.challengers = response.data.map(function(data){
@@ -16,8 +44,6 @@ module.exports = function(app, socket){
           });
           console.log("challenger",$scope.challengers);
           $scope.$apply();
-        }else{
-
         }
       })
       .catch(console.log.bind(console));

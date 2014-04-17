@@ -2,7 +2,38 @@ module.exports = function(app, socket){
   'use strict';
 
   app
-  .controller('homeCtrl', ['$scope', 'MainService', '$state', function($scope, MainService, $state){
+  .controller('homeCtrl', ['$scope', 'MainService', '$state', '$rootScope', function($scope, MainService, $state, $rootScope){
+
+
+    $scope.listener = function(event){
+      if(event.verb === 'create'){
+        $scope.images.push(event.data);
+      }
+      if(event.verb === 'update'){
+        for(var i = 0; i < $scope.images.length; i++){
+          if($scope.images[i]._id === event.id){
+            for(var key in event.data){
+              $scope.images[i][key] = event.data[key];
+            }
+            $scope.$apply();
+            break;
+          }
+        }
+      }
+    };
+
+    $scope.removeListeners = function(){
+      socket.off('image', $scope.listener);
+    };
+
+    $rootScope.$on('$stateChangeStart', function(a,b){
+      console.log(b.name);
+      if(b.name.indexOf('homescreen') === -1){
+        $scope.removeListeners();
+        console.log('done');
+      }
+    });
+    socket.on('image', $scope.listener);
 
     $scope.init = function(){
       MainService.getImages()
@@ -19,7 +50,32 @@ module.exports = function(app, socket){
     };
     $scope.init();
   }])
-  .controller('imageDetailsCtrl', ['$scope', 'MainService', '$state', '$stateParams', function($scope, MainService, $state, $stateParams){
+  .controller('imageDetailsCtrl', ['$scope', 'MainService', '$state', '$stateParams', '$rootScope', function($scope, MainService, $state, $stateParams, $rootScope){
+
+    $scope.listener = function(event){
+      if(event.verb === 'update'){
+        if($stateParams.imageId === event.id){
+          for(var key in event.data){
+            $scope[key] = event.data[key];
+          }
+          $scope.$apply();
+        }
+      }
+    };
+
+    $scope.removeListeners = function(){
+      socket.off('image', $scope.listener);
+    };
+
+    $rootScope.$on('$stateChangeStart', function(a,b){
+      console.log(b.name);
+      if(b.name.indexOf('imageDetails') === -1){
+        $scope.removeListeners();
+        console.log('done');
+      }
+    });
+
+    socket.on('image', $scope.listener);
 
     $scope.isLoggedIn = false;
     $scope.imageId = parseInt($stateParams.imageId);

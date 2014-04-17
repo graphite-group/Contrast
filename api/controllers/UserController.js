@@ -51,9 +51,19 @@ module.exports = {
     var userId = updates.id;
     delete updates.id;
     userService.updateUser(userId, updates)
+    .then(function(data){
+      sails.io.sockets.emit('user', {
+        data: data,
+        verb: 'update',
+        createdAt: data.createdAt,
+        updatedAt: new Date(),
+        id: data._id
+      });
+      return data;
+    })
     .then(serveData(res))
     .catch(serveError(res));
-    
+
   },
 
   /**

@@ -29,9 +29,36 @@ module.exports = function(app, socket){
         controller: 'imageDetailsCtrl'
       });
   }])
-  .controller('profileCtrl', ['$scope', '$stateParams', '$state', 'MainService',
-    function($scope, $stateParams, $state, MainService){
-    $scope.Hello = 'World';
+  .controller('profileCtrl', ['$scope', '$stateParams', '$state', 'MainService', '$rootScope', function($scope, $stateParams, $state, MainService, $rootScope){
+
+    $scope.listener = function(event){
+      if(event.verb === 'create'){
+        $scope.images.push(event.data);
+      }
+      console.log(event);
+      if(event.verb === 'update'){
+        if(parseInt($scope.profileId) === parseInt(event.id)){
+          for(var key in event.data){
+            $scope.user[key] = event.data[key];
+          }
+          $scope.$apply();
+        }
+      }
+    };
+
+    $scope.removeListeners = function(){
+      socket.off('user', $scope.listener);
+    };
+
+    $rootScope.$on('$stateChangeStart', function(a,b){
+      console.log(b.name);
+      if(b.name.indexOf('profile') === -1){
+        $scope.removeListeners();
+        console.log('done');
+      }
+    });
+    socket.on('user', $scope.listener);
+
     $scope.profileId = $stateParams.id;
     $scope.profileOwner = false;
     $scope.showIt = function(evt, id){
@@ -64,7 +91,7 @@ module.exports = function(app, socket){
         console.log('error retrieving images');
       });
     };
-    
+
     if($stateParams.id){
       $scope.getUser($stateParams.id).then(function(isUser){
         if(isUser){
