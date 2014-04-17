@@ -54,6 +54,26 @@ module.exports = {
         })
         .spread(addThreeWayRelationship)
         .spread(function(challengerRelationship, opponentRelationship, node){
+
+          db.cypherQueryAsync(
+            "START challenge = node(" +node._id+")\n" +
+            "MATCH (challenger:user)-[:CREATED]->()-[:IS_CHALLENGER]->(ch)<-[:IS_OPPONENT]-()<-[:CREATED]-(opponent:user)\n" +
+            "RETURN challenger, challenge, opponent;"
+          )
+          .then(function(results){return results.data[0];})
+          .spread(function(challenger, challenge, opponent){
+            challenge.challenger = challenger;
+            challenge.opponent = opponent;
+
+            sails.io.sockets.emit('challenge', {
+              data: challenge,
+              id: node._id,
+              verb: 'update',
+              createdAt: node.createdAt,
+              updatedAt: new Date()
+            });
+          });
+          // console.log('=======challengerRelationship=======', challengerRelationship);
           return node;
         });
 
@@ -334,9 +354,15 @@ module.exports = {
 
 
 var createChallenge = module.exports.createChallenge;
-// createChallenge(47,24,{}).then(function(node){
+// createChallenge(26763,26766,{}).then(function(node){
 //   console.log(node);
 // });
+
+setTimeout(function(){
+  createChallenge(26763,26766,{}).then(function(node){
+    console.log('================RESULT================',node);
+  });  
+}, 5000);
 
 // createChallenge(49,23,{}).then(function(node){
 //   console.log(node);
