@@ -35,6 +35,7 @@ module.exports = function(app, socket){
       };
 
       this.getImagesForUser = function(id){
+        console.log('the route is:', '/user/' + id + '/images');
         return socket.getAsync('/user/' + id + '/images')
           .then(function(res){
             if(res.success === false){

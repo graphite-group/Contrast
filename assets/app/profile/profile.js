@@ -88,14 +88,14 @@ module.exports = function(app, socket){
         $scope.images = images;
         $scope.$apply();
       }, function(err){
-        console.log('error retrieving images');
+        console.log('error retrieving images', err);
       });
     };
 
     if($stateParams.id){
       $scope.getUser($stateParams.id).then(function(isUser){
         if(isUser){
-          $scope.getImages();
+          $scope.getImages($stateParams.id);
         } else {
           $state.go('404');
         }

@@ -7,7 +7,7 @@ module.exports = function(app, socket){
 
     $scope.listener = function(event){
       if(event.verb === 'create'){
-        $scope.images.push(event.data);
+        $scope.images.unshift(event.data);
         $scope.$apply();
       }
       if(event.verb === 'update'){
