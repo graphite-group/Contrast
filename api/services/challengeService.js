@@ -205,14 +205,15 @@ module.exports = {
 
   //relationship should be either "IS_CHALLENGER" or "IS_OPPONENT", or neither
   findChallengesByUserHistory: function(userId, relationship, callback){
-    if(!Array.isArray(relationship)){
-      relationship = [relationship];
+    if(Array.isArray(relationship)){
+      relationship = relationship.map(function(str){return ':' + str}).join('');
+    } else {
+      relationship = ':' + relationship
     }
-
       var a =
         db.cypherQueryAsync(
           "START n=node("+userId+")\n" +
-          "MATCH (n)-[:CREATED]->(:image)-->(m:challenge)\n" +
+          "MATCH (n)-[:CREATED]->(:image)-["+relationship+"]->(m:challenge)\n" +
           "WITH m \n" +
           "MATCH (o:user)-[:CREATED]->(:image)-[:IS_OPPONENT]->(m)<-[:IS_CHALLENGER]-(:image)<-[:CREATED]-(c:user) \n" +
           "RETURN o,m,c;"
@@ -330,9 +331,6 @@ var endChallenge = module.exports.endChallenge;
 //   console.log(result);
 // });
 
-
-//module.exports.findChallengesByUserHistory(26745).then(console.log.bind(console)).then(console.error.bind(console, "error: "))
-// findChallengesByUserHistory(4,[],function(err,results){
 //  console.log('results', results);
 // });
 

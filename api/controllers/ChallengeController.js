@@ -77,8 +77,9 @@ module.exports = {
 
   myChallenges: function (req, res) {
     var userId = req.session.user.id;
+    var relationship = req.body.relationship;
 
-    challengeService.findChallengesByUserHistory(userId, [])
+    challengeService.findChallengesByUserHistory(userId, relationship)
     .then(serveData(res))
     .catch(serveError(res));
   },
