@@ -69,9 +69,13 @@ module.exports = {
   },
 
   logout:function(req,res){
+    var userId = req.session.user.id || req.session.user._id;
     req.session.user = null;
     req.session.authenticated = false;
     if(!!req.wantsJSON){
+      req.socket.broadcast.emit('/user/' + userId, {
+        updatedAt: new Date()
+      });
       res.send({
         success: true
       });
