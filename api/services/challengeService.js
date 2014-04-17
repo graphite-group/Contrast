@@ -225,22 +225,30 @@ module.exports = {
       return a;
     }
   },
-  
+
   //relationship should be either "IS_CHALLENGER" or "IS_OPPONENT", or neither
   findChallengesByUserHistory: function(userId, relationship, callback){
-    if(!Array.isArray(relationship)){
-      relationship = [relationship];
+    if(Array.isArray(relationship)){
+      relationship = relationship.map(function(str){return ':' + str}).join('');
+    } else {
+      relationship = ':' + relationship
     }
-    var a =
-      db.cypherQueryAsync(
-        "START n=node("+userId+")\n" +
-        "MATCH (n)-[:CREATED]->(:image)-->(m:challenge)\n" +
-        "RETURN m;"
-      )
-      .then(function(results){
-        return results.data;
-      });
-
+      var a =
+        db.cypherQueryAsync(
+          "START n=node("+userId+")\n" +
+          "MATCH (n)-[:CREATED]->(:image)-["+relationship+"]->(m:challenge)\n" +
+          "WITH m \n" +
+          "MATCH (o:user)-[:CREATED]->(:image)-[:IS_OPPONENT]->(m)<-[:IS_CHALLENGER]-(:image)<-[:CREATED]-(c:user) \n" +
+          "RETURN o,m,c;"
+        )
+        .then(function(results){
+          return results.data;
+        })
+        .map(function(result){
+          result[1].opponent = result[0];
+          result[1].challenger = result[2];
+          return result[1];
+        });
 
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);
@@ -263,7 +271,6 @@ module.exports = {
         console.log("results",results);
         return results.data;
       });
-      // .map(function(result))
 
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);
@@ -277,7 +284,7 @@ module.exports = {
       db.cypherQueryAsync(
         "START u=node("+userId+")\n" +
         "MATCH (n:accepted)\n" +
-        "WHERE NOT((n)-[]-(u))\n"+
+        "WHERE NOT((n)-[:VOTED_ON]-(u))\n"+
         "RETURN n;"
       )
       .then(function(results){
@@ -317,16 +324,7 @@ module.exports = {
 
 };
 
-//need to make nodes in browser before using these to test
-/* data to get started:
-create (n:user {username:"stash"});
-create (n:user {username:"norm"});
-create (n:user {username:"harry"});
-create (n:image {url:"xxxxx"});
-create (n:image {url:"adsf"});
-start n=node(13), m=node(14) create (n)-[r:created]->(m) return n;
-start n=node(12), m=node(15) create (n)-[r:created]->(m) return n;
-*/
+
 
 var createChallenge = module.exports.createChallenge;
 // createChallenge(124,47,{}).then(function(node){
@@ -363,9 +361,6 @@ var acceptChallenge = module.exports.acceptChallenge;
 //   console.log(result);
 // });
 
-
-var findChallengesByUserHistory = module.exports.findChallengesByUserHistory;
-// findChallengesByUserHistory(4,[],function(err,results){
 //  console.log('results', results);
 // });
 

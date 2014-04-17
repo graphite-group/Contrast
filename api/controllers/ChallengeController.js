@@ -34,6 +34,16 @@ module.exports = {
     }
 
     challengeService.createChallenge(challengerImageId, opponentImageId, {})
+    // .then(function(challenge){
+    //   sails.io.sockets.emit('challenge', {
+    //     data: challenge,
+    //     verb: 'create',
+    //     id: challenge._is,
+    //     createdAt: challenge.createdAt,
+    //     updatedAt: new Date()
+    //   })
+    //   return challenge;
+    // })
     .then(serveData(res))
     .catch(serveError(res));
   },
@@ -67,8 +77,9 @@ module.exports = {
 
   myChallenges: function (req, res) {
     var userId = req.session.user.id;
+    var relationship = req.body.relationship;
 
-    challengeService.findChallengesByUserHistory(userId, [])
+    challengeService.findChallengesByUserHistory(userId, relationship)
     .then(serveData(res))
     .catch(serveError(res));
   },

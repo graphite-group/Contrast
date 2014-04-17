@@ -1,26 +1,72 @@
 module.exports = function(app, socket){
   app
-    .controller('mychallengesCtrl',['$scope', function($scope){
+    .controller('mychallengesCtrl',['$scope', '$rootScope', function($scope, $rootScope){
 
-      socket.getAsync("/mychallenges")
+      $scope.listener = function(event){
+        if(event.verb === 'update'){
+          for(var i = 0; i < $scope.images.length; i++){
+            if($scope.challenges[i].id === event.id){
+              for(var key in event.data){
+                $scope.challenges[i][key] = event.data[key];
+              }
+              $scope.$apply();
+              break;
+            }
+          }
+        }
+      };
+
+      $scope.removeListeners = function(){
+        socket.off('challenge', $scope.listener);
+      };
+
+      $rootScope.$on('$stateChangeStart', function(a,b){
+        console.log(b.name);
+        if(b.name.indexOf('mychallenges') === -1){
+          $scope.removeListeners();
+          console.log('done');
+        }
+      });
+      socket.on('challenge', $scope.listener);
+
+      socket.postAsync("/mychallenges",{relationship: "IS_CHALLENGER"})
+
       .then(function(response){
         if(!!response.data){
-          $scope.challenges = response.data.map(function(data){
+          $scope.challengers = response.data.map(function(data){
             return {
               id : data._id,
               challengerImage : data.challengerImage,
-              challengerId : data.challengerImageId,
+              challengerVote : data.challengerVote,
               opponentImage : data.opponentImage,
-              opponentId : data.opponentImageId
+              opponentVote : data.opponentVote
             };
           });
+          console.log("challenger",$scope.challengers);
+          $scope.$apply();
+        }
+      })
+      .catch(console.log.bind(console));
+
+      socket.postAsync("/mychallenges",{relationship: "IS_OPPONENT"})
+      .then(function(response){
+        if(!!response.data){
+          $scope.opponents = response.data.map(function(data){
+            return {
+              id : data._id,
+              challengerImage : data.challengerImage,
+              challengerVote : data.challengerVote,
+              opponentImage : data.opponentImage,
+              opponentVote : data.opponentVote
+            };
+          });
+          console.log("opponents",$scope.opponents);
           $scope.$apply();
         }else{
 
         }
       })
       .catch(console.log.bind(console));
-
 
     }])
     .config(['$stateProvider', function($stateProvider){

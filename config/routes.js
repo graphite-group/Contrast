@@ -118,7 +118,7 @@ module.exports.routes = {
     action: 'serveChallenge'
   },
 
-  'GET /myChallenges' : {
+  'POST /myChallenges' : {
     controller: 'ChallengeController',
     action: 'myChallenges'
   },
