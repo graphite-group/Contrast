@@ -8,6 +8,7 @@ module.exports = function(app, socket){
     $scope.listener = function(event){
       if(event.verb === 'create'){
         $scope.images.push(event.data);
+        $scope.$apply();
       }
       if(event.verb === 'update'){
         for(var i = 0; i < $scope.images.length; i++){
