@@ -27,6 +27,8 @@ module.exports = {
           Queue.destroy({
             challengeId: challengeId,
             endTime : endTime
+          }).done(function(err,res){
+            console.log("completed task?:",err,res);
           });
         }
       });

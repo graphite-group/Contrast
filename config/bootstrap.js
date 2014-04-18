@@ -10,7 +10,8 @@
 
 module.exports.bootstrap = function (cb) {
 
- // Queue.destroy().done(function(err,res){});
+
+  //****CAREFUL WHEN UNCOMMENTING THIS: Queue.destroy().done(function(err,res){});
 
   Queue.find()
   .done(function(err, tasks){
