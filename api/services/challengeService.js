@@ -15,12 +15,13 @@ var emitChallengeUpdate = function(challengeId){
   db.cypherQueryAsync(
     "START challenge = node(" +challengeId+")\n" +
     "MATCH (challenger:user)-[:CREATED]->()-[:IS_CHALLENGER]->(ch)<-[:IS_OPPONENT]-()<-[:CREATED]-(opponent:user)\n" +
-    "RETURN challenger, challenge, opponent;"
+    "RETURN challenger, challenge, opponent, labels(challenge);"
   )
   .then(function(results){return results.data[0];})
-  .spread(function(challenger, challenge, opponent){
+  .spread(function(challenger, challenge, opponent, labels){
     challenge.challenger = challenger;
     challenge.opponent = opponent;
+    challenge.labels = labels;
 
     sails.io.sockets.emit('challenge', {
       data: challenge,
@@ -81,12 +82,13 @@ module.exports = {
           db.cypherQueryAsync(
             "START challenge = node(" +node._id+")\n" +
             "MATCH (challenger:user)-[:CREATED]->()-[:IS_CHALLENGER]->(ch)<-[:IS_OPPONENT]-()<-[:CREATED]-(opponent:user)\n" +
-            "RETURN challenger, challenge, opponent;"
+            "RETURN challenger, challenge, opponent, labels(challenge);"
           )
           .then(function(results){return results.data[0];})
-          .spread(function(challenger, challenge, opponent){
+          .spread(function(challenger, challenge, opponent, labels){
             challenge.challenger = challenger;
             challenge.opponent = opponent;
+            challenge.labels = labels;
 
             sails.io.sockets.emit('challenge', {
               data: challenge,
@@ -259,12 +261,13 @@ module.exports = {
             "MATCH (loser:user)-[:CREATED]->(image)-[:LOSER]->(challenge)<-[:WINNER]-(:image)<-[:CREATED]-(winner:user)\n" +
             "SET winner.points = winner.points+20\n" +
             "SET loser.points = loser.points-20\n" +
-            "RETURN winner, challenge, loser;"
+            "RETURN winner, challenge, loser, labels(challenge);"
           )
           .then(function(results){return results.data[0];})
-          .spread(function(winner, challenge, loser){
+          .spread(function(winner, challenge, loser, labels){
             challenge.winner = winner;
             challenge.loser = loser;
+            challenge.labels = labels;
 
             sails.io.sockets.emit('challenge', {
               data: challenge,
