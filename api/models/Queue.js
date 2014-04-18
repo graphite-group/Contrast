@@ -13,8 +13,6 @@ module.exports = {
   	/* e.g.
   	nickname: 'string'
   	*/
-    id: 'STRING'
-
   }
 
 };

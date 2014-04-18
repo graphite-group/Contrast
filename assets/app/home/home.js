@@ -28,10 +28,8 @@ module.exports = function(app, socket){
     };
 
     $rootScope.$on('$stateChangeStart', function(a,b){
-      console.log(b.name);
       if(b.name.indexOf('homescreen') === -1){
         $scope.removeListeners();
-        console.log('done');
       }
     });
     socket.on('image', $scope.listener);
@@ -69,10 +67,8 @@ module.exports = function(app, socket){
     };
 
     $rootScope.$on('$stateChangeStart', function(a,b){
-      console.log(b.name);
       if(b.name.indexOf('imageDetails') === -1){
         $scope.removeListeners();
-        console.log('done');
       }
     });
 
