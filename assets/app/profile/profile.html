@@ -3,7 +3,11 @@
 <!-- <pre>{{user | json}}</pre> -->
 
 <div class="cover" style="background-image: url({{user.coverImgUrl}})">
+  <button ng-show="profileOwner" ng-click="coverEdit=!coverEdit" class="editcover">Change Cover</button>
+  <input class="coverEdit" ng-show="coverEdit" type="text" />
   <div class="profile" style="background-image: url({{user.profileImgUrl}})">
+    <button ng-show="profileOwner" ng-click="profileEdit=!profileEdit" class="editcover">Change Cover</button>
+    <input class="coverEdit" ng-show="profileEdit" type="text" />
     <div class="username">
     <!-- <a href="#" editable-text="user.name">{{ user.name || 'empty' }}</a> -->
       {{user.username}} <br />
@@ -21,7 +25,7 @@
   <div class="losses" data-title="Losses">{{user.losses}}</div>
 </div>
 
-<!--editable user form data -->
+<!--editable user form data ->
 <div ng-controller="accountDataCtrl" ng-show="profileOwner">
   <form editable-form name="editableForm" onbeforesave="updateUser($data)">
     <div>
@@ -44,11 +48,11 @@
     </div>
 
     <div class="buttons">
-      <!-- button to show form -->
+      <! button to show form >
       <button type="button" class="btn btn-default" ng-click="editableForm.$show()" ng-show="!editableForm.$visible">
         Edit
       </button>
-      <!-- buttons to submit / cancel form -->
+      <! buttons to submit / cancel form 
       <span ng-show="editableForm.$visible">
         <button type="submit" class="btn btn-primary" ng-disabled="editableForm.$waiting">
           Save
@@ -60,7 +64,7 @@
     </div>
   </form>
 
-</div>
+</div>-->
 
   <section class="images">
     <h3>
