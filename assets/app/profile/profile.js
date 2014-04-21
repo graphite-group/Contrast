@@ -35,7 +35,6 @@ module.exports = function(app, socket){
       if(event.verb === 'create'){
         $scope.images.push(event.data);
       }
-      console.log(event);
       if(event.verb === 'update'){
         if(parseInt($scope.profileId) === parseInt(event.id)){
           for(var key in event.data){
@@ -51,10 +50,8 @@ module.exports = function(app, socket){
     };
 
     $rootScope.$on('$stateChangeStart', function(a,b){
-      console.log(b.name);
       if(b.name.indexOf('profile') === -1){
         $scope.removeListeners();
-        console.log('done');
       }
     });
     socket.on('user', $scope.listener);

@@ -123,7 +123,6 @@ module.exports = function(app, socket){
     };
   }])
   .controller('myImagesCtrl', ['$scope', 'MainService', function($scope, MainService){
-    console.log('Opponent Image is = ', $scope.$parent.imageId);
     MainService.isLoggedIn()
     .then(function(user){
       if(!user.id){
@@ -139,7 +138,6 @@ module.exports = function(app, socket){
       return image._id !== $scope.$parent.imageId;
     })
     .then(function(images){
-      console.log('Images', images);
       $scope.images = images;
       $scope.$apply();
     })

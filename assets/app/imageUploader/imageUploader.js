@@ -32,18 +32,15 @@ module.exports = function(app, socket){
       
 
       $scope.cancel = function(){
-        // console.log("cancelled");
         $state.go('profile');
       };
 
       $scope.submitForm = function(){
-        //console.log({url: $scope.imageUrl, title: $scope.imageUpload.title, description: $scope.imageUpload.description});
         socket.postAsync("/image",{url: $scope.imageUrl, title: $scope.imageUpload.title, description: $scope.imageUpload.description})
         .then(function(response){
           if(!response.success){
             throw new Error("Something went wrong, please try again");
           }
-          console.log("imageUploadResponse",response);
           $state.go('profileAbs.profile');
         })
         .catch(function(err){
