@@ -38,6 +38,8 @@ npm-debug.log
 nbproject
 .idea
 api/services/adamsTestBits.js
+api/services/testBits_challengeService.js
+
 
 
 ########################
