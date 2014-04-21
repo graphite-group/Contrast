@@ -228,7 +228,7 @@ module.exports = {
         .then(function(flag){
           var challengeStats = {};
           challengeStats.startTime = new Date();
-          challengeStats.endTime = new Date(Date.now().valueOf() + 3600000);
+          challengeStats.endTime = new Date(Date.now().valueOf() + 3600000); //3600000 = 1 hour //100000 = 1.6 minutes
           scheduler.addJob(challengeId, challengeStats.endTime);
 
           //emit update event over socket
@@ -266,7 +266,7 @@ module.exports = {
           if(!isUser){
             throw new Error("user can not reject this challenge");
           }
-          return db.replaceLabelsFromNodeAsync(challengeId, ['challenge', 'ended']);
+          return db.replaceLabelsFromNodeAsync(challengeId, ['challenge', 'ended', 'rejected']);
         })
         .then(function(node){
           var challengeStats = {};
@@ -328,7 +328,7 @@ module.exports = {
             q = db.cypherQueryAsync(
               "START challenge = node(" + node._id +")\n" +
               "MATCH (loser:user)-[:CREATED]->(image)-[:WINNER]->(challenge)<-[:WINNER]-(:image)<-[:CREATED]-(winner:user)\n" +
-              "RETURN winner, challenge, loser;"
+              "RETURN winner, challenge, loser, labels(challenge);"
             );
           } else {
             q = db.cypherQueryAsync(
@@ -336,15 +336,16 @@ module.exports = {
               "MATCH (loser:user)-[:CREATED]->(image)-[:LOSER]->(challenge)<-[:WINNER]-(:image)<-[:CREATED]-(winner:user)\n" +
               "SET winner.points = winner.points+20\n" +
               "SET loser.points = loser.points-20\n" +
-              "RETURN winner, challenge, loser;"
+              "RETURN winner, challenge, loser, labels(challenge);"
             );
           }
 
           q.then(function(results){return results.data[0];})
-          .spread(function(winner, challenge, loser){
+          .spread(function(winner, challenge, loser, labels){
             challenge.winner = winner;
             challenge.loser = loser;
             challenge.labels = labels;
+
 
             sails.io.sockets.emit('challenge', {
               data: challenge,
@@ -486,108 +487,3 @@ module.exports = {
   }
 
 };
-
-
-
-// var createChallenge = module.exports.createChallenge;
-// createChallenge(48,49,{}).then(function(node){
-//   console.log(node);
-// });
-
-// setTimeout(function(){
-//   createChallenge(26763,26766,{}).then(function(node){
-//     console.log('================RESULT================',node);
-//   });
-// }, 5000);
-
-// createChallenge(49,23,{}).then(function(node){
-//   console.log(node);
-// });
-// createChallenge(48,24,{}).then(function(node){
-//   console.log(node);
-
-// });
-
-// updateChallenge = module.exports.updateChallenge;
-// // updateChallenge(118,{challengerVote:'9', opponentVote:'0'}, function(err,result){
-// //   console.log("update challenge", result);
-// // });
-
-//signature: acceptChallenge(userId, challengeId, callback)
-var acceptChallenge = module.exports.acceptChallenge;
-// acceptChallenge(4,6712, function(err,result){
-  // console.log("err",err);
-  // console.log("result",result);
-// });
-
-
-var endChallenge = module.exports.endChallenge;
-//endChallenge(6720).then(function(err){console.log(err);}).catch(function(err){console.log(err);});
-//  function(err,result){
-//   console.log("err: ",err, "result:", result);
-// });
-
-// setTimeout(function(){
-//   challengeService.endChallenge(26769, function(err,result){
-//     console.log('================ERROR================', err);
-//     console.log('================RESULT================',result);
-//   });
-// }, 5000);
-// endChallenge(36, function(err,result){
-//   console.log(err);
-//   console.log(result);
-// });
-
-//  console.log('results', results);
-// });
-
-//var findChallengesToVoteOn = module.exports.findChallengesToVoteOn;
-// findChallengesToVoteOn(2,function(err,results){
-//  console.log('results', results);
-// });
-
-var findChallengesToBeAcceptedRejected = module.exports.findChallengesToBeAcceptedRejected;
-// findChallengesToBeAcceptedRejected(4,function(err,results){
-//  console.log("results", results);
-// });
-
-//addUserVote = module.exports.addUserVote;
-// addUserVote(117, 120, 117, function(err,node){
-//   console.log("node", node);
-// });
-
-// resolveChallenge = module.exports.resolveChallenge;
-// resolveChallenge();
-
-//Use to delete all nodes and relationships
-/*
-MATCH (n)
-OPTIONAL MATCH (n)-[r]-()
-DELETE n,r
-
-//use to delete node and it's relationships
-START n = node(32) MATCH n-[r]-() DELETE n, r
-
-//use to delete node that doesn't have relationships
-START n = node( 1920 )  DELETE n
-
-//delete all nodes by type
-match ()-[r]->(n:challenge)<-[s]-()
-delete n,r,s
-
-//find all challenges won by user
-Start n=node(user_id)
-Match (n)-->(:image)-[:WINNER]->(m:challenge) return m;
-
-//find all challenges to be accepted/rejected by user
-Start n=node(user_id)
-Match (n)-->(:image)-[:IS_OPPONENT]->(m:requested) return m;
-
-//change labels of nodes
-Match (n:ended)
-remove n: ended
-set n: requested
-return n
-
-
-*/

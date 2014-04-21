@@ -24,7 +24,6 @@ module.exports = function(app, socket){
       $scope.vote = function(event, id, imageId){
         socket.postAsync('/castVote',{challengeId: id, imageId:imageId})
         .then(function(response){
-          console.log("vote", response);
         });
         event.currentTarget.classList.add('liked');
         setTimeout(function(){

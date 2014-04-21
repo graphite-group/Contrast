@@ -12,10 +12,13 @@
         .getting-started li{overflow:visible;clear:both}.delete{width:690px}
         </style>
     <![endif]-->
-    <header>
-      <div class="header">
+    <header ng-controller="headerCtrl">
+      <div ng-class="{notification:notification, header:true}">
         <h1>Contrast.io</h1>
-        <div class="message">This is a notification</div>
+        <div class="message" ng-show="isNotifications">
+          <a ng-click="leaveNotification()">&#123;&#123;notification.text&#125;&#125;</a>
+          <div class="quit" ng-click="isNotifications=false">X</div>
+        </div>
         <nav>
           <div class="hamburger">
             <a href="#!">:::</a>

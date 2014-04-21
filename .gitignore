@@ -41,13 +41,12 @@ api/services/adamsTestBits.js
 api/services/testBits_challengeService.js
 
 
-
 ########################
 # local config
 ########################
 env.js
 config/local.js
-=======
+
 # Logs
 logs
 *.log

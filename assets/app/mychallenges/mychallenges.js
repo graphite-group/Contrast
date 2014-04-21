@@ -21,10 +21,8 @@ module.exports = function(app, socket){
       };
 
       $rootScope.$on('$stateChangeStart', function(a,b){
-        console.log(b.name);
         if(b.name.indexOf('mychallenges') === -1){
           $scope.removeListeners();
-          console.log('done');
         }
       });
       socket.on('challenge', $scope.listener);
@@ -42,7 +40,6 @@ module.exports = function(app, socket){
               opponentVote : data.opponentVote
             };
           });
-          console.log("challenger",$scope.challengers);
           $scope.$apply();
         }
       })
@@ -60,7 +57,6 @@ module.exports = function(app, socket){
               opponentVote : data.opponentVote
             };
           });
-          console.log("opponents",$scope.opponents);
           $scope.$apply();
         }else{
 

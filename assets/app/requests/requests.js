@@ -22,16 +22,13 @@ module.exports = function(app, socket){
       .catch(console.log.bind(console));
 
       $scope.accept = function(id){
-        console.log("id",id);
        $scope.requests.shift();  
         socket.postAsync('/acceptChallenge',{challengeId: id})
         .then(function(response){
-          console.log("accepted", response);
         });
       };
 
       $scope.reject = function(id){
-        console.log("id",id);
        $scope.requests.shift();  
         socket.postAsync('/rejectChallenge',{challengeId: id})
         .then(function(response){

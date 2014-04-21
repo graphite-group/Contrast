@@ -24,7 +24,6 @@ module.exports = function(app, socket){
             $scope.$apply();
             $state.go('profileAbs.profile',response.data.id);
           }else{
-            console.log(response.reason);
             $scope.serverMsg = response.reason;
             $scope.$apply();
           }
