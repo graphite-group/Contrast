@@ -78,7 +78,7 @@ module.exports = {
         if( Array.isArray(labels) && labels.indexOf('image') !== -1){
           return true;
         } else {
-          throw new Error('Cannot find User with the id ' + imageId);
+          throw new Error('Cannot find Image with the id ' + imageId);
         }
       })
       .then(function(){
@@ -103,30 +103,46 @@ module.exports = {
 
   fetchImageDetails: function(imageId, callback){
     var a =
-    db.readNodeAsync(imageId)
-      .then(function(node){
-        if(!node){
-          throw new Error('Image not found!');
-        }
-        return Promise.join(
-          db.readRelationshipsOfNodeAsync(imageId)
-            .filter(function(relationship){
-              return relationship._end === imageId && relationship._type === 'CREATED';
-            })
-            .map(function(relationship){
-              return db.readNodeAsync(relationship._start);
-            }),
-          node
-        );
-      })
-      .spread(function(creators, node){
-        if(creators.length === 1){
-          node.user = creators[0];
-        } else {
-          node.users = creators;
-        }
-        return node;
-      });
+    db.cypherQueryAsync(
+      'START n=node(' + imageId + ') \n' +
+      'MATCH (u:user)-[:CREATED]->(n) \n' +
+      'OPTIONAL MATCH (n)-[:HAS_COMMENT]->(c:comment) \n' +
+      'RETURN u, n'
+    )
+    .then(function(result){return result.data})
+    .then(function(results){
+      var user = results[0][0];
+      var image = results[0][1];
+      var comments = results.map(function(trio){return trio[2]});
+      image.userId = user._id;
+      image.user = user;
+      image.comments = comments.length ? comments: [];
+      return image;
+    });
+    // db.readNodeAsync(imageId)
+    //   .then(function(node){
+    //     if(!node){
+    //       throw new Error('Image not found!');
+    //     }
+    //     return Promise.join(
+    //       db.readRelationshipsOfNodeAsync(imageId)
+    //         .filter(function(relationship){
+    //           return relationship._end === imageId && relationship._type === 'CREATED';
+    //         })
+    //         .map(function(relationship){
+    //           return db.readNodeAsync(relationship._start);
+    //         }),
+    //       node
+    //     );
+    //   })
+    //   .spread(function(creators, node){
+    //     if(creators.length === 1){
+    //       node.user = creators[0];
+    //     } else {
+    //       node.users = creators;
+    //     }
+    //     return node;
+    //   });
 
     // call callback or return promise
     if(typeof callback === 'function'){
@@ -137,6 +153,7 @@ module.exports = {
   },
 
   fetchImageByUserId: function(userId, callback){
+    console.log("This is the function");
     var a =
     db.readRelationshipsOfNodeAsync(userId, {})
       .filter(function(relationship){
@@ -176,4 +193,10 @@ module.exports = {
 
 };
 
-//module.exports.fetchImageDetails(14).then(console.log.bind(console)).catch(console.log.bind(console, 'Error'));
+// START n=node(26746)
+// MATCH (n)-[]-(c:challenge)-[]-(x:image)
+// RETURN x, count(c), n
+// ORDER BY count(c) DESC
+
+
+//module.exports.fetchImageDetails(26758).then(console.log.bind(console)).catch(console.log.bind(console, 'Error'));
