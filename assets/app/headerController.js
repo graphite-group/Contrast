@@ -37,15 +37,16 @@ module.exports = function(app, socket){
           var ended = event.data.labels.indexOf('ended') !== -1;
           var accepted = event.data.labels.indexOf('accepted') !== -1;
           var rejected = event.data.labels.indexOf('rejected') !== -1;
-          var opponentId, challengerId, winnerId, loserId; 
+          var opponentId, challengerId, winnerId, loserId;
 
           if(accepted){
             opponentId = parseFloat(event.data.opponent._id);
             challengerId = parseFloat(event.data.challenger._id);
+            var votes = parseFloat(event.data.challengerVote) + parseFloat(event.data.opponentVote);
 
             MainService.isLoggedIn().then(function(user){
               var curUserId = parseFloat(user.id);
-              if(curUserId === challengerId ){
+              if(curUserId === challengerId && votes <= 0){
                 $scope.notification.text = 'An opponent has accepted your challenge.';
                 $scope.notification.target = 'mychallenges';
                 $scope.isNotifications = true;
