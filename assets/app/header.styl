@@ -5,9 +5,30 @@ header
   height 4rem
   width 100%
   border-bottom 1px solid rgba(0,0,0,0.1)
+  border-top 1px solid rgba(0,0,0,0.1)
   background white
   background rgba(255,255,255,0.9)
   z-index 999
+  transition 1s ease-out
+  transform-origin 50% 100%
+  transform-style: preserve-3d;
+  .message
+    position absolute
+    top -4rem
+    height 4rem
+    left 0
+    right 0
+    transform rotateX(90deg)
+    transform-origin 50% 100%
+    padding 2rem
+    text-align center
+    font-family myfont
+    background white
+    background rgba(255,255,255,0.9)
+    transition 1s
+  &.notification
+    transition 0.5s ease-in
+    transform rotateX(-90deg) translateY(4rem)
   h1
     font-size 2rem
     padding 1rem

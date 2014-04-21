@@ -68,7 +68,7 @@ module.exports = {
       db.readLabelsAsync(opponentImageId)
     )
     .spread(function(challengerLabels, opponentLabels){
-      if(challengerLabels.indexOf('image') === -1 || opponentLabels.indexOf('image') === -1 ){
+      if(!Array.isArray(challengerLabels) || !Array.isArray(opponentLabels) || challengerLabels.indexOf('image') === -1 || opponentLabels.indexOf('image') === -1 ){
         throw new Error("Given Ids are not images!");
       }
       return true;
@@ -87,7 +87,7 @@ module.exports = {
       console.log('2nd q');
       return db.cypherQueryAsync(
         'START n=node(' + opponentImageId + '), m=node(' + challengerImageId + ') \n' +
-        'create (n)-[:IS_OPPONENT]->(c:challenge {'+
+        'create (n)-[:IS_OPPONENT]->(c:challenge:requested {'+
           'createdAt:'+JSON.stringify(challengeStats.createdAt)+',' +
           'challengerImageId:'+challengeStats.challengerImageId+',' +
           'challengerVote: 0,' +
@@ -102,14 +102,16 @@ module.exports = {
       challenge.challenger = challenger;
       challenge.opponent = opponent;
       challenge.labels = labels;
+      challenge.challengerImage = challenger.url;
+      challenge.opponentImage = opponent.url;
 
-      // sails.io.sockets.emit('challenge', {
-      //   data: challenge,
-      //   id: challenge._id,
-      //   verb: 'create',
-      //   createdAt: challenge.createdAt,
-      //   updatedAt: new Date()
-      // });
+      sails.io.sockets.emit('challenge', {
+        data: challenge,
+        id: challenge._id,
+        verb: 'create',
+        createdAt: challenge.createdAt,
+        updatedAt: new Date()
+      });
 
       return challenge;
 
@@ -319,7 +321,7 @@ module.exports = {
               "RETURN winner, challenge, loser;"
             );
           }
-          
+
           q.then(function(results){return results.data[0];})
           .spread(function(winner, challenge, loser){
             challenge.winner = winner;
@@ -448,10 +450,10 @@ module.exports = {
 
 
 
-var createChallenge = module.exports.createChallenge;
-createChallenge(48,49,{}).then(function(node){
-  console.log(node);
-});
+// var createChallenge = module.exports.createChallenge;
+// createChallenge(48,49,{}).then(function(node){
+//   console.log(node);
+// });
 
 // setTimeout(function(){
 //   createChallenge(26763,26766,{}).then(function(node){
@@ -490,7 +492,7 @@ var endChallenge = module.exports.endChallenge;
 //   challengeService.endChallenge(26769, function(err,result){
 //     console.log('================ERROR================', err);
 //     console.log('================RESULT================',result);
-//   });  
+//   });
 // }, 5000);
 // endChallenge(36, function(err,result){
 //   console.log(err);
