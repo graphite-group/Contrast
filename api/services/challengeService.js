@@ -40,8 +40,6 @@ module.exports = {
   //RELATIONSHIPS: 'IS_CHALLENGER', 'IS_OPPONENT', 'VOTED_ON'
   //LABELS: 'requested', 'accepted', 'ended'
 
-
-
   //challengerImageId: num, challengeeImageId: num, challengeStats: objects
   createChallenge: function(challengerImageId, opponentImageId, challengeStats, callback){
 

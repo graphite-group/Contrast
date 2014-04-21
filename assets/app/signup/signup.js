@@ -16,14 +16,13 @@ module.exports = function(app, socket){
       };
 
       $scope.submit = function(){
-        socket.postAsync("/signup",{email: $scope.formData.email, password: $scope.formData.password, json: 'true'})
+        socket.postAsync("/signup",{email: $scope.formData.email, username: $scope.formData.username, password: $scope.formData.password})
         .then(function(response){
           if(response.data){
             MainService.login(response.data);
             $scope.serverMsg = "User Created";
             $scope.$apply();
             $state.go('profileAbs.profile',response.data.id);
-            
           }else{
             console.log(response.reason);
             $scope.serverMsg = response.reason;
