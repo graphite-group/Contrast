@@ -87,20 +87,26 @@ module.exports = {
       console.log('2nd q');
       return db.cypherQueryAsync(
         'START n=node(' + opponentImageId + '), m=node(' + challengerImageId + ') \n' +
-        'create (n)-[:IS_OPPONENT]->(c:challenge:requested {'+
+        'CREATE (n)-[:IS_OPPONENT]->(c:challenge:requested {'+
           'createdAt:'+JSON.stringify(challengeStats.createdAt)+',' +
           'challengerImageId:'+challengeStats.challengerImageId+',' +
           'challengerVote: 0,' +
           'opponentImageId:'+challengeStats.opponentImageId+',' +
           'opponentVote: 0' +
         '})<-[:IS_CHALLENGER]-(m) \n' +
-        'RETURN m, c, n, labels(c)'
+        'WITH m, c, n \n' +
+        'MATCH (o:user)-[:CREATED]->(n)-[:IS_OPPONENT]->(c)<-[:IS_CHALLENGER]-(m)<-[:CREATED]-(ch:user) \n' +
+        'RETURN m, c, n, labels(c), o, ch'
       );
     })
     .then(function(results){return results.data[0];})
-    .spread(function(challenger, challenge, opponent, labels){
-      challenge.challenger = challenger;
-      challenge.opponent = opponent;
+    .spread(function(challengerImage, challenge, opponentImage, labels, opponentUser, challengerUser){
+      delete opponentUser.password;
+      delete challengerUser.password;
+      challenge.challenger = challengerUser;
+      challenge.opponent = opponentUser;
+      challenge.challengerImage = challengerImage;
+      challenge.opponentImage = opponentUserImage;
       challenge.labels = labels;
       challenge.challengerImage = challenger.url;
       challenge.opponentImage = opponent.url;
