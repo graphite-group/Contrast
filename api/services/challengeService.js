@@ -84,7 +84,6 @@ module.exports = {
       if(results.data.length>0){
         throw new Error("Challenge already exists");
       }
-      console.log('2nd q');
       return db.cypherQueryAsync(
         'START n=node(' + opponentImageId + '), m=node(' + challengerImageId + ') \n' +
         'CREATE (n)-[:IS_OPPONENT]->(c:challenge:requested {'+
@@ -99,17 +98,28 @@ module.exports = {
         'RETURN m, c, n, labels(c), o, ch'
       );
     })
-    .then(function(results){return results.data[0];})
+    .then(function(results){
+      console.log("GOT RESULTS:", results.data);
+      return results.data[0];
+    })
     .spread(function(challengerImage, challenge, opponentImage, labels, opponentUser, challengerUser){
-      delete opponentUser.password;
-      delete challengerUser.password;
+
+      console.log("ChallengerImage: ", challengerImage);
+      console.log("Challenge: ", challenge);
+      console.log("Opponent Image: ", opponentImage);
+      console.log("LABEL: ", labels);
+      console.log("Opponent User: ", opponentUser)
+      console.log("Challenger User", challengerUser);
+
+      // delete opponentUser.password;
+      // delete challengerUser.password;
       challenge.challenger = challengerUser;
       challenge.opponent = opponentUser;
       challenge.challengerImage = challengerImage;
-      challenge.opponentImage = opponentUserImage;
+      challenge.opponentImage = opponentImage;
       challenge.labels = labels;
-      challenge.challengerImage = challenger.url;
-      challenge.opponentImage = opponent.url;
+      challenge.challengerImage = challengerImage.url;
+      challenge.opponentImage = opponentImage.url;
 
       sails.io.sockets.emit('challenge', {
         data: challenge,
@@ -118,6 +128,8 @@ module.exports = {
         createdAt: challenge.createdAt,
         updatedAt: new Date()
       });
+
+      console.log("SENDING NEW CHALLENGE", challenge);
 
       return challenge;
 
