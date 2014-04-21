@@ -389,7 +389,7 @@ module.exports = {
     var a =
       db.cypherQueryAsync(
         "START n=node("+userId+")\n" +
-        "MATCH (n)-->(oi:image)-[:IS_OPPONENT]->(m:requested)<-[:IS_CHALLENGER]-(ci:image)\n" +
+        "MATCH (n)-[:CREATED]->(oi:image)-[:IS_OPPONENT]->(m:requested)<-[:IS_CHALLENGER]-(ci:image)\n" +
         "RETURN m, oi, ci, n;"
       )
       .then(function(results){
@@ -400,8 +400,8 @@ module.exports = {
         var opponentImage = row[1];
         var challengerImage = row[2];
         var opponent = row[3];
-        challenge.opponentImage = opponentImage;
-        challenge.challengerImage = challengerImage;
+        challenge.opponentImage = opponentImage.url;
+        challenge.challengerImage = challengerImage.url;
         challenge.opponent = opponent;
         return challenge;
       });
@@ -421,7 +421,7 @@ module.exports = {
         "WHERE NOT((n)-[:VOTED_ON]-(u))\n"+
         "WITH n \n" +
         'MATCH (oi:image)-[:IS_OPPONENT]->(n)<-[:IS_CHALLENGER]-(ci:image) \n' +
-        'RETURN m, oi, ci;'
+        'RETURN n, oi, ci;'
       )
       .then(function(results){
         return results.data;
@@ -430,8 +430,8 @@ module.exports = {
         var challenge = row[0];
         var opponentImage = row[1];
         var challengerImage = row[2];
-        challenge.opponentImage = opponentImage;
-        challenge.challengerImage = challengerImage;
+        challenge.opponentImage = opponentImage.url;
+        challenge.challengerImage = challengerImage.url;
         return challenge;
       });
 
