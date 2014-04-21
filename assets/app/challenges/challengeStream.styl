@@ -14,7 +14,29 @@
     transform translateY(100%)
     font-size 0
     padding 1rem
-    transition 1s ease-out
+    @media screen and (max-width: 40rem)
+      position static
+      transform none
+      padding 6rem 0
+    button
+      position absolute
+      bottom 0
+      width 50%
+      height 4rem
+      appearance none
+      border 0
+      opacity 0.8
+      transition 0.5s
+      cursor pointer
+      &:hover
+        opacity 1
+      &.accept
+        right 0
+        background myblue
+        color white
+      &.reject
+        left 0
+        background myred
     //border 1px solid black
     &::before
       content ""
@@ -22,6 +44,8 @@
       vertical-align middle
       height 100%
       width 0
+      @media screen and (max-width: 40rem)
+        display none
     h1
       position absolute
       top 2rem
@@ -32,11 +56,15 @@
       font-family myfont
       font-weight 100
       line-height 0.8
+      @media screen and (max-width: 40rem)
+        position static
+        padding 2rem 0
       small
         font-size 0.5em
         font-weight 400
         color textgrey
     &:first-child
+      transition 1s ease-out
       transform translateY(0)
     .half
       display inline-block
@@ -44,6 +72,9 @@
       padding-bottom 28.75%
       position relative
       vertical-align middle
+      @media screen and (max-width: 40rem)
+        width 100%
+        padding-bottom 56.5%
       .block
         top 1rem
         left 1rem
@@ -86,3 +117,28 @@
           opacity 0.8
           animation-name 'popIn'
           animation-duration 0.5s
+
+.allchallenges.scroll
+  overflow scroll
+  h1
+    text-align center
+    font-size 2rem
+    font-family myfont
+    font-weight 100
+    line-height 0.8
+    margin-top 2rem
+  .challenge
+    position static
+    height auto
+    width 100%
+    padding 4rem 0
+    transform none
+    .block p
+      position absolute
+      top -2rem
+      left 0
+      right 0
+      text-align center
+      font-size 1rem
+      font-family myfont
+      font-weight 200

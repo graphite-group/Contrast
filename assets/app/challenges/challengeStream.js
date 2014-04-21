@@ -16,7 +16,7 @@ module.exports = function(app, socket){
           });
           $scope.$apply();
         }else{
-
+   
         }
       })
       .catch(console.log.bind(console));
