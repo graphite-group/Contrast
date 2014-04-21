@@ -10,6 +10,30 @@ var db = new neo4j(dbAddress);
 
 db = Promise.promisifyAll(db);
 
+var emitChallengeUpdate = function(challengeId){
+  //cypher query to get the challenger and opponent data to send down on the socket event
+  db.cypherQueryAsync(
+    "START challenge = node(" +challengeId+")\n" +
+    "MATCH (challenger:user)-[:CREATED]->()-[:IS_CHALLENGER]->(ch)<-[:IS_OPPONENT]-()<-[:CREATED]-(opponent:user)\n" +
+    "RETURN challenger, challenge, opponent, labels(challenge);"
+  )
+  .then(function(results){return results.data[0];})
+  .spread(function(challenger, challenge, opponent, labels){
+    challenge.challenger = challenger;
+    challenge.opponent = opponent;
+    challenge.labels = labels;
+
+    sails.io.sockets.emit('challenge', {
+      data: challenge,
+      id: challenge._id,
+      verb: 'update',
+      createdAt: challenge.createdAt,
+      updatedAt: new Date()
+    });
+  });
+
+};
+
 
 module.exports = {
 
@@ -54,6 +78,26 @@ module.exports = {
         })
         .spread(addThreeWayRelationship)
         .spread(function(challengerRelationship, opponentRelationship, node){
+
+          db.cypherQueryAsync(
+            "START challenge = node(" +node._id+")\n" +
+            "MATCH (challenger:user)-[:CREATED]->()-[:IS_CHALLENGER]->(ch)<-[:IS_OPPONENT]-()<-[:CREATED]-(opponent:user)\n" +
+            "RETURN challenger, challenge, opponent, labels(challenge);"
+          )
+          .then(function(results){return results.data[0];})
+          .spread(function(challenger, challenge, opponent, labels){
+            challenge.challenger = challenger;
+            challenge.opponent = opponent;
+            challenge.labels = labels;
+
+            sails.io.sockets.emit('challenge', {
+              data: challenge,
+              id: node._id,
+              verb: 'create',
+              createdAt: node.createdAt,
+              updatedAt: new Date()
+            });
+          });
           return node;
         });
 
@@ -74,6 +118,9 @@ module.exports = {
           if(Object.keys(challengeStats).length === 0){
             return node;
           }
+          //emit update event over socket
+          emitChallengeUpdate(challengeId);
+
           return db.updateNodeByIdAsync(node._id, challengeStats);
         });
 
@@ -115,6 +162,10 @@ module.exports = {
           challengeStats.startTime = new Date();
           challengeStats.endTime = new Date(Date.now().valueOf() + 3600000);
           scheduler.addJob(challengeId, challengeStats.endTime);
+
+          //emit update event over socket
+          emitChallengeUpdate(challengeId);
+
           return db.updateNodeByIdAsync(challengeId, challengeStats);
         });
 
@@ -153,6 +204,10 @@ module.exports = {
           var challengeStats = {};
           challengeStats.startTime = new Date();
           challengeStats.endTime = challengeStats.startTime;
+
+          //emit update event over socket
+          emitChallengeUpdate(challengeId);
+
           return db.updateNodeByIdAsync(challengeId, challengeStats);
         });
 
@@ -221,6 +276,7 @@ module.exports = {
           .spread(function(winner, challenge, loser){
             challenge.winner = winner;
             challenge.loser = loser;
+            challenge.labels = labels;
 
             sails.io.sockets.emit('challenge', {
               data: challenge,
@@ -328,6 +384,8 @@ module.exports = {
 
           return db.updateNodeByIdAsync(node._id, challengeStats);
         }).then(function(node){
+          //emit update event over socket
+          emitChallengeUpdate(challengeId);
           return db.insertRelationshipAsync(userId, node._id, 'VOTED_ON', {});
         });
 
@@ -343,8 +401,22 @@ module.exports = {
 
 
 var createChallenge = module.exports.createChallenge;
-// createChallenge(47,24,{}).then(function(node){
-//   console.log("created challenge:", node);
+// createChallenge(26763,26766,{}).then(function(node){
+//   console.log(node);
+// });
+
+// setTimeout(function(){
+//   createChallenge(26763,26766,{}).then(function(node){
+//     console.log('================RESULT================',node);
+//   });
+// }, 5000);
+
+// createChallenge(49,23,{}).then(function(node){
+//   console.log(node);
+// });
+// createChallenge(48,24,{}).then(function(node){
+//   console.log(node);
+
 // });
 
 // updateChallenge = module.exports.updateChallenge;
