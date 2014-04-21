@@ -68,7 +68,7 @@ module.exports = {
       db.readLabelsAsync(opponentImageId)
     )
     .spread(function(challengerLabels, opponentLabels){
-      if(challengerLabels.indexOf('image') === -1 || opponentLabels.indexOf('image') === -1 ){
+      if(!Array.isArray(challengerLabels) || !Array.isArray(opponentLabels) || challengerLabels.indexOf('image') === -1 || opponentLabels.indexOf('image') === -1 ){
         throw new Error("Given Ids are not images!");
       }
       return true;
@@ -87,7 +87,7 @@ module.exports = {
       console.log('2nd q');
       return db.cypherQueryAsync(
         'START n=node(' + opponentImageId + '), m=node(' + challengerImageId + ') \n' +
-        'create (n)-[:IS_OPPONENT]->(c:challenge {'+
+        'create (n)-[:IS_OPPONENT]->(c:challenge:requested {'+
           'createdAt:'+JSON.stringify(challengeStats.createdAt)+',' +
           'challengerImageId:'+challengeStats.challengerImageId+',' +
           'challengerVote: 0,' +
@@ -102,14 +102,16 @@ module.exports = {
       challenge.challenger = challenger;
       challenge.opponent = opponent;
       challenge.labels = labels;
+      challenge.challengerImage = challenger.url;
+      challenge.opponentImage = opponent.url;
 
-      // sails.io.sockets.emit('challenge', {
-      //   data: challenge,
-      //   id: challenge._id,
-      //   verb: 'create',
-      //   createdAt: challenge.createdAt,
-      //   updatedAt: new Date()
-      // });
+      sails.io.sockets.emit('challenge', {
+        data: challenge,
+        id: challenge._id,
+        verb: 'create',
+        createdAt: challenge.createdAt,
+        updatedAt: new Date()
+      });
 
       return challenge;
 
@@ -319,7 +321,7 @@ module.exports = {
               "RETURN winner, challenge, loser, labels(challenge);"
             );
           }
-          
+
           q.then(function(results){return results.data[0];})
           .spread(function(winner, challenge, loser, labels){
             challenge.winner = winner;
@@ -360,8 +362,8 @@ module.exports = {
           "START n=node("+userId+")\n" +
           "MATCH (n)-[:CREATED]->(:image)-["+relationship+"]->(m:challenge)\n" +
           "WITH m \n" +
-          "MATCH (o:user)-[:CREATED]->(:image)-[:IS_OPPONENT]->(m)<-[:IS_CHALLENGER]-(:image)<-[:CREATED]-(c:user) \n" +
-          "RETURN o,m,c;"
+          "MATCH (o:user)-[:CREATED]->(oi:image)-[:IS_OPPONENT]->(m)<-[:IS_CHALLENGER]-(ci:image)<-[:CREATED]-(c:user) \n" +
+          "RETURN o,m,c, oi, ci;"
         )
         .then(function(results){
           return results.data;
@@ -369,6 +371,8 @@ module.exports = {
         .map(function(result){
           result[1].opponent = result[0];
           result[1].challenger = result[2];
+          result[1].challengerImage = result[4].url;
+          result[1].opponentImage = result[3].url;
           return result[1];
         });
 
@@ -386,11 +390,21 @@ module.exports = {
     var a =
       db.cypherQueryAsync(
         "START n=node("+userId+")\n" +
-        "MATCH (n)-->(:image)-[:IS_OPPONENT]->(m:requested)\n" +
-        "RETURN m;"
+        "MATCH (n)-[:CREATED]->(oi:image)-[:IS_OPPONENT]->(m:requested)<-[:IS_CHALLENGER]-(ci:image)\n" +
+        "RETURN m, oi, ci, n;"
       )
       .then(function(results){
         return results.data;
+      })
+      .map(function(row){
+        var challenge = row[0];
+        var opponentImage = row[1];
+        var challengerImage = row[2];
+        var opponent = row[3];
+        challenge.opponentImage = opponentImage.url;
+        challenge.challengerImage = challengerImage.url;
+        challenge.opponent = opponent;
+        return challenge;
       });
 
     if(typeof callback === 'function'){
@@ -406,12 +420,21 @@ module.exports = {
         "START u=node("+userId+")\n" +
         "MATCH (n:accepted)\n" +
         "WHERE NOT((n)-[:VOTED_ON]-(u))\n"+
-        "RETURN n;"
+        "WITH n \n" +
+        'MATCH (oi:image)-[:IS_OPPONENT]->(n)<-[:IS_CHALLENGER]-(ci:image) \n' +
+        'RETURN n, oi, ci;'
       )
       .then(function(results){
         return results.data;
+      })
+      .map(function(row){
+        var challenge = row[0];
+        var opponentImage = row[1];
+        var challengerImage = row[2];
+        challenge.opponentImage = opponentImage.url;
+        challenge.challengerImage = challengerImage.url;
+        return challenge;
       });
-      // .map(function(result))
 
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);
