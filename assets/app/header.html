@@ -1,0 +1,20 @@
+
+  <div ng-class="{notification:notification, header:true}">
+    <h1>Contrast.io</h1>
+    <div class="message" ng-show="isNotifications">
+      <a ng-click="leaveNotification()">&#123;&#123;notification.text&#125;&#125;</a>
+      <div class="quit" ng-click="isNotifications=false">X</div>
+    </div>
+    <nav>
+      <div class="hamburger">
+        <a href="#!">:::</a>
+        <div class="dropdown">
+          <a href="#/">home</a>
+          <a href="#/profile">profile</a>
+          <a href="#/challenges">challenges</a>
+          <a href="#/login">login</a>
+          <a href="#/logout">logout</a>
+        </div>
+      </div>
+    </nav>
+  </div>

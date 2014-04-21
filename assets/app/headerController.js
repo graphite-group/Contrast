@@ -3,10 +3,26 @@
 module.exports = function(app, socket){
 
   app
-    .controller('headerCtrl', ['$scope', '$state', 'MainService', function($scope, $state, MainService){
+    .controller('headerCtrl', ['$scope', '$state', 'MainService', '$rootScope', function($scope, $state, MainService, $rootScope){
       $scope.notification = {};
       $scope.isNotifications = false;
       $scope.hello = 'world';
+      $scope.isLoggedIn = false;
+
+      $scope.init = function(){
+        MainService.isLoggedIn().then(function(user){
+          if(!!user.id || !!user._id){
+            $scope.isLoggedIn = true;
+          } else {
+            $scope.isLoggedIn = false;
+          }
+          $scope.$apply();
+        });
+      };
+
+      $rootScope.$on('$stateChangeStart', function(a,b){
+        $scope.init();
+      });
 
       $scope.leaveNotification = function(){
         $scope.isNotifications = false;
@@ -16,7 +32,7 @@ module.exports = function(app, socket){
       $scope.listener = function(event){
         if(event.verb === 'create'){
           var requested = event.data.labels.indexOf('requested') !== -1;
-  
+
           if(requested){
             opponentId = parseFloat(event.data.opponent._id);
             challengerId = parseFloat(event.data.challenger._id);
@@ -70,7 +86,7 @@ module.exports = function(app, socket){
           } else if(ended){
             winnerId = parseFloat(event.data.winner._id);
             loserId = parseFloat(event.data.loser._id);
-            
+
             MainService.isLoggedIn().then(function(user){
               var curUserId = parseFloat(user.id);
 
