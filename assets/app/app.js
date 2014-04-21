@@ -75,7 +75,7 @@ var app =
 
 require('./home/home.js')(app, rootSocket);
 require('./MainService.js')(app, rootSocket);
-require('./mainController.js')(app, rootSocket);
+require('./headerController.js')(app, rootSocket);
 require('./login/login.js')(app, rootSocket);
 require('./signup/signup.js')(app, rootSocket);
 require('./404/404.js')(app, rootSocket);

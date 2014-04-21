@@ -160,7 +160,7 @@ module.exports = {
         .then(function(flag){
           var challengeStats = {};
           challengeStats.startTime = new Date();
-          challengeStats.endTime = new Date(Date.now().valueOf() + 3600000);
+          challengeStats.endTime = new Date(Date.now().valueOf() + 100000);
           scheduler.addJob(challengeId, challengeStats.endTime);
 
           //emit update event over socket
@@ -198,7 +198,7 @@ module.exports = {
           if(!isUser){
             throw new Error("user can not reject this challenge");
           }
-          return db.replaceLabelsFromNodeAsync(challengeId, ['challenge', 'ended']);
+          return db.replaceLabelsFromNodeAsync(challengeId, ['challenge', 'ended', 'rejected']);
         })
         .then(function(node){
           var challengeStats = {};
@@ -260,7 +260,7 @@ module.exports = {
             q = db.cypherQueryAsync(
               "START challenge = node(" + node._id +")\n" +
               "MATCH (loser:user)-[:CREATED]->(image)-[:WINNER]->(challenge)<-[:WINNER]-(:image)<-[:CREATED]-(winner:user)\n" +
-              "RETURN winner, challenge, loser;"
+              "RETURN winner, challenge, loser, labels(challenge);"
             );
           } else {
             q = db.cypherQueryAsync(
@@ -268,15 +268,17 @@ module.exports = {
               "MATCH (loser:user)-[:CREATED]->(image)-[:LOSER]->(challenge)<-[:WINNER]-(:image)<-[:CREATED]-(winner:user)\n" +
               "SET winner.points = winner.points+20\n" +
               "SET loser.points = loser.points-20\n" +
-              "RETURN winner, challenge, loser;"
+              "RETURN winner, challenge, loser, labels(challenge);"
             );
           }
           
           q.then(function(results){return results.data[0];})
-          .spread(function(winner, challenge, loser){
+          .spread(function(winner, challenge, loser, labels){
             challenge.winner = winner;
             challenge.loser = loser;
+            console.log("Challenge Ended, Emitting event now...", challenge);
             challenge.labels = labels;
+
 
             sails.io.sockets.emit('challenge', {
               data: challenge,

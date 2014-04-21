@@ -12,17 +12,22 @@
         .getting-started li{overflow:visible;clear:both}.delete{width:690px}
         </style>
     <![endif]-->
-    <div class="notifications" ng-controller="notificationCtrl">
-    </div>
 
-    <header>
+    <header ng-controller="headerCtrl" ng-class"{notification:notification}">
       <h1>Contrast.io</h1>
+
+      <div class="message" ng-show="notification">
+        notifications &#123;&#123;notification&#125;&#125;
+        <div class="quit" ng-click="notification=''">X</div>
+      </div>
+
       <nav>
         <div class="hamburger">
           <a href="#!">:::</a>
           <div class="dropdown">
             <a href="#/">home</a>
             <a href="#/profile">profile</a>
+            <a href="#/requests">requests</a>
             <a href="#/challenges">challenges</a>
             <a href="#/login">login</a>
             <a href="#/logout">logout</a>
