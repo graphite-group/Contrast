@@ -8,7 +8,6 @@ module.exports = function(app, socket){
       $scope.hello = 'world';
 
       $scope.listener = function(event){
-        console.log(event);
         if(event.verb === 'create'){
           var requested = event.data.labels.indexOf('requested') !== -1;
   
@@ -31,7 +30,6 @@ module.exports = function(app, socket){
           var accepted = event.data.labels.indexOf('accepted') !== -1;
           var rejected = event.data.labels.indexOf('rejected') !== -1;
           var opponentId, challengerId, winnerId, loserId; 
-          // console.log(event.data);
 
           if(accepted){
             opponentId = parseFloat(event.data.opponent._id);
