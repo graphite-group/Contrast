@@ -91,12 +91,12 @@ module.exports = {
     //else return error
     var userData = req.body;
     delete userData.json;
-    userData.points = 100;
     userService.createUser(userData)
     .then(function(node){
       delete node.password;
       req.session.user = node;
       req.session.user.id = node._id;
+      req.session.user.name = node.username;
       req.session.authenticated = true;
       if(!!req.wantsJSON){
         res.send({
@@ -111,7 +111,7 @@ module.exports = {
       console.log('error creating user: ' + err);
       res.send({
         success: false,
-        reason: "Account with the given email address already exists!"
+        reason: err.toString().replace('Error: ','')
       });
     });
   },

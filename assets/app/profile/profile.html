@@ -3,14 +3,21 @@
 <!-- <pre>{{user | json}}</pre> -->
 
 <div class="cover" style="background-image: url({{user.coverImgUrl}})">
+  <button ng-show="profileOwner" ng-click="coverClick($event)" class="editcover">Change Cover</button>
+  <form action="#" class="coverEdit" ng-show="coverEdit" ng-submit="update">
+    <input type="text" ng-model="user.coverImgUrl" placeholder="Enter Image Url Here..."/>
+    <input type="submit" ng-click="coverClick($event)" value="Cancel">
+    <input type="submit" ng-click="coverSubmit($event)">
+  </form>
   <div class="profile" style="background-image: url({{user.profileImgUrl}})">
+    <button ng-show="profileOwner" ng-click="profileClick($event)" class="editprofile">Change profile</button>
+    <form action="#" class="profileEdit" ng-show="profileEdit" ng-submit="update">
+      <input type="text" ng-model="user.profileImgUrl" placeholder="Enter Image Url Here..."/>
+      <input type="submit" ng-click="profileClick($event)" value="Cancel">
+      <input type="submit" ng-click="profileSubmit($event)">
+    </form>
     <div class="username">
-    <!-- <a href="#" editable-text="user.name">{{ user.name || 'empty' }}</a> -->
-      {{user.username}} <br />
-      <div ng-controller="accountDataCtrl">
-        <span editable-text="user.name">{{user.name}}</span>
-      </div>
-      <!-- {{user.name}} -->
+      {{user.username}}
     </div>
   </div>
 </div>
@@ -21,7 +28,7 @@
   <div class="losses" data-title="Losses">{{user.losses}}</div>
 </div>
 
-<!--editable user form data -->
+<!--editable user form data ->
 <div ng-controller="accountDataCtrl" ng-show="profileOwner">
   <form editable-form name="editableForm" onbeforesave="updateUser($data)">
     <div>
@@ -44,11 +51,11 @@
     </div>
 
     <div class="buttons">
-      <!-- button to show form -->
+      <! button to show form >
       <button type="button" class="btn btn-default" ng-click="editableForm.$show()" ng-show="!editableForm.$visible">
         Edit
       </button>
-      <!-- buttons to submit / cancel form -->
+      <! buttons to submit / cancel form
       <span ng-show="editableForm.$visible">
         <button type="submit" class="btn btn-primary" ng-disabled="editableForm.$waiting">
           Save
@@ -60,7 +67,7 @@
     </div>
   </form>
 
-</div>
+</div>-->
 
   <section class="images">
     <h3>

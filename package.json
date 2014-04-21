@@ -22,7 +22,8 @@
     "gulp-replace": "~0.2.0",
     "gulp-notify": "~1.2.5",
     "node-schedule": "^0.1.13",
-    "sails-redis": "^0.9.3"
+    "sails-redis": "^0.9.3",
+    "sails-mongo": "^0.9.7"
   },
   "scripts": {
     "start": "node app.js",

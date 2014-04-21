@@ -29,7 +29,7 @@ module.exports = function(app, socket){
         controller: 'imageDetailsCtrl'
       });
   }])
-  .controller('profileCtrl', ['$scope', '$stateParams', '$state', 'MainService', '$rootScope', function($scope, $stateParams, $state, MainService, $rootScope){
+  .controller('profileCtrl', ['$scope', '$stateParams', '$state', 'MainService', 'UserService', '$rootScope', function($scope, $stateParams, $state, MainService, UserService, $rootScope){
 
     $scope.listener = function(event){
       if(event.verb === 'create'){
@@ -87,6 +87,67 @@ module.exports = function(app, socket){
       }, function(err){
         console.log('error retrieving images', err);
       });
+    };
+
+    $scope.alert = function(evt){
+      evt.preventDefault();
+      window.alert('yo!');
+    };
+
+    $scope.coverSubmit = function(evt){
+      evt.preventDefault();
+      $scope.coverEdit = !$scope.coverEdit;
+      UserService.updateUser({updates: {
+        coverImgUrl: $scope.user.coverImgUrl,
+        id: $scope.user._id
+      }})
+      .then(function(data){
+        console.log("done!", data);
+        $scope.oldCover = $scope.user.coverImgUrl;
+      })
+      .catch(function(err){
+        console.error(err);
+        $scope.user.coverImgUrl = $scope.oldCover;
+        $scope.$apply();
+      })
+    };
+
+    $scope.profileSubmit = function(evt){
+      evt.preventDefault();
+      $scope.profileEdit = !$scope.profileEdit;
+      UserService.updateUser({updates: {
+        profileImgUrl: $scope.user.profileImgUrl,
+        id: $scope.user._id
+      }})
+      .then(function(data){
+        console.log("done!", data);
+        $scope.oldprofile = $scope.user.profileImgUrl;
+      })
+      .catch(function(err){
+        console.error(err);
+        $scope.user.profileImgUrl = $scope.oldprofile;
+        $scope.$apply();
+      })
+    };
+
+    $scope.coverClick = function(evt){
+      evt.preventDefault();
+      if($scope.coverEdit){
+        $scope.user.coverImgUrl = $scope.oldCover;
+      } else {
+        $scope.oldCover = $scope.user.coverImgUrl;
+      }
+      $scope.coverEdit = !$scope.coverEdit;
+    };
+
+    $scope.profileClick = function(evt){
+      evt.preventDefault();
+      if($scope.profileEdit){
+        $scope.user.profileImgUrl = $scope.oldprofile;
+      } else {
+        $scope.oldprofile = $scope.user.profileImgUrl;
+      }
+      $scope.profileEdit = !$scope.profileEdit;
     };
 
     if($stateParams.id){

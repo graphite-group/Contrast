@@ -40,8 +40,6 @@ module.exports = {
   //RELATIONSHIPS: 'IS_CHALLENGER', 'IS_OPPONENT', 'VOTED_ON'
   //LABELS: 'requested', 'accepted', 'ended'
 
-
-
   //challengerImageId: num, challengeeImageId: num, challengeStats: objects
   createChallenge: function(challengerImageId, opponentImageId, challengeStats, callback){
 
@@ -51,55 +49,105 @@ module.exports = {
     challengeStats.opponentImageId = opponentImageId;
     challengeStats.opponentVote = 0;
 
-    var addThreeWayRelationship = function(challengerNode, opponentNode, node){
-      if(!challengerNode._id || !opponentNode._id){
-        throw new Error("challengerNode or opponentNode does not exist");
+    // var addThreeWayRelationship = function(challengerNode, opponentNode, node){
+    //   if(!challengerNode._id || !opponentNode._id){
+    //     throw new Error("challengerNode or opponentNode does not exist");
+    //   }
+    //   return Promise.all([
+    //     db.insertRelationshipAsync(challengerNode._id, node._id, 'IS_CHALLENGER', {}),
+    //     db.insertRelationshipAsync(opponentNode._id, node._id, 'IS_OPPONENT', {}),
+    //     db.updateNodeByIdAsync(node._id, {
+    //       challengerImage : challengerNode.url,
+    //       opponentImage : opponentNode.url
+    //     })
+    //   ]);
+    // };
+
+    var a = Promise.join(
+      db.readLabelsAsync(challengerImageId),
+      db.readLabelsAsync(opponentImageId)
+    )
+    .spread(function(challengerLabels, opponentLabels){
+      if(challengerLabels.indexOf('image') === -1 || opponentLabels.indexOf('image') === -1 ){
+        throw new Error("Given Ids are not images!");
       }
-      return Promise.all([
-        db.insertRelationshipAsync(challengerNode._id, node._id, 'IS_CHALLENGER', {}),
-        db.insertRelationshipAsync(opponentNode._id, node._id, 'IS_OPPONENT', {}),
-        db.updateNodeByIdAsync(node._id, {
-          challengerImage : challengerNode.url,
-          opponentImage : opponentNode.url
-        })
-      ]);
-    };
+      return true;
+    })
+    .then(function(){
+      return db.cypherQueryAsync(
+        'START n=node(' + opponentImageId + '), m=node(' + challengerImageId + ') \n' +
+        'match (n)-[:IS_OPPONENT]->(c:challenge)<-[:IS_CHALLENGER]-(m) \n' +
+        'RETURN m, c, n, labels(c)'
+      );
+    })
+    .then(function(results){
+      if(results.data.length>0){
+        throw new Error("Challenge already exists");
+      }
+      console.log('2nd q');
+      return db.cypherQueryAsync(
+        'START n=node(' + opponentImageId + '), m=node(' + challengerImageId + ') \n' +
+        'create (n)-[:IS_OPPONENT]->(c:challenge {'+
+          'createdAt:'+JSON.stringify(challengeStats.createdAt)+',' +
+          'challengerImageId:'+challengeStats.challengerImageId+',' +
+          'challengerVote: 0,' +
+          'opponentImageId:'+challengeStats.opponentImageId+',' +
+          'opponentVote: 0' +
+        '})<-[:IS_CHALLENGER]-(m) \n' +
+        'RETURN m, c, n, labels(c)'
+      );
+    })
+    .then(function(results){return results.data[0];})
+    .spread(function(challenger, challenge, opponent, labels){
+      challenge.challenger = challenger;
+      challenge.opponent = opponent;
+      challenge.labels = labels;
 
-    //TODO: change order to first check images exist.
-    //Try a Cypher Query to create Challenge Node AND Relationships all together.
-    var a =
-      db.insertNodeAsync(challengeStats, ['challenge', 'requested' ])
-        .then(function(node){
-          return Promise.all([
-            db.readNodeAsync(challengerImageId),
-            db.readNodeAsync(opponentImageId),
-            node
-          ]);
-        })
-        .spread(addThreeWayRelationship)
-        .spread(function(challengerRelationship, opponentRelationship, node){
+      // sails.io.sockets.emit('challenge', {
+      //   data: challenge,
+      //   id: challenge._id,
+      //   verb: 'create',
+      //   createdAt: challenge.createdAt,
+      //   updatedAt: new Date()
+      // });
 
-          db.cypherQueryAsync(
-            "START challenge = node(" +node._id+")\n" +
-            "MATCH (challenger:user)-[:CREATED]->()-[:IS_CHALLENGER]->(ch)<-[:IS_OPPONENT]-()<-[:CREATED]-(opponent:user)\n" +
-            "RETURN challenger, challenge, opponent, labels(challenge);"
-          )
-          .then(function(results){return results.data[0];})
-          .spread(function(challenger, challenge, opponent, labels){
-            challenge.challenger = challenger;
-            challenge.opponent = opponent;
-            challenge.labels = labels;
+      return challenge;
 
-            sails.io.sockets.emit('challenge', {
-              data: challenge,
-              id: node._id,
-              verb: 'create',
-              createdAt: node.createdAt,
-              updatedAt: new Date()
-            });
-          });
-          return node;
-        });
+    });
+
+    // var a =
+    //   db.insertNodeAsync(challengeStats, ['challenge', 'requested' ])
+    //     .then(function(node){
+    //       return Promise.all([
+    //         db.readNodeAsync(challengerImageId),
+    //         db.readNodeAsync(opponentImageId),
+    //         node
+    //       ]);
+    //     })
+    //     .spread(addThreeWayRelationship)
+    //     .spread(function(challengerRelationship, opponentRelationship, node){
+
+    //       db.cypherQueryAsync(
+    //         "START challenge = node(" +node._id+")\n" +
+    //         "MATCH (challenger:user)-[:CREATED]->()-[:IS_CHALLENGER]->(ch)<-[:IS_OPPONENT]-()<-[:CREATED]-(opponent:user)\n" +
+    //         "RETURN challenger, challenge, opponent, labels(challenge);"
+    //       )
+    //       .then(function(results){return results.data[0];})
+    //       .spread(function(challenger, challenge, opponent, labels){
+    //         challenge.challenger = challenger;
+    //         challenge.opponent = opponent;
+    //         challenge.labels = labels;
+
+    //         sails.io.sockets.emit('challenge', {
+    //           data: challenge,
+    //           id: node._id,
+    //           verb: 'create',
+    //           createdAt: node.createdAt,
+    //           updatedAt: new Date()
+    //         });
+    //       });
+    //       return node;
+    //     });
 
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);

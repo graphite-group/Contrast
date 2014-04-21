@@ -29,9 +29,12 @@ module.exports = {
   createChallenge:function(req,res){
     var challengerImageId = req.body.challengerImageId;
     var opponentImageId = req.body.opponentImageId;
+
     if(!challengerImageId || !opponentImageId){
       return serveError(res)("Challenger and Opponent IDs are needed.");
     }
+
+    console.log('challenge:', challengerImageId, opponentImageId);
 
     challengeService.createChallenge(challengerImageId, opponentImageId, {})
     // .then(function(challenge){
@@ -126,7 +129,7 @@ module.exports = {
 
   // endChallenge: function(req, res){
   //   var challengeId = req.body.challengeId;
-    
+
   //   challengeService.endChallenge(challengeId)
   //   .then()
   //   // .then(function(){
@@ -141,17 +144,3 @@ module.exports = {
    */
   _config: {}
 };
-
-// //fake req data to test
-// var req={session:{a:'a',user:{id:0}}, body:{challengeId:0,imageId:0}};
-// req.session.user.id = 3;
-// req.body.challengeId = 0;
-// req.body.imageId = 1;
-
-// //should return empty array if there are no challenges unconnected to user.id above, else should
-// //return array of challenges
-// var serveChallenge = module.exports.serveChallenge;
-// //serveChallenge(req);
-
-// var castVote = module.exports.castVote;
-// //castVote(req);

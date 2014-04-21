@@ -24,6 +24,10 @@ module.exports.adapters = {
     module: 'sails-disk'
   },
 
+  mongo: {
+    module: 'sails-mongo'
+  },
+
   // redis: {
   //   module: 'sails-redis',
 

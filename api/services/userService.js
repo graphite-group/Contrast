@@ -28,9 +28,15 @@ module.exports = {
     userData.wins = 0;
     userData.losses = 0;
 
-    var a = db.readNodesWithLabelsAndPropertiesAsync('user', {email:userData.email})
+
+    var a = //db.readNodesWithLabelsAndPropertiesAsync('user', {email:userData.email})
+    db.cypherQueryAsync(
+      "MATCH (n:user)\n" +
+      "WHERE n.username ='"+userData.username+"' or n.email='"+userData.email+"'\n" +
+      "RETURN n"
+    )
     .then(function(nodes){
-      if(nodes.length < 1){
+      if(nodes.data.length < 1){
         return module.exports.hashPassword(userData.password)
         .then(function(hash){
           userData.password = hash;
@@ -41,7 +47,14 @@ module.exports = {
         });
         // return db.insertNodeAsync(userData, ['user']);
       } else {
-        throw new Error("a user account for " + userData.email +" already exists.");
+        //console.log(nodes.data);
+        nodes.data.forEach(function(node){
+          if(node.email === userData.email){
+            throw new Error("An account with email " + userData.email +" already exists.");
+          }else if(node.username === userData.username){
+            throw new Error("An account with username " + userData.username +" already exists.");
+          }
+        });
       }
     });
 
