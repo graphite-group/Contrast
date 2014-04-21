@@ -228,7 +228,7 @@ module.exports = {
         .then(function(flag){
           var challengeStats = {};
           challengeStats.startTime = new Date();
-          challengeStats.endTime = new Date(Date.now().valueOf() + 100000);
+          challengeStats.endTime = new Date(Date.now().valueOf() + 3600000); //3600000 = 1 hour //100000 = 1.6 minutes
           scheduler.addJob(challengeId, challengeStats.endTime);
 
           //emit update event over socket

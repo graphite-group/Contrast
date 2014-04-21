@@ -3,9 +3,15 @@
 module.exports = function(app, socket){
 
   app
-    .controller('headerCtrl', ['$scope', 'MainService', function($scope, MainService){
-      $scope.notification = '';
+    .controller('headerCtrl', ['$scope', '$state', 'MainService', function($scope, $state, MainService){
+      $scope.notification = {};
+      $scope.isNotifications = false;
       $scope.hello = 'world';
+
+      $scope.leaveNotification = function(){
+        $scope.isNotifications = false;
+        $state.go($scope.notification.target);
+      };
 
       $scope.listener = function(event){
         if(event.verb === 'create'){
@@ -18,7 +24,9 @@ module.exports = function(app, socket){
             MainService.isLoggedIn().then(function(user){
               var curUserId = parseFloat(user.id);
               if(curUserId === opponentId){
-                $scope.notification = '<a href="#/requests">You just received a challenge request.</a>';
+                $scope.notification.text = 'You just received a challenge request.';
+                $scope.notification.target = 'requests';
+                $scope.isNotifications = true;
               }
               $scope.$apply();
             });
@@ -37,9 +45,10 @@ module.exports = function(app, socket){
 
             MainService.isLoggedIn().then(function(user){
               var curUserId = parseFloat(user.id);
-              if(curUserId === challengerId && !$scope.accepted){
-                $scope.accepted = true;
-                $scope.notification = '<a href="#/challenges">An opponent has accepted your challenge.</a>';
+              if(curUserId === challengerId ){
+                $scope.notification.text = 'An opponent has accepted your challenge.';
+                $scope.notification.target = 'mychallenges';
+                $scope.isNotifications = true;
               }
               $scope.$apply();
             });
@@ -49,9 +58,10 @@ module.exports = function(app, socket){
 
             MainService.isLoggedIn().then(function(user){
               var curUserId = parseFloat(user.id);
-              if(curUserId === challengerId && !$scope.rejected){
-                $scope.rejected = false;
-                $scope.notification = '<a href="#/challenges">An opponent has rejected your challenge.</a>';
+              if(curUserId === challengerId ){
+                $scope.notification.text = 'An opponent has rejected your challenge.';
+                $scope.notification.target = 'mychallenges';
+                $scope.isNotifications = true;
               }
               $scope.$apply();
             });
@@ -63,8 +73,10 @@ module.exports = function(app, socket){
             MainService.isLoggedIn().then(function(user){
               var curUserId = parseFloat(user.id);
 
-              if(!$scope.ended && (curUserId === winnerId || curUserId === loserId)){
-                $scope.notification = '<a href="#/challenges">One of your challenges has just ended.</a>';
+              if((curUserId === winnerId || curUserId === loserId)){
+                $scope.notification.text = 'One of you challenges has just ended.';
+                $scope.notification.target = 'mychallenges';
+                $scope.isNotifications = true;
               }
               $scope.$apply();
             });

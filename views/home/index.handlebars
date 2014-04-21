@@ -15,9 +15,9 @@
     <header ng-controller="headerCtrl">
       <div ng-class="{notification:notification, header:true}">
         <h1>Contrast.io</h1>
-        <div class="message" ng-show="notification">
-          notifications &#123;&#123;notification&#125;&#125;
-          <div class="quit" ng-click="notification=''">X</div>
+        <div class="message" ng-show="isNotifications">
+          <a ng-click="leaveNotification()">&#123;&#123;notification.text&#125;&#125;</a>
+          <div class="quit" ng-click="isNotifications=false">X</div>
         </div>
         <nav>
           <div class="hamburger">
