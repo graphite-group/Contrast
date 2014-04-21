@@ -361,8 +361,8 @@ module.exports = {
           "START n=node("+userId+")\n" +
           "MATCH (n)-[:CREATED]->(:image)-["+relationship+"]->(m:challenge)\n" +
           "WITH m \n" +
-          "MATCH (o:user)-[:CREATED]->(:image)-[:IS_OPPONENT]->(m)<-[:IS_CHALLENGER]-(:image)<-[:CREATED]-(c:user) \n" +
-          "RETURN o,m,c;"
+          "MATCH (o:user)-[:CREATED]->(oi:image)-[:IS_OPPONENT]->(m)<-[:IS_CHALLENGER]-(ci:image)<-[:CREATED]-(c:user) \n" +
+          "RETURN o,m,c, oi, ci;"
         )
         .then(function(results){
           return results.data;
@@ -370,6 +370,8 @@ module.exports = {
         .map(function(result){
           result[1].opponent = result[0];
           result[1].challenger = result[2];
+          result[1].challengerImage = result[4].url;
+          result[1].opponentImage = result[3].url;
           return result[1];
         });
 
@@ -387,11 +389,21 @@ module.exports = {
     var a =
       db.cypherQueryAsync(
         "START n=node("+userId+")\n" +
-        "MATCH (n)-->(:image)-[:IS_OPPONENT]->(m:requested)\n" +
-        "RETURN m;"
+        "MATCH (n)-->(oi:image)-[:IS_OPPONENT]->(m:requested)<-[:IS_CHALLENGER]-(ci:image)\n" +
+        "RETURN m, oi, ci, n;"
       )
       .then(function(results){
         return results.data;
+      })
+      .map(function(row){
+        var challenge = row[0];
+        var opponentImage = row[1];
+        var challengerImage = row[2];
+        var opponent = row[3];
+        challenge.opponentImage = opponentImage;
+        challenge.challengerImage = challengerImage;
+        challenge.opponent = opponent;
+        return challenge;
       });
 
     if(typeof callback === 'function'){
@@ -407,12 +419,21 @@ module.exports = {
         "START u=node("+userId+")\n" +
         "MATCH (n:accepted)\n" +
         "WHERE NOT((n)-[:VOTED_ON]-(u))\n"+
-        "RETURN n;"
+        "WITH n \n" +
+        'MATCH (oi:image)-[:IS_OPPONENT]->(n)<-[:IS_CHALLENGER]-(ci:image) \n' +
+        'RETURN m, oi, ci;'
       )
       .then(function(results){
         return results.data;
+      })
+      .map(function(row){
+        var challenge = row[0];
+        var opponentImage = row[1];
+        var challengerImage = row[2];
+        challenge.opponentImage = opponentImage;
+        challenge.challengerImage = challengerImage;
+        return challenge;
       });
-      // .map(function(result))
 
     if(typeof callback === 'function'){
       a.then(callback.bind(this, null)).catch(callback);
