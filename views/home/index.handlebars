@@ -5,41 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <link rel="stylesheet" href="/styles/app.css">
   </head>
+  <body>
+    <div ng-app="contrast" ng-cloak="true">
 
-  <body ng-app="contrast">
-
-    <header ng-controller="headerCtrl">
-      <div ng-class="{notification: isNotifications, header: true}">
-          <h1>Contrast.io</h1>
-          <div class="message">
-            <a ng-click="leaveNotification()">&#123;&#123;notification.text&#125;&#125;</a>
-            <div class="quit" ng-click="isNotifications=false">X</div>
-          </div>
-          <nav>
-            <div class="hamburger">
-              <a href="#!">:::</a>
-              <div class="dropdown">
-                <a href="#/">Home</a>
-                <a href="#/profile" ng-show="isLoggedIn">Profile</a>
-                <a href="#/challenges" ng-show="isLoggedIn">Challenges</a>
-                <a href="#/requests" ng-show="isLoggedIn">Requests</a>
-                <a href="#/mychallenges" ng-show="isLoggedIn">My Challenges</a>
-                <a href="#/login" ng-show="!isLoggedIn">Login</a>
-                <a href="#/signup" ng-show="!isLoggedIn">Sign Up</a>
-                <a href="#/logout" ng-show="isLoggedIn">Logout</a>
-              </div>
+      <header ng-controller="headerCtrl">
+        <div ng-class="{notification: isNotifications, header: true}">
+            <h1>Contrast.io</h1>
+            <div class="message">
+              <a ng-click="leaveNotification()">&#123;&#123;notification.text&#125;&#125;</a>
+              <div class="quit" ng-click="isNotifications=false">X</div>
             </div>
-          </nav>
-        </div>
-    </header>
+            <nav>
+              <div class="hamburger">
+                <a href="#!">:::</a>
+                <div class="dropdown">
+                  <a href="#/">Home</a>
+                  <a href="#/profile" ng-show="isLoggedIn">Profile</a>
+                  <a href="#/challenges" ng-show="isLoggedIn">Challenges</a>
+                  <a href="#/requests" ng-show="isLoggedIn">Requests</a>
+                  <a href="#/mychallenges" ng-show="isLoggedIn">My Challenges</a>
+                  <a href="#/login" ng-show="!isLoggedIn">Login</a>
+                  <a href="#/signup" ng-show="!isLoggedIn">Sign Up</a>
+                  <a href="#/logout" ng-show="isLoggedIn">Logout</a>
+                </div>
+              </div>
+            </nav>
+          </div>
+      </header>
 
-    <div class="container">
-      <div ui-view></div>
+      <div class="container">
+        <div ui-view></div>
+      </div>
+      <footer>
+        &copy; 2014. All Rights Reserved.
+        <script src="/js/app.js"></script>
+      </footer>
     </div>
-    <footer>
-      &copy; 2014. All Rights Reserved.
-      <script src="/js/app.js"></script>
-    </footer>
   </body>
 </html>
 

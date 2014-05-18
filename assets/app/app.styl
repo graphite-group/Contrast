@@ -13,7 +13,19 @@ textgrey = rgb(180,180,180)
 @css{
   *, *:before, *:after {
     -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
-   }
+  }
+  div[ng-app][ng-cloak] {
+    display: none;
+    opacity: 0;
+  }
+  div[ng-app] {
+    opacity: 1;
+    -webkit-transition: 1s 1s ease-out;
+    -moz-transition: 1s 1s ease-out;
+    -o-transition: 1s 1s ease-out;
+    -ms-transition: 1s 1s ease-out;
+    transition: 1s 1s ease-out;
+  }
 }
 
 html, body
@@ -33,6 +45,10 @@ body
   top 4rem
   left 4rem
   z-index 9999
+
+div[ng-cloak]
+  display none
+  opacity 0
 
 @import './header.styl'
 
